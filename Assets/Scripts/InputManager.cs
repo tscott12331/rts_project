@@ -11,9 +11,9 @@ public class InputManager : MonoBehaviour
     public GameObject basicUnitPrefab;
     public LayerMask groundLayer;
     public LayerMask unitLayer;
-    public Transform unitySelectionVisual;
 
     List<GameObject> units = new List<GameObject>();
+    bool selecting = false;
 
     void deselectAllUnits(List<GameObject> units) {
         foreach (GameObject unit in units)
@@ -25,8 +25,31 @@ public class InputManager : MonoBehaviour
     RaycastHit hitInfo;
     void Update()
     {
-        bool leftClicked = Input.GetMouseButtonDown(0);
         bool middleClicked = Input.GetMouseButtonDown(2);
+            
+        if(selecting)
+        {
+            if(Input.GetMouseButtonUp(0))
+            {
+                selecting = false;
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY, unitLayer);
+                if(hit)
+                {
+                    Debug.Log("hit a unit");
+                    hitInfo.transform.Find("UnitSelected").gameObject.SetActive(true);
+                } else
+                {
+                    deselectAllUnits(units);
+                }
+            }
+        } else
+        {
+            if(Input.GetMouseButtonDown(0))
+            {
+                selecting = true;
+            }
+        }
 
         if (middleClicked)
         {
@@ -39,18 +62,6 @@ public class InputManager : MonoBehaviour
                 unit.transform.position = new Vector3(hitInfo.point.x, hitInfo.point.y + unit.transform.localScale.y / 2, hitInfo.point.z);
                 units.Add(unit);
             }
-        } else if(leftClicked)
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY, unitLayer);
-            if(hit)
-            {
-                Debug.Log("hit a unit");
-                hitInfo.transform.Find("UnitSelected").gameObject.SetActive(true);
-            } else
-            {
-                deselectAllUnits(units);
-            }
-        }
+        }     
     }
 }
