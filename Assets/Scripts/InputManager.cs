@@ -8,15 +8,19 @@ public class InputManager : MonoBehaviour
 {
     const float MAX_MOUSE_RAY = 250.0f;
 
-    [SerializeField]
-    Camera mainCam;
-
     public GameObject basicUnitPrefab;
     public LayerMask groundLayer;
     public LayerMask unitLayer;
     public Transform unitySelectionVisual;
 
     List<GameObject> units = new List<GameObject>();
+
+    void deselectAllUnits(List<GameObject> units) {
+        foreach (GameObject unit in units)
+        {
+            unit.transform.Find("UnitSelected").gameObject.SetActive(false);
+        }
+    }
 
     RaycastHit hitInfo;
     void Update()
@@ -26,7 +30,7 @@ public class InputManager : MonoBehaviour
 
         if (middleClicked)
         {
-            Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY, groundLayer);
 
             if (hit)
@@ -37,12 +41,15 @@ public class InputManager : MonoBehaviour
             }
         } else if(leftClicked)
         {
-            Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY, unitLayer);
             if(hit)
             {
-                // hitInfo.transform.gameObject.Find("UnitSelected").SetActive(true);
-                // hitInfo.transform.GetComponent<InputManager>().unitySelectionVisual.gameObject.SetActive(true);
+                Debug.Log("hit a unit");
+                hitInfo.transform.Find("UnitSelected").gameObject.SetActive(true);
+            } else
+            {
+                deselectAllUnits(units);
             }
         }
     }

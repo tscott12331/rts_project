@@ -9,19 +9,29 @@ public class CameraMovement : MonoBehaviour
     const int MOVE_FRAME_SIZE = 100;
     const float CAM_SPEED = 0.02f;
     
-    int moveLowerBoundX;
-    int moveUpperBoundX;
+    int moveLowerBoundX = MOVE_FRAME_SIZE;
+    int moveUpperBoundX = Screen.width - MOVE_FRAME_SIZE;
 
-    int moveLowerBoundY;
-    int moveUpperBoundY;
+    int moveLowerBoundY = MOVE_FRAME_SIZE;
+    int moveUpperBoundY = Screen.height - MOVE_FRAME_SIZE;
     Vector3 mousePosition;
+
+
+    void correctCamHeight()
+    {
+        RaycastHit hitInfo;
+        bool hit = Physics.Raycast(transform.position, Vector3.down, out hitInfo, groundLayer);
+        if(hit)
+        {
+            float distance = transform.position.y - hitInfo.point.y;
+            transform.Translate(Vector3.up * (HEIGHT_ABOVE_GROUND - distance), Space.World);
+        }
+
+    }
+
     private void Start()
     {
-        moveLowerBoundX = MOVE_FRAME_SIZE;
-        moveUpperBoundX = Screen.width - MOVE_FRAME_SIZE;
-
-        moveLowerBoundY = MOVE_FRAME_SIZE;
-        moveUpperBoundY = Screen.height - MOVE_FRAME_SIZE;
+        correctCamHeight();
     }
 
     // Update is called once per frame
@@ -50,16 +60,7 @@ public class CameraMovement : MonoBehaviour
             moved = true;
         }
 
-        if(moved)
-        {
-            RaycastHit hitInfo;
-            bool hit = Physics.Raycast(transform.position, Vector3.down, out hitInfo, groundLayer);
-            if(hit)
-            {
-                float distance = transform.position.y - hitInfo.point.y;
-                transform.Translate(Vector3.up * (HEIGHT_ABOVE_GROUND - distance), Space.World);
-            }
-        }
+        if(moved) correctCamHeight();
 
     }
 }

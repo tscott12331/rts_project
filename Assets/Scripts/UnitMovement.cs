@@ -7,9 +7,6 @@ public class UnitMovement : MonoBehaviour
 {
     const float MAX_MOUSE_RAY = 250.0f;
 
-    [SerializeField]
-    Camera mainCam;
-
     public LayerMask groundLayer;
 
     void Update()
@@ -19,14 +16,15 @@ public class UnitMovement : MonoBehaviour
         if (rightClicked)
         {
             RaycastHit hitInfo;
-            Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY, groundLayer);
 
             if (hit)
             {
                 if (rightClicked)
                 {
-                    GetComponent<NavMeshAgent>().SetDestination(hitInfo.point);
+                    GetComponentInParent<NavMeshAgent>().SetDestination(hitInfo.point);
+                    // GetComponent<NavMeshAgent>().SetDestination(hitInfo.point);
                 }
             }
         }
