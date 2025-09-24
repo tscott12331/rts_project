@@ -3,18 +3,23 @@ using UnityEngine.UIElements;
 
 public class CameraMovement : MonoBehaviour
 {
-    public LayerMask groundLayer;
-    public float HEIGHT_ABOVE_GROUND;
+    [SerializeField]
+    LayerMask groundLayer;
+    [SerializeField]
+    float HEIGHT_ABOVE_GROUND;
 
-    const int MOVE_FRAME_SIZE = 100;
-    const float CAM_SPEED = 0.02f;
+    [SerializeField]
+    int MOVE_FRAME_SIZE;
+    [SerializeField]
+    float CAM_SPEED;
     
-    int moveLowerBoundX = MOVE_FRAME_SIZE;
-    int moveUpperBoundX = Screen.width - MOVE_FRAME_SIZE;
-
-    int moveLowerBoundY = MOVE_FRAME_SIZE;
-    int moveUpperBoundY = Screen.height - MOVE_FRAME_SIZE;
     Vector3 mousePosition;
+
+    int moveLowerBoundX;
+    int moveUpperBoundX;
+
+    int moveLowerBoundY;
+    int moveUpperBoundY;
 
 
     void correctCamHeight()
@@ -31,6 +36,11 @@ public class CameraMovement : MonoBehaviour
 
     private void Start()
     {
+        moveLowerBoundX = MOVE_FRAME_SIZE;
+        moveUpperBoundX = Screen.width - MOVE_FRAME_SIZE;
+
+        moveLowerBoundY = MOVE_FRAME_SIZE;
+        moveUpperBoundY = Screen.height - MOVE_FRAME_SIZE;
         correctCamHeight();
     }
 
