@@ -398,7 +398,9 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  HEIGHT_ABOVE_GROUND: 30
+  HEIGHT_ABOVE_GROUND: 20
+  MOVE_FRAME_SIZE: 50
+  CAM_SPEED: 0.06
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -583,8 +585,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 6e56b59e3f37d904e91af9fd49dab526, type: 3}
-  m_Type: 0
+  m_Sprite: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -729,9 +731,6 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  unitLayer:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!1 &1150562880
 GameObject:
   m_ObjectHideFlags: 0
@@ -927,6 +926,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SelectController
   selectRect: {fileID: 540044584}
+  unitLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  MAX_MOUSE_RAY: 250
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
