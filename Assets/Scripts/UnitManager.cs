@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public sealed class UnitManager : MonoBehaviour
+public sealed class UnitManager
 {
     private static UnitManager _instance;
     public static UnitManager Instance
@@ -35,14 +35,6 @@ public sealed class UnitManager : MonoBehaviour
         return selectedUnits.Contains(unit);
     }
 
-    public GameObject createUnit()
-    {
-        GameObject unit = Instantiate(basicUnitPrefab);
-
-        _instance.addUnit(unit);
-        return unit;
-    }
-
     public void addUnit(GameObject unit)
     {
         units.Add(unit);
@@ -66,21 +58,5 @@ public sealed class UnitManager : MonoBehaviour
         {
             deselectUnit(unit);
         }
-    }
-
-    /* events */
-    void UIManager_onBasicUnitCreate()
-    {
-        _instance.createUnit();
-    }
-
-    private void OnEnable()
-    {
-        UIManager.onBasicUnitCreate += UIManager_onBasicUnitCreate;
-    }
-
-    private void OnDisable()
-    {
-        UIManager.onBasicUnitCreate -= UIManager_onBasicUnitCreate;
     }
 }
