@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class UnitFactoryController : MonoBehaviour
+public class UnitFactory : Structure
 {
     [SerializeField]
     GameObject basicUnitPrefab;
@@ -18,8 +18,7 @@ public class UnitFactoryController : MonoBehaviour
     void UIManager_onBasicUnitCreate() {
         NavMeshHit navMeshHit;
         if(NavMesh.SamplePosition(spawnPositionTransform.position, out navMeshHit, MAX_SAMPLE_DIST, NavMesh.AllAreas)) {
-            GameObject unit = Instantiate(basicUnitPrefab);
-            unit.transform.position = navMeshHit.position;
+            GameObject unit = Instantiate(basicUnitPrefab, navMeshHit.position, Quaternion.identity);
             UnitManager.Instance.addUnit(unit);
 
             if(NavMesh.SamplePosition(walkPositionTransform.position, out navMeshHit, MAX_SAMPLE_DIST, NavMesh.AllAreas))

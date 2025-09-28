@@ -8,24 +8,21 @@ public class InputManager : MonoBehaviour
 {
     const float MAX_MOUSE_RAY = 250.0f;
 
-    public GameObject basicUnitPrefab;
-    public LayerMask groundLayer;
-
-    RaycastHit hitInfo;
     void Update()
     {
-        bool middleClicked = Input.GetMouseButtonDown(2);
+        bool leftClicked = Input.GetMouseButtonDown(0);
 
-        if (middleClicked)
+        if (leftClicked)
         {
+            RaycastHit hitInfo;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY, groundLayer);
+            bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY);
 
             if (hit)
             {
-                var unit = Instantiate(basicUnitPrefab);
-                unit.transform.position = new Vector3(hitInfo.point.x, hitInfo.point.y + unit.transform.localScale.y / 2, hitInfo.point.z);
-                UnitManager.Instance.addUnit(unit);
+                // maybe a switch on the layer for diff actions?
+                // like on structure hit we gotta enable structure ui with proper listeners
+                // hitInfo.transform.gameObject.layer;
             }
         }     
     }
