@@ -7,7 +7,6 @@ public class UIManager : MonoBehaviour
 
     public void OnBasicUnitButtonClick()
     {
-        Debug.Log("Invoking");
         onBasicUnitCreate?.Invoke();
     }
 }
