@@ -70,7 +70,7 @@ public class CameraMovement : MonoBehaviour
             moved = true;
         }
 
-        if(moved) correctCamHeight();
+        // if(moved) correctCamHeight();
 
     }
 }
