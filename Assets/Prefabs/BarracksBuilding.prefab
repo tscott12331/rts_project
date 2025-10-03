@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 7657747418295553238}
   - component: {fileID: 7997756060837641730}
   m_Layer: 8
-  m_Name: UnitFactoryBuilding
+  m_Name: BarracksBuilding
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

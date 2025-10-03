@@ -4369,7 +4369,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4806627809971288126, guid: 24a33d19906c5084c879cdd55a0454e2, type: 3}
       propertyPath: m_Name
-      value: UnitFactoryBuilding
+      value: Barracks
       objectReference: {fileID: 0}
     - target: {fileID: 8727786441083492218, guid: 24a33d19906c5084c879cdd55a0454e2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4424,13 +4424,13 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1150562883}
+  - {fileID: 410087041}
+  - {fileID: 832575519}
   - {fileID: 965245291}
   - {fileID: 889992722}
   - {fileID: 1501451065}
   - {fileID: 1777745011}
   - {fileID: 1131249961}
   - {fileID: 330585546}
-  - {fileID: 410087041}
-  - {fileID: 832575519}
   - {fileID: 316989691}
   - {fileID: 4404813051489533426}
