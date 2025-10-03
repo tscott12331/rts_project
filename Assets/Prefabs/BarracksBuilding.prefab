@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 2775920884337138288}
   - component: {fileID: 4071322118992664264}
   - component: {fileID: 7657747418295553238}
-  - component: {fileID: 7997756060837641730}
+  - component: {fileID: 4056662187400995070}
   m_Layer: 8
   m_Name: BarracksBuilding
   m_TagString: Untagged
@@ -145,7 +145,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &7997756060837641730
+--- !u!114 &4056662187400995070
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -156,7 +156,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0aea32daf23d2496a8fbfeb79b6ebffd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UnitFactoryController
+  m_EditorClassIdentifier: Assembly-CSharp::UnitFactory
   _id: 0
   basicUnitPrefab: {fileID: 8909066516744522350, guid: a91c778472d716743b4dc9fd5dfbfbdb, type: 3}
   spawnPositionTransform: {fileID: 2336406090664999572}

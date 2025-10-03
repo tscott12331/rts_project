@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class UnitFactory : Structure
+public class BarracksController : Structure
 {
     [SerializeField]
     GameObject basicUnitPrefab;
