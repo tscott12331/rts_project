@@ -10,14 +10,7 @@ public class SelectController : MonoBehaviour
     [SerializeField]
     float MAX_MOUSE_RAY;
 
-    Vector2 startPosition;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        // selectRect.sizeDelta = new Vector3(50, 50, 50);
-        startPosition = Vector2.zero;
-    }
+    Vector2 startPosition = Vector2.zero;
 
     // Update is called once per frame
     void Update()
@@ -59,15 +52,16 @@ public class SelectController : MonoBehaviour
             {
                 if(!isShifting) UnitManager.Instance.deselectAll();
             }
+
+            float halfWidth = selectRect.rect.width / 2;
+            float halfHeight = selectRect.rect.height / 2;
+            float left = selectRect.transform.position.x - halfWidth;
+            float right = selectRect.transform.position.x + halfWidth;
+            float top = selectRect.transform.position.y + halfHeight;
+            float bottom = selectRect.transform.position.y - halfHeight;
             foreach(GameObject unit in UnitManager.Instance.getUnits())
             {
                 Vector2 screenPoint = Camera.main.WorldToScreenPoint(unit.transform.position);
-                float halfWidth = selectRect.rect.width / 2;
-                float halfHeight = selectRect.rect.height / 2;
-                float left = selectRect.transform.position.x - halfWidth;
-                float right = selectRect.transform.position.x + halfWidth;
-                float top = selectRect.transform.position.y + halfHeight;
-                float bottom = selectRect.transform.position.y - halfHeight;
 
                 if(screenPoint.x >= left && screenPoint.x <= right
                     && screenPoint.y >= bottom && screenPoint.y <= top)

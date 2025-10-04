@@ -21,11 +21,7 @@ public class UnitMovement : MonoBehaviour
 
             if (hit)
             {
-                if (rightClicked)
-                {
-                    GetComponentInParent<NavMeshAgent>().SetDestination(hitInfo.point);
-                    // GetComponent<NavMeshAgent>().SetDestination(hitInfo.point);
-                }
+                GetComponentInParent<NavMeshAgent>().SetDestination(hitInfo.point);
             }
         }
     }
