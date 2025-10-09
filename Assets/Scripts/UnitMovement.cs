@@ -11,18 +11,18 @@ public class UnitMovement : MonoBehaviour
 
     void Update()
     {
-        bool rightClicked = Input.GetMouseButtonDown(1);
-
-        if (rightClicked)
-        {
-            RaycastHit hitInfo;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY, groundLayer);
-
-            if (hit)
-            {
-                GetComponentInParent<NavMeshAgent>().SetDestination(hitInfo.point);
-            }
-        }
+        // bool rightClicked = Input.GetMouseButtonDown(1);
+        //
+        // if (rightClicked)
+        // {
+        //     RaycastHit hitInfo;
+        //     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //     bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY, groundLayer);
+        //
+        //     if (hit)
+        //     {
+        //         GetComponentInParent<NavMeshAgent>().SetDestination(hitInfo.point);
+        //     }
+        // }
     }
 }

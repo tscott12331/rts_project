@@ -30,6 +30,10 @@ public sealed class UnitManager
         return units;
     }
 
+    public List<GameObject> getSelectedUnits() {
+        return selectedUnits;
+    }
+
     public bool unitIsSelected(GameObject unit)
     {
         return selectedUnits.Contains(unit);

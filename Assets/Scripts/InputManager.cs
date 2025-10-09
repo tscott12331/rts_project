@@ -9,6 +9,12 @@ public class InputManager : MonoBehaviour
     public delegate void OnStructureSelect(int id);
     public static event OnStructureSelect onStructureSelect;
 
+    [SerializeField]
+    LayerMask groundLayer;
+
+    [SerializeField]
+    Transform selectMarkerTransform;
+
     const float MAX_MOUSE_RAY = 250.0f;
 
     int structureLayer;
@@ -20,6 +26,7 @@ public class InputManager : MonoBehaviour
     void Update()
     {
         bool leftClicked = Input.GetMouseButtonDown(0);
+        bool rightClicked = Input.GetMouseButtonDown(1);
 
         if (leftClicked)
         {
@@ -38,5 +45,24 @@ public class InputManager : MonoBehaviour
                 }
             }
         }     
+
+        if(rightClicked) {
+            RaycastHit hitInfo;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY, groundLayer);
+
+            if (hit)
+            {
+                var selectedUnits = UnitManager.Instance.getSelectedUnits();
+                if(selectedUnits.Count > 0) {
+                    foreach(GameObject unit in UnitManager.Instance.getSelectedUnits()) {
+                        unit.GetComponent<NavMeshAgent>().SetDestination(hitInfo.point);
+                    }
+
+                    selectMarkerTransform.position = hitInfo.point;
+                    selectMarkerTransform.gameObject.SetActive(true);
+                }
+            }
+        }
     }
 }
