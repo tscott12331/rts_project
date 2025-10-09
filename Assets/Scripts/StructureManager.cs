@@ -2,8 +2,16 @@ using System.Collections.Generic;
 using UnityEditorInternal;
 using UnityEngine;
 
-public class StructureManager
+public class StructureManager : MonoBehaviour
 {
+    public void OnEnable() {
+        InputManager.onStructureSelect += InputManager_onStructureSelect;
+    }
+
+    public void OnDisable() {
+        InputManager.onStructureSelect -= InputManager_onStructureSelect;
+    }
+
     private static StructureManager _instance;
     public static StructureManager Instance
     {
@@ -32,4 +40,9 @@ public class StructureManager
     {
         structures.Remove(structure);
     }
+
+    void InputManager_onStructureSelect(int id) {
+        Debug.Log($"Selected structure {id}");
+    }
+
 }
