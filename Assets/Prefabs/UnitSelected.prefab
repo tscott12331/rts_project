@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 8685857771597029178}
   - component: {fileID: 7399822551691988931}
   - component: {fileID: 5683393866324163625}
-  - component: {fileID: 1376058453849698348}
   m_Layer: 0
   m_Name: UnitSelected
   m_TagString: Untagged
@@ -90,18 +89,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &1376058453849698348
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7669044095800484499}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3bdd73a6ea06d7a4c8d767df916317fe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UnitMovement
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
