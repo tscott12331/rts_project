@@ -41,7 +41,7 @@ public class InputManager : MonoBehaviour
                 // hitInfo.transform.gameObject.layer;
                 if(hitInfo.transform.gameObject.layer == structureLayer) {
                     Structure s = hitInfo.transform.GetComponent<Structure>();
-                    onStructureSelect?.Invoke(s.GetId());
+                    onStructureSelect?.Invoke(s.getId());
                 }
             }
         }     
