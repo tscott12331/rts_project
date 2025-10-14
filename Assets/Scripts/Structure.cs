@@ -7,8 +7,6 @@ public class Structure : MonoBehaviour
     private int _id;
     [SerializeField]
     private int _hp;
-    [SerializeField]
-    private List<Unit> _trainableUnits;
 
     public int getId() {
         return _id;
@@ -16,9 +14,5 @@ public class Structure : MonoBehaviour
 
     public int getHP() {
         return _hp;
-    }
-
-    public List<Unit> getTrainableUnits() {
-        return _trainableUnits;
     }
 }
