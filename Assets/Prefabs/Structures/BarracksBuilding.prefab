@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 4071322118992664264}
   - component: {fileID: 7657747418295553238}
   - component: {fileID: 4056662187400995070}
+  - component: {fileID: -4098519752221368339}
   m_Layer: 8
   m_Name: BarracksBuilding
   m_TagString: Untagged
@@ -157,13 +158,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0aea32daf23d2496a8fbfeb79b6ebffd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnitFactory
+--- !u!114 &-4098519752221368339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4806627809971288126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f01237d89b97f042a8612bbbe0cda91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainingStructure
   _id: 0
-  basicUnitPrefab: {fileID: 8909066516744522350, guid: a91c778472d716743b4dc9fd5dfbfbdb, type: 3}
-  spawnPositionTransform: {fileID: 2336406090664999572}
-  walkPositionTransform: {fileID: 99421209834687602}
+  _hp: 0
+  _prefab: {fileID: 0}
+  spawnPositionTransform: {fileID: 0}
+  walkPositionTransform: {fileID: 0}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 0
 --- !u!1 &5145103896006285412
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class BarracksController : TrainingStructure
+public class BarracksController : MonoBehaviour
 {
     void UIManager_onBasicUnitCreate() {
 

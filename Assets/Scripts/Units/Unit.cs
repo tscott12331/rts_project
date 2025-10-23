@@ -9,8 +9,15 @@ public class Unit : MonoBehaviour
     [SerializeField]
     int _speed;
 
+    [SerializeField]
+    GameObject _prefab;
+
     public int getId() {
         return _id;
+    }
+
+    public GameObject getPrefab() {
+        return _prefab;
     }
 
     public int getHP() {
@@ -28,4 +35,5 @@ public class Unit : MonoBehaviour
     public void attack() {
 
     }
+
 }
