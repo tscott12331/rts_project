@@ -13,10 +13,4 @@ public class GameManager : MonoBehaviour
 
         StructureManager.Instance.placeStructure(so, Vector3.zero);
     }
-
-    // // Update is called once per frame
-    // void Update()
-    // {
-    //
-    // }
 }

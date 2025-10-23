@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 9069565103921405990}
   - component: {fileID: 3235673008366841341}
   - component: {fileID: 1270819806153174500}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Headquarters
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -174,15 +174,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f01237d89b97f042a8612bbbe0cda91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainingStructure
-  _id: 0
-  _hp: 0
-  _trainableUnits: []
-  basicUnitPrefab: {fileID: 0}
+  id: 0
+  HP: 0
+  prefab: {fileID: 0}
   spawnPositionTransform: {fileID: 0}
   walkPositionTransform: {fileID: 0}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
 --- !u!1 &8806412365008177788
 GameObject:
   m_ObjectHideFlags: 0

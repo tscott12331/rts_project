@@ -3,34 +3,19 @@ using UnityEngine;
 
 public class Structure : MonoBehaviour
 {
-    public Structure(StructureScriptableObject so) {
+    public int id;
+
+    public int HP;
+
+    public GameObject prefab;
+
+    public void copyStructureData(StructureScriptableObject so) {
         var data = so.data;
-        this._id = data.id;
-        this._hp = data.HP;
-        this._prefab = data.prefab;
-    }
-
-    [SerializeField]
-    private int _id;
-    [SerializeField]
-    private int _hp;
-
-    [SerializeField]
-    GameObject _prefab;
-
-    public int getId() {
-        return _id;
-    }
-
-    public GameObject getPrefab() {
-        return _prefab;
-    }
-
-    public int getHP() {
-        return _hp;
+        this.HP = data.HP;
+        this.prefab = data.prefab;
     }
 
     public void showStructureUI() {
-        Debug.Log($"Showing structure {_id}'s UI");
+        Debug.Log($"Showing structure {id}'s UI");
     }
 }

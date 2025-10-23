@@ -19,30 +19,13 @@ public class StructureManager : MonoBehaviour
         }
     }
 
-    // private static StructureManager _instance;
-    // public static StructureManager Instance
-    // {
-    //     get
-    //     {
-    //         if(_instance == null)
-    //         {
-    //             _instance = new StructureManager();
-    //         }
-    //
-    //         return _instance;
-    //     }
-    //     set
-    //     {
-    //         _instance = value;
-    //     }
-    // }
-
     Dictionary<int, Structure> structures = new Dictionary<int, Structure>();
     private int currentId = 0;
 
     public void addStructure(Structure structure)
     {
         structures.Add(++currentId, structure);
+        structure.id = currentId;
     }
 
     public void removeStructure(Structure structure)
@@ -52,6 +35,7 @@ public class StructureManager : MonoBehaviour
 
     public void placeStructure(StructureScriptableObject so, Vector3 pos) {
         var structure = Instantiate(so.data.prefab, pos, Quaternion.identity);
+        structure.GetComponent<Structure>().copyStructureData(so);
         addStructure(structure.GetComponent<Structure>());
     }
 
