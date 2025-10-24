@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections.Generic;
+using System;
 
 public class TrainingStructure : Structure
 {
@@ -8,13 +9,13 @@ public class TrainingStructure : Structure
     public Transform walkPositionTransform;
     public LayerMask groundLayer;
 
-    public Dictionary<int, GameObject> trainableUnits;
+    public List<GameObject> trainableUnits;
 
     const float MAX_SAMPLE_DIST = 100.0f;
 
     public void train(int id)
     {
-        if(trainableUnits.ContainsKey(id)) {
+        if (id > -1 && id < trainableUnits.Count) {
             GameObject unitPrefab = trainableUnits[id];
 
             NavMeshHit navMeshHit;
@@ -30,13 +31,22 @@ public class TrainingStructure : Structure
         }
     }
 
-    public void copyStructureData(TrainableStructureScriptableObject so) {
-        var data = so.data;
+    public override void copyStructureData(StructureSO so) {
+        Debug.Log($"[TrainingStructure]: copyStructureData");
 
+        var trainingSO = (TrainableStructureSO)so;
+        var data = trainingSO.data;
         this.HP = data.HP;
         this.prefab = data.prefab;
-        
-        this.trainableUnits = so.trainableUnits;
 
+        this.trainableUnits = trainingSO.trainableUnits;
+        this.spawnPositionTransform = trainingSO.spawnPosition;
+        this.walkPositionTransform = trainingSO.walkPosition;
+    }
+
+    public override void showStructureUI()
+    {
+        Debug.Log("[TrainingStructure]: SHOW STRUCTURE UI");
+        UIManager.Instance.enableUnitPanel(trainableUnits);
     }
 }

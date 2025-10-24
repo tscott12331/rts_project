@@ -20,7 +20,7 @@ public class InputManager : MonoBehaviour
     int structureLayer;
 
     void Start() {
-        structureLayer = LayerMask.NameToLayer("Structure");
+        structureLayer = LayerMask.NameToLayer("GeneralStructure");
     }
 
     void Update()
@@ -40,7 +40,7 @@ public class InputManager : MonoBehaviour
                 // like on structure hit we gotta enable structure ui with proper listeners
                 // hitInfo.transform.gameObject.layer;
                 if(hitInfo.transform.gameObject.layer == structureLayer) {
-                    Structure s = hitInfo.transform.GetComponent<Structure>();
+                    GeneralStructure s = hitInfo.transform.GetComponent<GeneralStructure>();
                     Debug.Log($"[InputManager]: Hit a structure ${s.id}");
                     onStructureSelect?.Invoke(s.id);
                 }

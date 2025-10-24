@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Debug.Log("[GameManager]: Preparing to load HeadquartersScriptableObject");
-        var so = Resources.Load<TrainableStructureScriptableObject>("ScriptableObjects/Structures/HeadquartersScriptableObject");
+        var so = Resources.Load<TrainableStructureSO>("ScriptableObjects/Structures/HeadquartersSO");
 
         Debug.Log("[GameManager]: Loaded HeadquartersScriptableObject");
         Debug.Log($"[GameManager]: id: {so.data.id}, HP: {so.data.HP}, prefab: {so.data.prefab.name}");
