@@ -177,11 +177,12 @@ MonoBehaviour:
   id: 0
   HP: 0
   prefab: {fileID: 0}
-  spawnPositionTransform: {fileID: 0}
-  walkPositionTransform: {fileID: 0}
+  spawnPositionTransform: {fileID: 8731327578423781374}
+  walkPositionTransform: {fileID: 5680631206475055927}
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  trainableUnits: []
 --- !u!1 &8806412365008177788
 GameObject:
   m_ObjectHideFlags: 0

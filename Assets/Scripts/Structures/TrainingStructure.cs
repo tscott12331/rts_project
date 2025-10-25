@@ -38,8 +38,6 @@ public class TrainingStructure : Structure
         this.prefab = data.prefab;
 
         this.trainableUnits = trainingSO.trainableUnits;
-        this.spawnPositionTransform = trainingSO.spawnPosition;
-        this.walkPositionTransform = trainingSO.walkPosition;
     }
 
     public override void showStructureUI()

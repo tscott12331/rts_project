@@ -7,8 +7,8 @@ using System.Linq;
 
 public class UIManager : MonoBehaviour
 {
-    public delegate void OnBasicUnitCreate();
-    public static event OnBasicUnitCreate onBasicUnitCreate;
+    public delegate void OnUnitCreate(int unitNum);
+    public static event OnUnitCreate onUnitCreate;
 
     public static UIManager Instance { get; protected set; }
 
@@ -28,9 +28,9 @@ public class UIManager : MonoBehaviour
     public GameObject UnitPanel;
     public GameObject UpgradePanel;
 
-    public void OnBasicUnitButtonClick()
+    public void OnUnitButtonPress(int unitNum)
     {
-        onBasicUnitCreate?.Invoke();
+        onUnitCreate?.Invoke(unitNum);
     }
 
     public void enableUnitPanel(List<GameObject> units) {

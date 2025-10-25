@@ -21,6 +21,7 @@ public class StructureManager : MonoBehaviour
 
     Dictionary<int, Structure> structures = new Dictionary<int, Structure>();
     private int currentId = 0;
+    private Structure selectedStructure = null;
 
     public void addStructure(Structure structure)
     {
@@ -40,19 +41,24 @@ public class StructureManager : MonoBehaviour
     }
 
     void InputManager_onStructureSelect(int id) {
-        foreach (var item in structures)
-        {
-        }
         if (structures.ContainsKey(id)) {
             structures[id].showStructureUI();
+            selectedStructure = structures[id];
         }
+    }
+    public void UIManager_onUnitCreate(int unitNum)
+    {
+        var ts = (TrainingStructure)selectedStructure;
+        ts.train(unitNum);
     }
 
     public void OnEnable() {
+        UIManager.onUnitCreate += UIManager_onUnitCreate;
         InputManager.onStructureSelect += InputManager_onStructureSelect;
     }
 
     public void OnDisable() {
+        UIManager.onUnitCreate -= UIManager_onUnitCreate;
         InputManager.onStructureSelect -= InputManager_onStructureSelect;
     }
 
