@@ -19,9 +19,24 @@ public class StructureManager : MonoBehaviour
         }
     }
 
+    const byte MAX_PLACEABLE_STRUCTURES = 4;
+    Dictionary<int, StructureSO> placeableStructures = new Dictionary<int, StructureSO>();
+
     Dictionary<int, Structure> structures = new Dictionary<int, Structure>();
     private int currentId = 0;
     private Structure selectedStructure = null;
+
+
+    public void loadPlaceableStructures()
+    {
+        var structureSOs = Resources.LoadAll<StructureSO>("ScriptableObjects/Structures/");
+
+        for (byte i = 0; i < structureSOs.Length && i < MAX_PLACEABLE_STRUCTURES; i++)
+        {
+            placeableStructures[i] = structureSOs[i];
+            Debug.Log($"[StructureManager]: Loaded structure {placeableStructures[i].name}");
+        }
+    }
 
     public void addStructure(Structure structure)
     {
@@ -35,6 +50,14 @@ public class StructureManager : MonoBehaviour
     }
 
     public void placeStructure(StructureSO so, Vector3 pos) {
+        var structure = Instantiate(so.data.prefab, pos, Quaternion.identity);
+        structure.GetComponent<Structure>().copyStructureData(so);
+        addStructure(structure.GetComponent<Structure>());
+    }
+
+    public void placeStructure(byte structureIndex, Vector3 pos) {
+        var so = placeableStructures[structureIndex];
+
         var structure = Instantiate(so.data.prefab, pos, Quaternion.identity);
         structure.GetComponent<Structure>().copyStructureData(so);
         addStructure(structure.GetComponent<Structure>());
