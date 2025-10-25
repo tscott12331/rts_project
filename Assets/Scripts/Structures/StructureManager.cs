@@ -33,15 +33,17 @@ public class StructureManager : MonoBehaviour
         structures.Remove(currentId);
     }
 
-    public void placeStructure(StructureScriptableObject so, Vector3 pos) {
+    public void placeStructure(StructureSO so, Vector3 pos) {
         var structure = Instantiate(so.data.prefab, pos, Quaternion.identity);
         structure.GetComponent<Structure>().copyStructureData(so);
         addStructure(structure.GetComponent<Structure>());
     }
 
     void InputManager_onStructureSelect(int id) {
-        Debug.Log($"Selected structure {id}");
-        if(structures.ContainsKey(id)) {
+        foreach (var item in structures)
+        {
+        }
+        if (structures.ContainsKey(id)) {
             structures[id].showStructureUI();
         }
     }

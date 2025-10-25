@@ -9,14 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea7a9f0bcab1e4d5bb3ab5b422b269a8, type: 3}
-  m_Name: HeadquartersScriptableObject
-  m_EditorClassIdentifier: Assembly-CSharp::TrainableStructureScriptableObject
+  m_Script: {fileID: 11500000, guid: 8eaee5a91ad652f4f8cad2fac7e14695, type: 3}
+  m_Name: HeadquartersSO
+  m_EditorClassIdentifier: Assembly-CSharp::TrainableStructureSO
   data:
     id: 0
     prefab: {fileID: 8282126221494494500, guid: 0ef22acd4997e5b47842b30bc9f3ae43, type: 3}
     HP: 1500
   trainableUnits:
   - {fileID: 8909066516744522350, guid: a91c778472d716743b4dc9fd5dfbfbdb, type: 3}
-  spawnPosition: {x: 0, y: 0, z: 0}
-  walkPosition: {x: 0, y: 0, z: 0}
+  spawnPosition: {fileID: 0}
+  walkPosition: {fileID: 0}

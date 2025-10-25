@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.EventSystems;
+using UnityEngine.Video;
 
 
 public class InputManager : MonoBehaviour
@@ -18,30 +20,47 @@ public class InputManager : MonoBehaviour
     const float MAX_MOUSE_RAY = 250.0f;
 
     int structureLayer;
+    int UILayer;
 
     void Start() {
         structureLayer = LayerMask.NameToLayer("Structure");
+        UILayer = LayerMask.NameToLayer("UI");
     }
 
     void Update()
     {
-        bool leftClicked = Input.GetMouseButtonDown(0);
-        bool rightClicked = Input.GetMouseButtonDown(1);
+        bool leftClicked = Input.GetMouseButtonUp(0);
+        bool rightClicked = Input.GetMouseButtonUp(1);
 
         if (leftClicked)
         {
+            var raycastResults = new List<RaycastResult>();
+            var pointerEventData = new PointerEventData(EventSystem.current);
+            pointerEventData.position = Input.mousePosition;
+            EventSystem.current.RaycastAll(pointerEventData, raycastResults);
+
             RaycastHit hitInfo;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY);
 
-            if (hit)
+            bool hitUI = false;
+            for(int i = 0; i < raycastResults.Count; i++)
             {
-                // maybe a switch on the layer for diff actions?
-                // like on structure hit we gotta enable structure ui with proper listeners
-                // hitInfo.transform.gameObject.layer;
-                if(hitInfo.transform.gameObject.layer == structureLayer) {
-                    Structure s = hitInfo.transform.GetComponent<Structure>();
-                    Debug.Log($"[InputManager]: Hit a structure ${s.id}");
+                var layer = raycastResults[i].gameObject.layer;
+                if(layer == UILayer)
+                {
+                    hitUI = true;
+                    break;
+                }
+            }
+
+
+            if(hit && !hitUI)
+            {
+                UIManager.Instance.resetUIPanels();
+                if(hitInfo.transform.gameObject.layer == structureLayer)
+                {
+                    var s = hitInfo.transform.GetComponent<Structure>();
                     onStructureSelect?.Invoke(s.id);
                 }
             }
