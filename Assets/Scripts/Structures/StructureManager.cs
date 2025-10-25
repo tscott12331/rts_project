@@ -46,19 +46,19 @@ public class StructureManager : MonoBehaviour
             selectedStructure = structures[id];
         }
     }
-    public void UIManager_onUnitCreate(int unitNum)
+    public void UIManager_onUnitButtonPress(int unitNum)
     {
         var ts = (TrainingStructure)selectedStructure;
         ts.train(unitNum);
     }
 
     public void OnEnable() {
-        UIManager.onUnitCreate += UIManager_onUnitCreate;
+        UIManager.onUnitButtonPress += UIManager_onUnitButtonPress;
         InputManager.onStructureSelect += InputManager_onStructureSelect;
     }
 
     public void OnDisable() {
-        UIManager.onUnitCreate -= UIManager_onUnitCreate;
+        UIManager.onUnitButtonPress -= UIManager_onUnitButtonPress;
         InputManager.onStructureSelect -= InputManager_onStructureSelect;
     }
 
