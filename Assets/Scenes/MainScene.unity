@@ -1825,7 +1825,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.25511748, g: 0.8584906, b: 0.38789827, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -3921,8 +3921,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31ab9e4f5d10c8249a097734fee9d97b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIManager
-  UnitPanel: {fileID: 0}
-  UpgradePanel: {fileID: 0}
+  UnitPanel: {fileID: 107419243}
+  UpgradePanel: {fileID: 1651923452}
 --- !u!4 &1501451065
 Transform:
   m_ObjectHideFlags: 0

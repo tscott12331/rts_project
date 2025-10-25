@@ -32,8 +32,6 @@ public class TrainingStructure : Structure
     }
 
     public override void copyStructureData(StructureSO so) {
-        Debug.Log($"[TrainingStructure]: copyStructureData");
-
         var trainingSO = (TrainableStructureSO)so;
         var data = trainingSO.data;
         this.HP = data.HP;
@@ -46,7 +44,6 @@ public class TrainingStructure : Structure
 
     public override void showStructureUI()
     {
-        Debug.Log("[TrainingStructure]: SHOW STRUCTURE UI");
         UIManager.Instance.enableUnitPanel(trainableUnits);
     }
 }

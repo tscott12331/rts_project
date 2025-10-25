@@ -24,11 +24,8 @@ public class StructureManager : MonoBehaviour
 
     public void addStructure(Structure structure)
     {
-        Debug.Log($"[StructureManager]: addStructure ${structure.id}");
         structures.Add(++currentId, structure);
-        Debug.Log($"[StructureManager]: Added structure");
         structure.id = currentId;
-        Debug.Log($"[StructureManager]: Set structure's id");
     }
 
     public void removeStructure(Structure structure)
@@ -43,14 +40,10 @@ public class StructureManager : MonoBehaviour
     }
 
     void InputManager_onStructureSelect(int id) {
-        Debug.Log($"[StructureManager]: Selected structure {id}");
-        Debug.Log($"[StructureManager]: structures:");
         foreach (var item in structures)
         {
-            Debug.Log($"[StructureManager]: Key: {item.Key}, Value name: {item.Value.name}");
         }
         if (structures.ContainsKey(id)) {
-            Debug.Log($"[StructureManager]: structures contains item with key {id}");
             structures[id].showStructureUI();
         }
     }
