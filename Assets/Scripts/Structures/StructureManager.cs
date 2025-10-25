@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEditorInternal;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class StructureManager : MonoBehaviour
 {
@@ -19,6 +20,9 @@ public class StructureManager : MonoBehaviour
         }
     }
 
+    const float MAX_MOUSE_RAY = 250.0f;
+    const float MAX_SAMPLE_DIST = 100.0f;
+
     const sbyte MAX_PLACEABLE_STRUCTURES = 4;
     Dictionary<int, StructureSO> placeableStructures = new Dictionary<int, StructureSO>();
 
@@ -26,6 +30,12 @@ public class StructureManager : MonoBehaviour
     private int currentId = 0;
     private Structure selectedStructure = null;
 
+    int groundLayer;
+
+    public void Start()
+    {
+        groundLayer = LayerMask.NameToLayer("Ground");
+    }
 
     public void loadPlaceableStructures()
     {
@@ -52,17 +62,20 @@ public class StructureManager : MonoBehaviour
     }
 
     public void placeStructure(StructureSO so, Vector3 pos) {
-        var structure = Instantiate(so.data.prefab, pos, Quaternion.identity);
-        structure.GetComponent<Structure>().copyStructureData(so);
-        addStructure(structure.GetComponent<Structure>());
+        NavMeshHit navMeshHit;
+        if(NavMesh.SamplePosition(pos, out navMeshHit, MAX_SAMPLE_DIST, NavMesh.AllAreas)) {
+            var prefab = so.data.prefab;
+            var structure = Instantiate(prefab, 
+                    navMeshHit.position + new Vector3(0, prefab.transform.localScale.y / 2, 0),
+                    Quaternion.identity);
+            structure.GetComponent<Structure>().copyStructureData(so);
+            addStructure(structure.GetComponent<Structure>());
+        }
     }
 
     public void placeStructure(sbyte structureIndex, Vector3 pos) {
         var so = placeableStructures[structureIndex];
-
-        var structure = Instantiate(so.data.prefab, pos, Quaternion.identity);
-        structure.GetComponent<Structure>().copyStructureData(so);
-        addStructure(structure.GetComponent<Structure>());
+        placeStructure(so, pos);
     }
 
     void InputManager_onStructureSelect(int id) {
