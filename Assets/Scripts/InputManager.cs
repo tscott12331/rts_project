@@ -1,3 +1,4 @@
+using NUnit.Framework.Internal;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -12,25 +13,48 @@ public class InputManager : MonoBehaviour
     public static event OnStructureSelect onStructureSelect;
 
     [SerializeField]
-    LayerMask groundLayer;
-
-    [SerializeField]
     Transform selectMarkerTransform;
 
     const float MAX_MOUSE_RAY = 250.0f;
 
     int structureLayer;
     int UILayer;
+    int groundLayer;
 
+    sbyte structureToPlace = -1; // -1 is no structure
+
+
+    public void UIManager_onBuildingButtonPress(sbyte buildingNum)
+    {
+        structureToPlace = buildingNum;
+    }
+
+    private void OnEnable()
+    {
+        UIManager.onBuildingButtonPress += UIManager_onBuildingButtonPress;
+    }
+
+    private void OnDisable()
+    {
+        UIManager.onBuildingButtonPress -= UIManager_onBuildingButtonPress;
+    }
     void Start() {
         structureLayer = LayerMask.NameToLayer("Structure");
         UILayer = LayerMask.NameToLayer("UI");
+        groundLayer = LayerMask.NameToLayer("Ground");
     }
+
 
     void Update()
     {
         bool leftClicked = Input.GetMouseButtonUp(0);
         bool rightClicked = Input.GetMouseButtonUp(1);
+        bool escaped = Input.GetKeyDown(KeyCode.Escape);
+
+        if(escaped)
+        {
+            structureToPlace = -1; // don't place structure on click
+        }
 
         if (leftClicked)
         {
@@ -62,6 +86,15 @@ public class InputManager : MonoBehaviour
                 {
                     var s = hitInfo.transform.GetComponent<Structure>();
                     onStructureSelect?.Invoke(s.id);
+                } else if(hitInfo.transform.gameObject.layer == groundLayer)
+                {
+                    if(structureToPlace != -1)
+                    {
+                        // place a structure
+                        StructureManager.Instance.placeStructure(structureToPlace, hitInfo.point);
+                        // reset structureToPlace
+                        structureToPlace = -1; 
+                    }
                 }
             }
         }     
@@ -69,9 +102,9 @@ public class InputManager : MonoBehaviour
         if(rightClicked) {
             RaycastHit hitInfo;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY, groundLayer);
+            bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY);
 
-            if (hit)
+            if (hit && hitInfo.transform.gameObject.layer == groundLayer)
             {
                 var selectedUnits = UnitManager.Instance.getSelectedUnits();
                 if(selectedUnits.Count > 0) {

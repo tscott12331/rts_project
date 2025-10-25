@@ -10,7 +10,7 @@ public class UIManager : MonoBehaviour
     public delegate void OnUnitButtonPress(int unitNum);
     public static event OnUnitButtonPress onUnitButtonPress;
 
-    public delegate void OnBuildingButtonPress(int buildingNum);
+    public delegate void OnBuildingButtonPress(sbyte buildingNum);
     public static event OnBuildingButtonPress onBuildingButtonPress;
 
     public static UIManager Instance { get; protected set; }
@@ -28,6 +28,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public GameObject BuildingPanel;
     public GameObject UnitPanel;
     public GameObject UpgradePanel;
 
@@ -36,9 +37,20 @@ public class UIManager : MonoBehaviour
         onUnitButtonPress?.Invoke(unitNum);
     }
 
-    public void HandleBuildingButtonPresss(int buildingNum)
+    public void HandleBuildingButtonPress(int buildingNum)
     {
-        onBuildingButtonPress?.Invoke(buildingNum);
+        onBuildingButtonPress?.Invoke((sbyte) buildingNum);
+    }
+
+    public void populateBuildingPanel(Dictionary<int, StructureSO> placeableStructures)
+    {
+        for(int i = 0; i < BuildingPanel.transform.childCount && i < placeableStructures.Count; i++)
+        {
+            var button = BuildingPanel.transform.GetChild(i);
+            button.gameObject.SetActive(true);
+            var text = button.GetComponentInChildren<TMP_Text>();
+            text.SetText(placeableStructures[i].data.prefab.name);
+        }
     }
 
     public void enableUnitPanel(List<GameObject> units) {
