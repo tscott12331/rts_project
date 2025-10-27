@@ -2144,6 +2144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2725ccbcb1a1d8d4485322ee0679485c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StructureManager
+  structurePreviewColor: {r: 0.4, g: 0.5, b: 0.7, a: 0.5}
 --- !u!4 &704254382
 Transform:
   m_ObjectHideFlags: 0
