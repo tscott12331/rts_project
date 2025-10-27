@@ -12,6 +12,9 @@ public class InputManager : MonoBehaviour
     public delegate void OnStructureSelect(int id);
     public static event OnStructureSelect onStructureSelect;
 
+    public delegate void OnStructureDeselect();
+    public static event OnStructureDeselect onStructureDeselect;
+
     [SerializeField]
     Transform selectMarkerTransform;
 
@@ -26,6 +29,7 @@ public class InputManager : MonoBehaviour
 
     public void UIManager_onBuildingButtonPress(sbyte buildingNum)
     {
+        StructureManager.Instance.setStructurePreviewViewState(structureToPlace, false, Vector3.zero);
         structureToPlace = buildingNum;
     }
 
@@ -53,7 +57,21 @@ public class InputManager : MonoBehaviour
 
         if(escaped)
         {
-            structureToPlace = -1; // don't place structure on click
+            structureToPlace = resetStructureToPlace(structureToPlace); // don't place structure on click
+        }
+
+        if(structureToPlace != -1)
+        {
+            RaycastHit hitInfo;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY);
+            if(hit)
+            {
+                if(hitInfo.transform.gameObject.layer == groundLayer)
+                {
+                    StructureManager.Instance.setStructurePreviewViewState(structureToPlace, true, hitInfo.point);
+                }
+            }
         }
 
         if (leftClicked)
@@ -61,12 +79,8 @@ public class InputManager : MonoBehaviour
             var raycastResults = new List<RaycastResult>();
             var pointerEventData = new PointerEventData(EventSystem.current);
             pointerEventData.position = Input.mousePosition;
+            
             EventSystem.current.RaycastAll(pointerEventData, raycastResults);
-
-            RaycastHit hitInfo;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY);
-
             bool hitUI = false;
             for(int i = 0; i < raycastResults.Count; i++)
             {
@@ -78,22 +92,26 @@ public class InputManager : MonoBehaviour
                 }
             }
 
-
+            RaycastHit hitInfo;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY);
             if(hit && !hitUI)
             {
-                UIManager.Instance.resetUIPanels();
                 if(hitInfo.transform.gameObject.layer == structureLayer)
                 {
+                    UIManager.Instance.resetUIPanels();
                     var s = hitInfo.transform.GetComponent<Structure>();
                     onStructureSelect?.Invoke(s.id);
                 } else if(hitInfo.transform.gameObject.layer == groundLayer)
                 {
+                    UIManager.Instance.resetUIPanels();
+                    onStructureDeselect?.Invoke(); // deselect structure when clicking ground
                     if(structureToPlace != -1)
                     {
                         // place a structure
                         StructureManager.Instance.placeStructure(structureToPlace, hitInfo.point);
                         // reset structureToPlace
-                        structureToPlace = -1; 
+                        structureToPlace = resetStructureToPlace(structureToPlace);
                     }
                 }
             }
@@ -117,5 +135,11 @@ public class InputManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    sbyte resetStructureToPlace(sbyte structureToPlace)
+    {
+        StructureManager.Instance.setStructurePreviewViewState(structureToPlace, false, Vector3.zero);
+        return -1;
     }
 }
