@@ -34,12 +34,14 @@ public class StructureManager : MonoBehaviour
     private Structure selectedStructure = null;
 
     int groundLayer;
+    int unitLayer;
 
     public Color structurePreviewColor = new Color(0.4f, 0.5f, 0.7f, 0.5f);
 
     public void Start()
     {
         groundLayer = LayerMask.NameToLayer("Ground");
+        unitLayer = LayerMask.NameToLayer("Unit");
     }
 
     public void loadPlaceableStructures()
@@ -55,7 +57,8 @@ public class StructureManager : MonoBehaviour
             preview.SetActive(false);
             preview.GetComponent<Renderer>().material.color = structurePreviewColor;
             preview.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
-            preview.GetComponent<Collider>().enabled = false;
+            //preview.GetComponent<Collider>().enabled = false;
+            preview.GetComponent<Collider>().excludeLayers = unitLayer;
             preview.GetComponent<NavMeshObstacle>().enabled = false;
             structurePreviews[i] = preview;
             Debug.Log($"[StructureManager]: Instantiated structure {preview.name}'s preview");
