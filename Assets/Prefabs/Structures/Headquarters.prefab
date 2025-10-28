@@ -190,6 +190,7 @@ MonoBehaviour:
   id: 0
   HP: 0
   prefab: {fileID: 0}
+  isValidPosition: 1
   spawnPositionTransform: {fileID: 8731327578423781374}
   walkPositionTransform: {fileID: 5680631206475055927}
   groundLayer:
@@ -209,7 +210,7 @@ SphereCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0

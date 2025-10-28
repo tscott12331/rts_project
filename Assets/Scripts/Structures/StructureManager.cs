@@ -36,7 +36,8 @@ public class StructureManager : MonoBehaviour
     int groundLayer;
     int unitLayer;
 
-    public Color structurePreviewColor = new Color(0.4f, 0.5f, 0.7f, 0.5f);
+    public Material ValidPlacementMaterial;
+    public Material InvalidPlacementMaterial;
 
     public void Start()
     {
@@ -59,15 +60,7 @@ public class StructureManager : MonoBehaviour
             var preview = Instantiate(sso.data.prefab);
             preview.SetActive(false);
             // make preview blue and transparent
-            //preview.TryGetComponent<Renderer>(out Renderer renderer);
-            //if (renderer == null)
-            //{
-            //    renderer = preview.GetComponentInChildren<Renderer>();
-            //    if(renderer != null) renderer.material.color = structurePreviewColor;
-            //} else
-            //{
-            //    preview.GetComponent<Renderer>().material.color = structurePreviewColor;
-            //}
+            ChangePreviewMaterial(preview, ValidPlacementMaterial);
 
             preview.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
 
@@ -88,6 +81,27 @@ public class StructureManager : MonoBehaviour
         UIManager.Instance.populateBuildingPanel(placeableStructures);
     }
 
+    public void ChangePreviewMaterial(GameObject preview, Material material)
+    {
+            preview.TryGetComponent<Renderer>(out Renderer renderer);
+            if (renderer == null)
+            {
+                renderer = preview.GetComponentInChildren<Renderer>();
+                if(renderer != null) renderer.material = material;
+            } else
+            {
+                preview.GetComponent<Renderer>().material = material;
+            }
+    }
+
+    public void UpdatePreviewMaterial(GameObject preview)
+    {
+
+        preview.TryGetComponent<Structure>(out Structure structure);
+        if (structure == null) return;
+        ChangePreviewMaterial(preview, structure.isValidPosition ? ValidPlacementMaterial : InvalidPlacementMaterial);
+    }
+
     public void setStructurePreviewViewState(int buildingNum, bool show, Vector3 pos)
     {
 
@@ -99,6 +113,8 @@ public class StructureManager : MonoBehaviour
             { 
                 s.transform.position = newPos;
             }
+
+            UpdatePreviewMaterial(s);
         }
     }
 
