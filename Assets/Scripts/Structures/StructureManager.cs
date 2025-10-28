@@ -55,7 +55,15 @@ public class StructureManager : MonoBehaviour
             Debug.Log($"[StructureManager]: Loaded structure {placeableStructures[i].name}");
             var preview = Instantiate(sso.data.prefab);
             preview.SetActive(false);
-            preview.GetComponent<Renderer>().material.color = structurePreviewColor;
+            preview.TryGetComponent<Renderer>(out Renderer renderer);
+            if (renderer == null)
+            {
+                renderer = preview.GetComponentInChildren<Renderer>();
+                if(renderer != null) renderer.material.color = structurePreviewColor;
+            } else
+            {
+                preview.GetComponent<Renderer>().material.color = structurePreviewColor;
+            }
             preview.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
             //preview.GetComponent<Collider>().enabled = false;
             preview.GetComponent<Collider>().excludeLayers = unitLayer;
