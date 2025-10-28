@@ -50,24 +50,37 @@ public class StructureManager : MonoBehaviour
 
         for (sbyte i = 0; i < structureSOs.Length && i < MAX_PLACEABLE_STRUCTURES; i++)
         {
+            // load placeable structure
             var sso = structureSOs[i];
             placeableStructures[i] = sso;
             Debug.Log($"[StructureManager]: Loaded structure {placeableStructures[i].name}");
+
+            // instantiate structure previews
             var preview = Instantiate(sso.data.prefab);
             preview.SetActive(false);
-            preview.TryGetComponent<Renderer>(out Renderer renderer);
-            if (renderer == null)
-            {
-                renderer = preview.GetComponentInChildren<Renderer>();
-                if(renderer != null) renderer.material.color = structurePreviewColor;
-            } else
-            {
-                preview.GetComponent<Renderer>().material.color = structurePreviewColor;
-            }
+            // make preview blue and transparent
+            //preview.TryGetComponent<Renderer>(out Renderer renderer);
+            //if (renderer == null)
+            //{
+            //    renderer = preview.GetComponentInChildren<Renderer>();
+            //    if(renderer != null) renderer.material.color = structurePreviewColor;
+            //} else
+            //{
+            //    preview.GetComponent<Renderer>().material.color = structurePreviewColor;
+            //}
+
             preview.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+
             //preview.GetComponent<Collider>().enabled = false;
-            preview.GetComponent<Collider>().excludeLayers = unitLayer;
-            preview.GetComponent<NavMeshObstacle>().enabled = false;
+            preview.TryGetComponent<Collider>(out Collider collider);
+            if (collider != null) collider.excludeLayers = unitLayer;
+
+            preview.TryGetComponent<Rigidbody>(out Rigidbody rigidbody);
+            if(rigidbody != null) rigidbody.isKinematic = true;
+
+            preview.TryGetComponent<NavMeshObstacle>(out NavMeshObstacle navMeshObstacle);
+            if(navMeshObstacle != null) navMeshObstacle.enabled = false;
+
             structurePreviews[i] = preview;
             Debug.Log($"[StructureManager]: Instantiated structure {preview.name}'s preview");
         }
@@ -129,6 +142,15 @@ public class StructureManager : MonoBehaviour
     }
 
     public void placeStructure(sbyte structureIndex, Vector3 pos) {
+        // get preview info
+        var preview = structurePreviews[structureIndex];
+        var structure = preview.GetComponent<Structure>();
+        if (structure == null || !structure.isValidPosition)
+        {
+            Debug.Log("[StructureManager]: Invalid structure placement");
+            return;
+        }
+
         var so = placeableStructures[structureIndex];
         placeStructure(so, pos);
     }
