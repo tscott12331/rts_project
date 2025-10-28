@@ -104,10 +104,10 @@ public class StructureManager : MonoBehaviour
 
     public void setStructurePreviewViewState(int buildingNum, bool show, Vector3 pos)
     {
-
         structurePreviews.TryGetValue(buildingNum, out var s);
-        s?.SetActive(show);
-        if(show && s != null)
+        if (s == null) return;
+        s.SetActive(show);
+        if(show)
         {
             if (samplePosition(s, pos, out Vector3 newPos)) 
             { 
@@ -115,6 +115,9 @@ public class StructureManager : MonoBehaviour
             }
 
             UpdatePreviewMaterial(s);
+        } else
+        {
+            s.GetComponent<Structure>()?.ResetPositionState();
         }
     }
 

@@ -67,10 +67,7 @@ public class InputManager : MonoBehaviour
             bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY);
             if(hit)
             {
-                if(hitInfo.transform.gameObject.layer == groundLayer)
-                {
-                    StructureManager.Instance.setStructurePreviewViewState(structureToPlace, true, hitInfo.point);
-                }
+                StructureManager.Instance.setStructurePreviewViewState(structureToPlace, true, hitInfo.point);
             }
         }
 
@@ -102,7 +99,7 @@ public class InputManager : MonoBehaviour
                     UIManager.Instance.resetUIPanels();
                     var s = hitInfo.transform.GetComponent<Structure>();
                     onStructureSelect?.Invoke(s.id);
-                } else if(hitInfo.transform.gameObject.layer == groundLayer)
+                } else
                 {
                     UIManager.Instance.resetUIPanels();
                     onStructureDeselect?.Invoke(); // deselect structure when clicking ground
