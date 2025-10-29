@@ -2,13 +2,15 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public Transform PlayerStartPoint;
+    public Transform EnemyStartPoint;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         StructureManager.Instance.loadPlaceableStructures();
 
-        StructureManager.Instance.placeStructure(0, Vector3.zero);
-        StructureManager.Instance.placeStructure(0, new Vector3(0.0f, 0.0f, 15.0f));
+        StructureManager.Instance.placeStructure(1, PlayerStartPoint.position);
+        StructureManager.Instance.placeStructure(1, EnemyStartPoint.position);
 
     }
 }
