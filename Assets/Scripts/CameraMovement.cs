@@ -21,6 +21,10 @@ public class CameraMovement : MonoBehaviour
     int moveLowerBoundY;
     int moveUpperBoundY;
 
+    public float MinFov;
+    public float MaxFov;
+    public float ZoomSpeed;
+    float CurFov;
 
     void correctCamHeight()
     {
@@ -42,6 +46,8 @@ public class CameraMovement : MonoBehaviour
         moveLowerBoundY = MOVE_FRAME_SIZE;
         moveUpperBoundY = Screen.height - MOVE_FRAME_SIZE;
         correctCamHeight();
+
+        CurFov = (MaxFov + MinFov) / 2;
     }
 
     // Update is called once per frame
@@ -69,6 +75,9 @@ public class CameraMovement : MonoBehaviour
             transform.Translate(Vector3.forward * CAM_SPEED, Space.World);
             moved = true;
         }
+
+        CurFov = Mathf.Clamp(CurFov - (Input.mouseScrollDelta.y * ZoomSpeed), MinFov, MaxFov);
+        GetComponent<Camera>().fieldOfView = CurFov;
 
         // if(moved) correctCamHeight();
 
