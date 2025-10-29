@@ -1,5 +1,5 @@
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class CameraMovement : MonoBehaviour
 {
@@ -9,17 +9,7 @@ public class CameraMovement : MonoBehaviour
     float HEIGHT_ABOVE_GROUND;
 
     [SerializeField]
-    int MOVE_FRAME_SIZE;
-    [SerializeField]
     float CAM_SPEED;
-    
-    Vector3 mousePosition;
-
-    int moveLowerBoundX;
-    int moveUpperBoundX;
-
-    int moveLowerBoundY;
-    int moveUpperBoundY;
 
     public float MinFov;
     public float MaxFov;
@@ -40,11 +30,6 @@ public class CameraMovement : MonoBehaviour
 
     private void Start()
     {
-        moveLowerBoundX = MOVE_FRAME_SIZE;
-        moveUpperBoundX = Screen.width - MOVE_FRAME_SIZE;
-
-        moveLowerBoundY = MOVE_FRAME_SIZE;
-        moveUpperBoundY = Screen.height - MOVE_FRAME_SIZE;
         correctCamHeight();
 
         CurFov = (MaxFov + MinFov) / 2;
@@ -53,33 +38,12 @@ public class CameraMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        mousePosition = Input.mousePosition;
-        bool moved = false;
-
-        if(mousePosition.x < moveLowerBoundX)
-        {
-            transform.Translate(Vector3.left * CAM_SPEED, Space.World);
-            moved = true;
-        } else if(mousePosition.x > moveUpperBoundX)
-        {
-            transform.Translate(Vector3.right * CAM_SPEED, Space.World);
-            moved = true;
-        }
-
-        if(mousePosition.y < moveLowerBoundY)
-        {
-            transform.Translate(Vector3.back * CAM_SPEED, Space.World);
-            moved = true;
-        } else if(mousePosition.y > moveUpperBoundY)
-        {
-            transform.Translate(Vector3.forward * CAM_SPEED, Space.World);
-            moved = true;
-        }
-
         CurFov = Mathf.Clamp(CurFov - (Input.mouseScrollDelta.y * ZoomSpeed), MinFov, MaxFov);
         GetComponent<Camera>().fieldOfView = CurFov;
 
-        // if(moved) correctCamHeight();
-
+        if (Input.GetMouseButton((int)MouseButton.Middle))
+        {
+            transform.Translate(new Vector3(Input.mousePositionDelta.x, 0, Input.mousePositionDelta.y) * -CAM_SPEED, Space.World);
+        }
     }
 }
