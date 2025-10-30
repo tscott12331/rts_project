@@ -1484,8 +1484,10 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  HEIGHT_ABOVE_GROUND: 20
-  CAM_SPEED: 0.15
+  MAX_HEIGHT: 30
+  MIN_HEIGHT: 20
+  DRAG_SPEED: 0.15
+  MOVE_SPEED: 0.2
   MinFov: 30
   MaxFov: 90
   ZoomSpeed: 1.5
@@ -2825,6 +2827,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2725ccbcb1a1d8d4485322ee0679485c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StructureManager
+  unitLayer:
+    serializedVersion: 2
+    m_Bits: 128
   ValidPlacementMaterial: {fileID: 2100000, guid: 864804998b4d16d4e8148bd823aa4e2f, type: 2}
   InvalidPlacementMaterial: {fileID: 2100000, guid: 9e213b2163476d3438e2731adeec84aa, type: 2}
 --- !u!4 &704254382
@@ -3553,6 +3558,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputManager
   selectMarkerTransform: {fileID: 273533496}
+  structureLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  UILayer:
+    serializedVersion: 2
+    m_Bits: 32
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &1032011203
 GameObject:
   m_ObjectHideFlags: 0
