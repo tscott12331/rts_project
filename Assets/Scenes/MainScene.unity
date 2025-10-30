@@ -1484,8 +1484,10 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  HEIGHT_ABOVE_GROUND: 20
-  CAM_SPEED: 0.15
+  MAX_HEIGHT: 30
+  MIN_HEIGHT: 20
+  DRAG_SPEED: 0.15
+  MOVE_SPEED: 0.2
   MinFov: 30
   MaxFov: 90
   ZoomSpeed: 1.5
