@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
@@ -33,17 +32,11 @@ public class StructureManager : MonoBehaviour
     private int currentId = 0;
     private Structure selectedStructure = null;
 
-    int groundLayer;
-    int unitLayer;
+    [SerializeField]
+    LayerMask unitLayer;
 
     public Material ValidPlacementMaterial;
     public Material InvalidPlacementMaterial;
-
-    public void Start()
-    {
-        groundLayer = LayerMask.NameToLayer("Ground");
-        unitLayer = LayerMask.NameToLayer("Unit");
-    }
 
     public void loadPlaceableStructures()
     {

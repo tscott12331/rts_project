@@ -20,9 +20,12 @@ public class InputManager : MonoBehaviour
 
     const float MAX_MOUSE_RAY = 250.0f;
 
-    int structureLayer;
-    int UILayer;
-    int groundLayer;
+    [SerializeField]
+    LayerMask structureLayer;
+    [SerializeField]
+    LayerMask UILayer;
+    [SerializeField]
+    LayerMask groundLayer;
 
     sbyte structureToPlace = -1; // -1 is no structure
 
@@ -42,12 +45,6 @@ public class InputManager : MonoBehaviour
     {
         UIManager.onBuildingButtonPress -= UIManager_onBuildingButtonPress;
     }
-    void Start() {
-        structureLayer = LayerMask.NameToLayer("Structure");
-        UILayer = LayerMask.NameToLayer("UI");
-        groundLayer = LayerMask.NameToLayer("Ground");
-    }
-
 
     void Update()
     {
@@ -64,7 +61,7 @@ public class InputManager : MonoBehaviour
         {
             RaycastHit hitInfo;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY);
+            bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY, groundLayer);
             if(hit)
             {
                 StructureManager.Instance.setStructurePreviewViewState(structureToPlace, true, hitInfo.point);
@@ -82,7 +79,7 @@ public class InputManager : MonoBehaviour
             for(int i = 0; i < raycastResults.Count; i++)
             {
                 var layer = raycastResults[i].gameObject.layer;
-                if(layer == UILayer)
+                if((1 << layer) == UILayer)
                 {
                     hitUI = true;
                     break;
@@ -94,7 +91,7 @@ public class InputManager : MonoBehaviour
             bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY);
             if(hit && !hitUI)
             {
-                if(hitInfo.transform.gameObject.layer == structureLayer)
+                if((1 << hitInfo.transform.gameObject.layer) == structureLayer)
                 {
                     UIManager.Instance.resetUIPanels();
                     var s = hitInfo.transform.GetComponent<Structure>();
@@ -103,7 +100,7 @@ public class InputManager : MonoBehaviour
                 {
                     UIManager.Instance.resetUIPanels();
                     onStructureDeselect?.Invoke(); // deselect structure when clicking ground
-                    if(structureToPlace != -1)
+                    if (structureToPlace != -1)
                     {
                         // place a structure
                         StructureManager.Instance.placeStructure(structureToPlace, hitInfo.point);
@@ -119,7 +116,7 @@ public class InputManager : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY);
 
-            if (hit && hitInfo.transform.gameObject.layer == groundLayer)
+            if (hit && (1 << hitInfo.transform.gameObject.layer) == groundLayer)
             {
                 var selectedUnits = UnitManager.Instance.getSelectedUnits();
                 if(selectedUnits.Count > 0) {
