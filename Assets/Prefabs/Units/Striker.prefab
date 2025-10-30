@@ -126,7 +126,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 10
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -150,9 +150,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 863b777b53b6847c9acf50547ad176b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Unit
-  id: 0
-  HP: 0
-  speed: 0
+  _id: 0
+  _hp: 0
+  _speed: 0
+  _prefab: {fileID: 0}
 --- !u!1001 &8764468002457915737
 PrefabInstance:
   m_ObjectHideFlags: 0
