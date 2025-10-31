@@ -7,11 +7,11 @@ using System.Linq;
 
 public class UIManager : MonoBehaviour
 {
-    public delegate void OnUnitButtonPress(int unitNum);
-    public static event OnUnitButtonPress onUnitButtonPress;
+    public delegate void UnitButtonPressedHandler(int unitNum);
+    public static event UnitButtonPressedHandler UnitButtonPressed;
 
-    public delegate void OnBuildingButtonPress(sbyte buildingNum);
-    public static event OnBuildingButtonPress onBuildingButtonPress;
+    public delegate void BuildingButtonPressedHandler(sbyte buildingNum);
+    public static event BuildingButtonPressedHandler BuildingButtonPressed;
 
     public static UIManager Instance { get; protected set; }
 
@@ -34,12 +34,12 @@ public class UIManager : MonoBehaviour
 
     public void HandleUnitButtonPress(int unitNum)
     {
-        onUnitButtonPress?.Invoke(unitNum);
+        UnitButtonPressed?.Invoke(unitNum);
     }
 
     public void HandleBuildingButtonPress(int buildingNum)
     {
-        onBuildingButtonPress?.Invoke((sbyte) buildingNum);
+        BuildingButtonPressed?.Invoke((sbyte) buildingNum);
     }
 
     public void populateBuildingPanel(Dictionary<int, StructureSO> placeableStructures)

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
@@ -32,8 +33,14 @@ public class StructureManager : MonoBehaviour
     private int currentId = 0;
     private Structure selectedStructure = null;
 
+    const sbyte NO_PREVIEW = -1;
+    private sbyte structurePreview = NO_PREVIEW; // -1 is no structure
+
+
     [SerializeField]
     LayerMask unitLayer;
+    [SerializeField]
+    LayerMask groundLayer;
 
     public Material ValidPlacementMaterial;
     public Material InvalidPlacementMaterial;
@@ -94,8 +101,13 @@ public class StructureManager : MonoBehaviour
         if (structure == null) return;
         ChangePreviewMaterial(preview, structure.isValidPosition ? ValidPlacementMaterial : InvalidPlacementMaterial);
     }
+    void ResetStructurePreview()
+    {
+        setStructurePreviewViewState(structurePreview, false, Vector3.zero);
+        structurePreview = NO_PREVIEW;
+    }
 
-    public void setStructurePreviewViewState(int buildingNum, bool show, Vector3 pos)
+    public void setStructurePreviewViewState(sbyte buildingNum, bool show, Vector3 pos)
     {
         structurePreviews.TryGetValue(buildingNum, out var s);
         if (s == null) return;
@@ -147,9 +159,12 @@ public class StructureManager : MonoBehaviour
 
             structure.copyStructureData(so);
 
+            // select and add new structure
             deselectStructure(selectedStructure);
             addStructure(structure);
             selectStructure(structure);
+
+            ResetStructurePreview();
         }
     }
 
@@ -167,6 +182,12 @@ public class StructureManager : MonoBehaviour
         placeStructure(so, pos);
     }
 
+    public void deselectStructure(Transform structureTransform)
+    {
+        structureTransform.TryGetComponent<Structure>(out Structure s);
+        deselectStructure(s);
+    }
+
     public void deselectStructure(Structure s)
     {
         if(s == null) return;
@@ -182,6 +203,12 @@ public class StructureManager : MonoBehaviour
         }
     }
 
+    public void selectStructure(Transform structureTransform)
+    {
+        structureTransform.TryGetComponent<Structure>(out Structure s);
+        selectStructure(s);
+    }
+
     public void selectStructure(Structure s)
     {
         if(s == null) return;
@@ -190,31 +217,71 @@ public class StructureManager : MonoBehaviour
         selectedStructure = s;
     }
 
-    void InputManager_onStructureSelect(int id) {
+    void InputManager_StructureLeftClicked(Transform structureTransform, Vector3 point) {
         deselectStructure(selectedStructure);
-        selectStructure(id);
-    }
-    void InputManager_onStructureDeselect()
-    {
-        deselectStructure(selectedStructure);
+        selectStructure(structureTransform);
     }
 
-    public void UIManager_onUnitButtonPress(int unitNum)
+    void InputManager_MiscLeftClicked(Transform miscTransform, Vector3 point)
+    {
+        deselectStructure(selectedStructure);
+        // deselect structure when misc objects
+        if (structurePreview != NO_PREVIEW)
+        {
+            // place a structure
+            placeStructure(structurePreview, point);
+        }
+        
+    }
+
+    void InputManager_EscapeKeyDown()
+    {
+        Debug.Log($"[StructureManager]: Escape key pressed, reset structure preview");
+        // reset preview when player hits escape
+        ResetStructurePreview();
+    }
+
+    void UIManager_UnitButtonPressed(int unitNum)
     {
         var ts = (TrainingStructure)selectedStructure;
         ts.train(unitNum);
     }
 
+    void UIManager_BuildingButtonPressed(sbyte buildingNum)
+    {
+        Debug.Log($"[StructureManager]: Building button pressed, set structure preview to ${buildingNum}");
+        setStructurePreviewViewState(structurePreview, false, Vector3.zero);
+        structurePreview = buildingNum;
+    }
+
     public void OnEnable() {
-        UIManager.onUnitButtonPress += UIManager_onUnitButtonPress;
-        InputManager.onStructureSelect += InputManager_onStructureSelect;
-        InputManager.onStructureDeselect += InputManager_onStructureDeselect;
+        UIManager.UnitButtonPressed += UIManager_UnitButtonPressed;
+        UIManager.BuildingButtonPressed += UIManager_BuildingButtonPressed;
+        InputManager.StructureLeftClicked += InputManager_StructureLeftClicked;
+        InputManager.MiscLeftClicked += InputManager_MiscLeftClicked;
+        InputManager.EscapeKeyDown += InputManager_EscapeKeyDown;
     }
 
     public void OnDisable() {
-        UIManager.onUnitButtonPress -= UIManager_onUnitButtonPress;
-        InputManager.onStructureSelect -= InputManager_onStructureSelect;
-        InputManager.onStructureDeselect -= InputManager_onStructureDeselect;
+        UIManager.UnitButtonPressed -= UIManager_UnitButtonPressed;
+        UIManager.BuildingButtonPressed -= UIManager_BuildingButtonPressed;
+        InputManager.StructureLeftClicked -= InputManager_StructureLeftClicked;
+        InputManager.MiscLeftClicked -= InputManager_MiscLeftClicked;
+        InputManager.EscapeKeyDown -= InputManager_EscapeKeyDown;
+    }
+
+    public void Update()
+    {
+        if(structurePreview != NO_PREVIEW)
+        {
+            RaycastHit hitInfo;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY, groundLayer);
+            if(hit)
+            {
+                setStructurePreviewViewState(structurePreview, true, hitInfo.point);
+            }
+        }
     }
 
 }

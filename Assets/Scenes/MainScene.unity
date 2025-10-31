@@ -2830,6 +2830,9 @@ MonoBehaviour:
   unitLayer:
     serializedVersion: 2
     m_Bits: 128
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
   ValidPlacementMaterial: {fileID: 2100000, guid: 864804998b4d16d4e8148bd823aa4e2f, type: 2}
   InvalidPlacementMaterial: {fileID: 2100000, guid: 9e213b2163476d3438e2731adeec84aa, type: 2}
 --- !u!4 &704254382

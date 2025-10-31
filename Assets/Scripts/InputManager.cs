@@ -9,11 +9,15 @@ using UnityEngine.Video;
 
 public class InputManager : MonoBehaviour
 {
-    public delegate void OnStructureSelect(int id);
-    public static event OnStructureSelect onStructureSelect;
+    public delegate void MiscLeftClickedHandler(Transform miscTransform, Vector3 point);
+    public static event MiscLeftClickedHandler MiscLeftClicked;
 
-    public delegate void OnStructureDeselect();
-    public static event OnStructureDeselect onStructureDeselect;
+    public delegate void StructureLeftClickedHandler(Transform structureTransform, Vector3 point);
+    public static event StructureLeftClickedHandler StructureLeftClicked;
+
+    public delegate void EscapeKeyDownHandler();
+    public static event EscapeKeyDownHandler EscapeKeyDown;
+    
 
     [SerializeField]
     Transform selectMarkerTransform;
@@ -27,45 +31,15 @@ public class InputManager : MonoBehaviour
     [SerializeField]
     LayerMask groundLayer;
 
-    sbyte structureToPlace = -1; // -1 is no structure
-
-
-    public void UIManager_onBuildingButtonPress(sbyte buildingNum)
-    {
-        StructureManager.Instance.setStructurePreviewViewState(structureToPlace, false, Vector3.zero);
-        structureToPlace = buildingNum;
-    }
-
-    private void OnEnable()
-    {
-        UIManager.onBuildingButtonPress += UIManager_onBuildingButtonPress;
-    }
-
-    private void OnDisable()
-    {
-        UIManager.onBuildingButtonPress -= UIManager_onBuildingButtonPress;
-    }
 
     void Update()
     {
         bool leftClicked = Input.GetMouseButtonUp(0);
         bool rightClicked = Input.GetMouseButtonUp(1);
-        bool escaped = Input.GetKeyDown(KeyCode.Escape);
 
-        if(escaped)
+        if(Input.GetKeyDown(KeyCode.Escape))
         {
-            structureToPlace = resetStructureToPlace(structureToPlace); // don't place structure on click
-        }
-
-        if(structureToPlace != -1)
-        {
-            RaycastHit hitInfo;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY, groundLayer);
-            if(hit)
-            {
-                StructureManager.Instance.setStructurePreviewViewState(structureToPlace, true, hitInfo.point);
-            }
+            EscapeKeyDown?.Invoke();
         }
 
         if (leftClicked)
@@ -86,27 +60,18 @@ public class InputManager : MonoBehaviour
                 }
             }
 
-            RaycastHit hitInfo;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY);
+            bool hit = Physics.Raycast(ray, out RaycastHit hitInfo, MAX_MOUSE_RAY);
             if(hit && !hitUI)
             {
                 if((1 << hitInfo.transform.gameObject.layer) == structureLayer)
                 {
                     UIManager.Instance.resetUIPanels();
-                    var s = hitInfo.transform.GetComponent<Structure>();
-                    onStructureSelect?.Invoke(s.id);
+                    StructureLeftClicked?.Invoke(hitInfo.transform, hitInfo.point);
                 } else
                 {
                     UIManager.Instance.resetUIPanels();
-                    onStructureDeselect?.Invoke(); // deselect structure when clicking ground
-                    if (structureToPlace != -1)
-                    {
-                        // place a structure
-                        StructureManager.Instance.placeStructure(structureToPlace, hitInfo.point);
-                        // reset structureToPlace
-                        structureToPlace = resetStructureToPlace(structureToPlace);
-                    }
+                    MiscLeftClicked?.Invoke(hitInfo.transform, hitInfo.point); 
                 }
             }
         }     
@@ -129,11 +94,5 @@ public class InputManager : MonoBehaviour
                 }
             }
         }
-    }
-
-    sbyte resetStructureToPlace(sbyte structureToPlace)
-    {
-        StructureManager.Instance.setStructurePreviewViewState(structureToPlace, false, Vector3.zero);
-        return -1;
     }
 }
