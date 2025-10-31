@@ -12,27 +12,27 @@ public class Unit : MonoBehaviour
     [SerializeField]
     GameObject _prefab;
 
-    public int getId() {
+    public int GetId() {
         return _id;
     }
 
-    public GameObject getPrefab() {
+    public GameObject GetPrefab() {
         return _prefab;
     }
 
-    public int getHP() {
+    public int GetHP() {
         return _hp;
     }
 
-    public int getSpeed() {
+    public int GetSpeed() {
         return _speed;
     }
 
-    public void takeDamage() {
+    public void TakeDamage() {
         
     }
 
-    public void attack() {
+    public void Attack() {
 
     }
 

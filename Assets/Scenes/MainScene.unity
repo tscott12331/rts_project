@@ -2833,8 +2833,8 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  ValidPlacementMaterial: {fileID: 2100000, guid: 864804998b4d16d4e8148bd823aa4e2f, type: 2}
-  InvalidPlacementMaterial: {fileID: 2100000, guid: 9e213b2163476d3438e2731adeec84aa, type: 2}
+  validPlacementMaterial: {fileID: 2100000, guid: 864804998b4d16d4e8148bd823aa4e2f, type: 2}
+  invalidPlacementMaterial: {fileID: 2100000, guid: 9e213b2163476d3438e2731adeec84aa, type: 2}
 --- !u!4 &704254382
 Transform:
   m_ObjectHideFlags: 0
@@ -3343,6 +3343,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 889992722}
+  - component: {fileID: 889992723}
   m_Layer: 0
   m_Name: _UnitManager
   m_TagString: Untagged
@@ -3365,6 +3366,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &889992723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 889992721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39c60d9d6905e5a41b759be7d35cfa9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnitManager
+  selectMarkerTransform: {fileID: 273533496}
 --- !u!4 &902406987 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7020811323543301196, guid: 555616d87ca46d7428355d80c0956b94, type: 3}

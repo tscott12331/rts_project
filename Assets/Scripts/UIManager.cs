@@ -42,7 +42,7 @@ public class UIManager : MonoBehaviour
         BuildingButtonPressed?.Invoke((sbyte) buildingNum);
     }
 
-    public void populateBuildingPanel(Dictionary<int, StructureSO> placeableStructures)
+    public void PopulateBuildingPanel(Dictionary<int, StructureSO> placeableStructures)
     {
         for(int i = 0; i < BuildingPanel.transform.childCount && i < placeableStructures.Count; i++)
         {
@@ -53,7 +53,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void enableUnitPanel(List<GameObject> units) {
+    public void EnableUnitPanel(List<GameObject> units) {
         UnitPanel.SetActive(true);
 
         for(int i = 0; i < UnitPanel.transform.childCount && i < units.Count; i++)
@@ -64,24 +64,24 @@ public class UIManager : MonoBehaviour
             text.SetText(units[i].name);
         }
     }
-    public void disableUnitPanel() {
+    public void DisableUnitPanel() {
         UnitPanel.SetActive(false);
     }
 
-    public void enableUpgradePanel()
+    public void EnableUpgradePanel()
     {
         UpgradePanel.SetActive(true);
     }
 
-    public void disableUpgradePanel()
+    public void DisableUpgradePanel()
     {
         UpgradePanel.SetActive(false);
     }
 
     public void resetUIPanels()
     {
-        disableUnitPanel();
-        disableUpgradePanel();
+        DisableUnitPanel();
+        DisableUpgradePanel();
     }
 
 
@@ -92,7 +92,7 @@ public class UIManager : MonoBehaviour
 
     void TrainingStructure_TrainingStructureSelected(TrainingStructure s)
     {
-        enableUnitPanel(s.trainableUnits);
+        EnableUnitPanel(s.trainableUnits);
     }
 
     private void OnEnable()

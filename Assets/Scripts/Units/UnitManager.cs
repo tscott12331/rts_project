@@ -26,49 +26,49 @@ public class UnitManager : MonoBehaviour
     Transform selectMarkerTransform;
     
 
-    public List<GameObject> getUnits()
+    public List<GameObject> GetUnits()
     {
         return units;
     }
 
-    public List<GameObject> getSelectedUnits() {
+    public List<GameObject> GetSelectedUnits() {
         return selectedUnits;
     }
 
-    public bool unitIsSelected(GameObject unit)
+    public bool UnitIsSelected(GameObject unit)
     {
         return selectedUnits.Contains(unit);
     }
 
-    public void addUnit(GameObject unit)
+    public void AddUnit(GameObject unit)
     {
         units.Add(unit);
     }
 
-    public void selectUnit(GameObject unit)
+    public void SelectUnit(GameObject unit)
     {
         unit.transform.Find("UnitSelected").gameObject.SetActive(true);
         selectedUnits.Add(unit);
     }
 
-    public void deselectUnit(GameObject unit)
+    public void DeselectUnit(GameObject unit)
     {
         unit.transform.Find("UnitSelected").gameObject.SetActive(false);
         selectedUnits.Remove(unit);
     }
 
-    public void deselectAll()
+    public void DeselectAll()
     {
         foreach (GameObject unit in units)
         {
-            deselectUnit(unit);
+            DeselectUnit(unit);
         }
     }
     void InputManager_GroundRightClicked(Transform groundTransform, Vector3 point)
     { 
-        var selectedUnits = getSelectedUnits();
+        var selectedUnits = GetSelectedUnits();
         if(selectedUnits.Count > 0) {
-            foreach(GameObject unit in getSelectedUnits()) {
+            foreach(GameObject unit in GetSelectedUnits()) {
                 unit.GetComponent<NavMeshAgent>().SetDestination(point);
             }
 

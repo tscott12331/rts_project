@@ -48,10 +48,10 @@ public class StructureManager : MonoBehaviour
     [SerializeField]
     LayerMask groundLayer;
 
-    public Material ValidPlacementMaterial;
-    public Material InvalidPlacementMaterial;
+    public Material validPlacementMaterial;
+    public Material invalidPlacementMaterial;
 
-    public void loadPlaceableStructures()
+    public void LoadPlaceableStructures()
     {
         var structureSOs = Resources.LoadAll<StructureSO>("ScriptableObjects/Structures/");
 
@@ -66,7 +66,7 @@ public class StructureManager : MonoBehaviour
             var preview = Instantiate(sso.data.prefab);
             preview.SetActive(false);
             // make preview blue and transparent
-            ChangePreviewMaterial(preview, ValidPlacementMaterial);
+            ChangePreviewMaterial(preview, validPlacementMaterial);
 
             preview.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
 
@@ -84,7 +84,7 @@ public class StructureManager : MonoBehaviour
             Debug.Log($"[StructureManager]: Instantiated structure {preview.name}'s preview");
         }
 
-        UIManager.Instance.populateBuildingPanel(placeableStructures);
+        UIManager.Instance.PopulateBuildingPanel(placeableStructures);
     }
 
     public void ChangePreviewMaterial(GameObject preview, Material material)
@@ -105,22 +105,22 @@ public class StructureManager : MonoBehaviour
 
         preview.TryGetComponent<Structure>(out Structure structure);
         if (structure == null) return;
-        ChangePreviewMaterial(preview, structure.isValidPosition ? ValidPlacementMaterial : InvalidPlacementMaterial);
+        ChangePreviewMaterial(preview, structure.isValidPosition ? validPlacementMaterial : invalidPlacementMaterial);
     }
     void ResetStructurePreview()
     {
-        setStructurePreviewViewState(structurePreview, false, Vector3.zero);
+        SetStructurePreviewViewState(structurePreview, false, Vector3.zero);
         structurePreview = NO_PREVIEW;
     }
 
-    public void setStructurePreviewViewState(sbyte buildingNum, bool show, Vector3 pos)
+    public void SetStructurePreviewViewState(sbyte buildingNum, bool show, Vector3 pos)
     {
         structurePreviews.TryGetValue(buildingNum, out var s);
         if (s == null) return;
         s.SetActive(show);
         if(show)
         {
-            if (samplePosition(s, pos, out Vector3 newPos)) 
+            if (SamplePosition(s, pos, out Vector3 newPos)) 
             { 
                 s.transform.position = newPos;
             }
@@ -132,18 +132,18 @@ public class StructureManager : MonoBehaviour
         }
     }
 
-    public void addStructure(Structure structure)
+    public void AddStructure(Structure structure)
     {
         structures.Add(++currentId, structure);
         structure.id = currentId;
     }
 
-    public void removeStructure(Structure structure)
+    public void RemoveStructure(Structure structure)
     {
         structures.Remove(currentId);
     }
 
-    public bool samplePosition(GameObject structure, Vector3 pos, out Vector3 newPos)
+    public bool SamplePosition(GameObject structure, Vector3 pos, out Vector3 newPos)
     {
         NavMeshHit navMeshHit;
         if (NavMesh.SamplePosition(pos, out navMeshHit, MAX_SAMPLE_DIST, NavMesh.AllAreas))
@@ -157,24 +157,24 @@ public class StructureManager : MonoBehaviour
         return false;
     }
 
-    public void placeStructure(StructureSO so, Vector3 pos) {
-        if(samplePosition(so.data.prefab, pos, out Vector3 newPos)) {
+    public void PlaceStructure(StructureSO so, Vector3 pos) {
+        if(SamplePosition(so.data.prefab, pos, out Vector3 newPos)) {
             var prefab = so.data.prefab;
             var structureGO = Instantiate(prefab, newPos, Quaternion.identity);
             var structure = structureGO.GetComponent<Structure>();
 
-            structure.copyStructureData(so);
+            structure.CopyStructureData(so);
 
             // select and add new structure
-            deselectStructure(selectedStructure);
-            addStructure(structure);
-            selectStructure(structure);
+            DeselectStructure(selectedStructure);
+            AddStructure(structure);
+            SelectStructure(structure);
 
             ResetStructurePreview();
         }
     }
 
-    public void placeStructure(sbyte structureIndex, Vector3 pos) {
+    public void PlaceStructure(sbyte structureIndex, Vector3 pos) {
         // get preview info
         var preview = structurePreviews[structureIndex];
         var structure = preview.GetComponent<Structure>();
@@ -185,16 +185,16 @@ public class StructureManager : MonoBehaviour
         }
 
         var so = placeableStructures[structureIndex];
-        placeStructure(so, pos);
+        PlaceStructure(so, pos);
     }
 
-    public void deselectStructure(Transform structureTransform)
+    public void DeselectStructure(Transform structureTransform)
     {
         structureTransform.TryGetComponent<Structure>(out Structure s);
-        deselectStructure(s);
+        DeselectStructure(s);
     }
 
-    public void deselectStructure(Structure s)
+    public void DeselectStructure(Structure s)
     {
         if(s == null) return;
         s.transform.Find("Selected").gameObject.SetActive(false);
@@ -202,21 +202,21 @@ public class StructureManager : MonoBehaviour
         StructureDeselected?.Invoke(s);
     }
 
-    public void selectStructure(int id)
+    public void SelectStructure(int id)
     {
         if (structures.ContainsKey(id)) {
             var s = structures[id];
-            selectStructure(s);
+            SelectStructure(s);
         }
     }
 
-    public void selectStructure(Transform structureTransform)
+    public void SelectStructure(Transform structureTransform)
     {
         structureTransform.TryGetComponent<Structure>(out Structure s);
-        selectStructure(s);
+        SelectStructure(s);
     }
 
-    public void selectStructure(Structure s)
+    public void SelectStructure(Structure s)
     {
         if(s == null) return;
         s.HandleStructureSelect();
@@ -224,18 +224,18 @@ public class StructureManager : MonoBehaviour
     }
 
     void InputManager_StructureLeftClicked(Transform structureTransform, Vector3 point) {
-        deselectStructure(selectedStructure);
-        selectStructure(structureTransform);
+        DeselectStructure(selectedStructure);
+        SelectStructure(structureTransform);
     }
 
     void InputManager_MiscLeftClicked(Transform miscTransform, Vector3 point)
     {
-        deselectStructure(selectedStructure);
+        DeselectStructure(selectedStructure);
         // deselect structure when misc objects
         if (structurePreview != NO_PREVIEW)
         {
             // place a structure
-            placeStructure(structurePreview, point);
+            PlaceStructure(structurePreview, point);
         }
         
     }
@@ -250,13 +250,13 @@ public class StructureManager : MonoBehaviour
     void UIManager_UnitButtonPressed(int unitNum)
     {
         var ts = (TrainingStructure)selectedStructure;
-        ts.train(unitNum);
+        ts.Train(unitNum);
     }
 
     void UIManager_BuildingButtonPressed(sbyte buildingNum)
     {
         Debug.Log($"[StructureManager]: Building button pressed, set structure preview to ${buildingNum}");
-        setStructurePreviewViewState(structurePreview, false, Vector3.zero);
+        SetStructurePreviewViewState(structurePreview, false, Vector3.zero);
         structurePreview = buildingNum;
     }
 
@@ -285,7 +285,7 @@ public class StructureManager : MonoBehaviour
             bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY, groundLayer);
             if(hit)
             {
-                setStructurePreviewViewState(structurePreview, true, hitInfo.point);
+                SetStructurePreviewViewState(structurePreview, true, hitInfo.point);
             }
         }
     }

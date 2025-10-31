@@ -18,7 +18,7 @@ public abstract class Structure : MonoBehaviour
         isValidPosition = true;
     }
 
-    public abstract void copyStructureData(StructureSO so);
+    public abstract void CopyStructureData(StructureSO so);
 
     public abstract void HandleStructureSelect();
 

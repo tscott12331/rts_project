@@ -9,7 +9,7 @@ public class GeneralStructure : Structure
         GeneralStructureSelected?.Invoke(this);
         transform.Find("Selected").gameObject.SetActive(true);
     }
-    public override void copyStructureData(StructureSO so)
+    public override void CopyStructureData(StructureSO so)
     {
         var data = so.data;
         this.HP = data.HP;
