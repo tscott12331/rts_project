@@ -15,6 +15,9 @@ public class InputManager : MonoBehaviour
     public delegate void StructureLeftClickedHandler(Transform structureTransform, Vector3 point);
     public static event StructureLeftClickedHandler StructureLeftClicked;
 
+    public delegate void GroundRightClickedHandler(Transform groundTransform, Vector3 point);
+    public static event GroundRightClickedHandler GroundRightClicked;
+
     public delegate void EscapeKeyDownHandler();
     public static event EscapeKeyDownHandler EscapeKeyDown;
     
@@ -83,15 +86,7 @@ public class InputManager : MonoBehaviour
 
             if (hit && (1 << hitInfo.transform.gameObject.layer) == groundLayer)
             {
-                var selectedUnits = UnitManager.Instance.getSelectedUnits();
-                if(selectedUnits.Count > 0) {
-                    foreach(GameObject unit in UnitManager.Instance.getSelectedUnits()) {
-                        unit.GetComponent<NavMeshAgent>().SetDestination(hitInfo.point);
-                    }
-
-                    selectMarkerTransform.position = hitInfo.point;
-                    selectMarkerTransform.gameObject.SetActive(true);
-                }
+                GroundRightClicked?.Invoke(hitInfo.transform, hitInfo.point);
             }
         }
     }

@@ -1,28 +1,29 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
-public sealed class UnitManager
+public class UnitManager : MonoBehaviour
 {
-    private static UnitManager _instance;
-    public static UnitManager Instance
+    public static UnitManager Instance { get; protected set; }
+
+    void Awake()
     {
-        get {
-            if(_instance == null)
-            {
-                _instance = new UnitManager();
-            }
-            return _instance;
-        }
-        private set
+        if (Instance != null && Instance != this)
         {
-            _instance = value;
+            Destroy(this);
+            throw new System.Exception("An instance of this singleton already exists.");
+        }
+        else
+        {
+            Instance = this;
         }
     }
 
     List<GameObject> units = new List<GameObject>();
     List<GameObject> selectedUnits = new List<GameObject>();
-    
-    public GameObject basicUnitPrefab;
+
+    [SerializeField]
+    Transform selectMarkerTransform;
     
 
     public List<GameObject> getUnits()
@@ -62,5 +63,28 @@ public sealed class UnitManager
         {
             deselectUnit(unit);
         }
+    }
+    void InputManager_GroundRightClicked(Transform groundTransform, Vector3 point)
+    { 
+        var selectedUnits = getSelectedUnits();
+        if(selectedUnits.Count > 0) {
+            foreach(GameObject unit in getSelectedUnits()) {
+                unit.GetComponent<NavMeshAgent>().SetDestination(point);
+            }
+
+            selectMarkerTransform.position = point;
+            selectMarkerTransform.gameObject.SetActive(true);
+        }
+
+    }
+
+    void OnEnable()
+    {
+        InputManager.GroundRightClicked += InputManager_GroundRightClicked;
+    }
+
+    void OnDisable()
+    { 
+        InputManager.GroundRightClicked -= InputManager_GroundRightClicked;
     }
 }
