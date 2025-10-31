@@ -22,6 +22,12 @@ public class StructureManager : MonoBehaviour
         }
     }
 
+    public delegate void StructureSelectedHandler(Structure structure);
+    public static event StructureSelectedHandler StructureSelected;
+
+    public delegate void StructureDeselectedHandler(Structure structure);
+    public static event StructureDeselectedHandler StructureDeselected;
+
     const float MAX_MOUSE_RAY = 250.0f;
     const float MAX_SAMPLE_DIST = 100.0f;
 
@@ -193,6 +199,7 @@ public class StructureManager : MonoBehaviour
         if(s == null) return;
         s.transform.Find("Selected").gameObject.SetActive(false);
         selectedStructure = null;
+        StructureDeselected?.Invoke(s);
     }
 
     public void selectStructure(int id)
@@ -212,8 +219,7 @@ public class StructureManager : MonoBehaviour
     public void selectStructure(Structure s)
     {
         if(s == null) return;
-        s.showStructureUI();
-        s.transform.Find("Selected").gameObject.SetActive(true);
+        s.HandleStructureSelect();
         selectedStructure = s;
     }
 

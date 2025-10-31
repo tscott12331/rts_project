@@ -5,6 +5,9 @@ using System;
 
 public class TrainingStructure : Structure
 {
+    public delegate void TrainingStructureSelectedHandler(TrainingStructure s);
+    public static event TrainingStructureSelectedHandler TrainingStructureSelected;
+
     public Transform spawnPositionTransform;
     public Transform walkPositionTransform;
     public LayerMask groundLayer;
@@ -40,8 +43,9 @@ public class TrainingStructure : Structure
         this.trainableUnits = trainingSO.trainableUnits;
     }
 
-    public override void showStructureUI()
+    public override void HandleStructureSelect()
     {
-        UIManager.Instance.enableUnitPanel(trainableUnits);
+        transform.Find("Selected").gameObject.SetActive(true);
+        TrainingStructureSelected?.Invoke(this);
     }
 }

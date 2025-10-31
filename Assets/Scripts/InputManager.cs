@@ -45,8 +45,10 @@ public class InputManager : MonoBehaviour
         if (leftClicked)
         {
             var raycastResults = new List<RaycastResult>();
-            var pointerEventData = new PointerEventData(EventSystem.current);
-            pointerEventData.position = Input.mousePosition;
+            var pointerEventData = new PointerEventData(EventSystem.current)
+            {
+                position = Input.mousePosition
+            };
             
             EventSystem.current.RaycastAll(pointerEventData, raycastResults);
             bool hitUI = false;
@@ -66,11 +68,9 @@ public class InputManager : MonoBehaviour
             {
                 if((1 << hitInfo.transform.gameObject.layer) == structureLayer)
                 {
-                    UIManager.Instance.resetUIPanels();
                     StructureLeftClicked?.Invoke(hitInfo.transform, hitInfo.point);
                 } else
                 {
-                    UIManager.Instance.resetUIPanels();
                     MiscLeftClicked?.Invoke(hitInfo.transform, hitInfo.point); 
                 }
             }

@@ -83,5 +83,28 @@ public class UIManager : MonoBehaviour
         disableUnitPanel();
         disableUpgradePanel();
     }
+
+
+    void StructureManager_StructureDeselected(Structure s)
+    {
+        resetUIPanels();
+    }
+
+    void TrainingStructure_TrainingStructureSelected(TrainingStructure s)
+    {
+        enableUnitPanel(s.trainableUnits);
+    }
+
+    private void OnEnable()
+    {
+        StructureManager.StructureDeselected += StructureManager_StructureDeselected;
+        TrainingStructure.TrainingStructureSelected += TrainingStructure_TrainingStructureSelected;
+    }
+
+    private void OnDisable()
+    {
+        StructureManager.StructureDeselected -= StructureManager_StructureDeselected;
+        TrainingStructure.TrainingStructureSelected -= TrainingStructure_TrainingStructureSelected;
+    }
 } 
 

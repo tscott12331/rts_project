@@ -20,7 +20,7 @@ public abstract class Structure : MonoBehaviour
 
     public abstract void copyStructureData(StructureSO so);
 
-    public abstract void showStructureUI();
+    public abstract void HandleStructureSelect();
 
     private void OnCollisionEnter(Collision collision)
     {
