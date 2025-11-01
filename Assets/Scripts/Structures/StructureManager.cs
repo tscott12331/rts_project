@@ -3,6 +3,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 public class StructureManager : MonoBehaviourSingleton<StructureManager>
@@ -26,6 +27,8 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
 
     const sbyte NO_PREVIEW = -1;
     private sbyte structurePreview = NO_PREVIEW; // -1 is no structure
+    bool rotatePreview = false;
+    Vector2 rotationMousePosition = Vector3.zero;
 
 
     [SerializeField]
@@ -94,19 +97,30 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
     }
     void ResetStructurePreview()
     {
-        SetStructurePreviewViewState(structurePreview, false, Vector3.zero);
+        SetStructurePreviewViewState(structurePreview, false, Vector3.zero, false);
+        rotatePreview = false;
         structurePreview = NO_PREVIEW;
+
+        structurePreviews.TryGetValue(structurePreview, out var previewObject);
+        if(previewObject != null)
+        {
+            previewObject.transform.rotation = Quaternion.identity;
+        }
     }
 
-    public void SetStructurePreviewViewState(sbyte buildingNum, bool show, Vector3 pos)
+    public void SetStructurePreviewViewState(sbyte buildingNum, bool show, Vector3 pos, bool rotate)
     {
         structurePreviews.TryGetValue(buildingNum, out var s);
         if (s == null) return;
         s.SetActive(show);
         if(show)
         {
-            if (SamplePosition(s, pos, out Vector3 newPos)) 
-            { 
+            if(rotate)
+            {
+                s.transform.Rotate(Vector3.up, Input.mousePositionDelta.x);
+            } else if (SamplePosition(s, pos, out Vector3 newPos))
+            {
+                
                 s.transform.position = newPos;
             }
 
@@ -114,6 +128,22 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         } else
         {
             s.GetComponent<Structure>().ResetPositionState();
+        }
+    }
+
+    public void SetPreviewRotateMode(sbyte buildingNum, bool on)
+    {
+        rotatePreview = buildingNum != NO_PREVIEW && on;
+        if(rotatePreview)
+        {
+            UnityEngine.Cursor.visible = false;
+            UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+            rotationMousePosition = Mouse.current.position.value;
+        } else
+        {
+            UnityEngine.Cursor.visible = true;
+            UnityEngine.Cursor.lockState = CursorLockMode.None;
+            Mouse.current.WarpCursorPosition(rotationMousePosition);
         }
     }
 
@@ -141,10 +171,10 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         return false;
     }
 
-    public void PlaceStructure(StructureSO so, Vector3 pos) {
+    public void PlaceStructure(StructureSO so, Vector3 pos, Quaternion rot) {
         if(SamplePosition(so.data.prefab, pos, out Vector3 newPos)) {
             var prefab = so.data.prefab;
-            var structureGO = Instantiate(prefab, newPos, Quaternion.identity);
+            var structureGO = Instantiate(prefab, newPos, rot);
             var structure = structureGO.GetComponent<Structure>();
 
             structure.CopyStructureData(so);
@@ -158,7 +188,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         }
     }
 
-    public void PlaceStructure(sbyte structureIndex, Vector3 pos) {
+    public void PlaceStructure(sbyte structureIndex, Vector3 pos, Quaternion rot) {
         // get preview info
         var preview = structurePreviews[structureIndex];
         var structure = preview.GetComponent<Structure>();
@@ -169,7 +199,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         }
 
         var so = placeableStructures[structureIndex];
-        PlaceStructure(so, pos);
+        PlaceStructure(so, pos, rot);
     }
 
     public void DeselectStructure(Transform structureTransform)
@@ -218,17 +248,37 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         // deselect structure when misc objects
         if (structurePreview != NO_PREVIEW)
         {
+            var previewTransform = structurePreviews[structurePreview].transform;
             // place a structure
-            PlaceStructure(structurePreview, point);
+            PlaceStructure(structurePreview, previewTransform.position, previewTransform.rotation);
         }
         
     }
 
-    void InputManager_EscapeKeyDown()
+    void InputManager_KeyDown(Keybind action)
     {
-        Debug.Log($"[StructureManager]: Escape key pressed, reset structure preview");
-        // reset preview when player hits escape
-        ResetStructurePreview();
+        switch (action) {
+            case Keybind.Escape:
+                Debug.Log($"[StructureManager]: Escape key pressed, reset structure preview");
+                // reset preview when player hits escape
+                ResetStructurePreview();
+                break;
+            case Keybind.Rotate:
+                Debug.Log($"[StructureManager]: Rotate key pressed, switch to rotate mode if preview is showing");
+                SetPreviewRotateMode(structurePreview, true);
+                break;
+        }
+
+    }
+
+    void InputManager_KeyUp(Keybind action)
+    {
+        switch (action) {
+            case Keybind.Rotate:
+                Debug.Log($"[StructureManager]: Rotate key released, turn off rotate mode");
+                SetPreviewRotateMode(structurePreview, false);
+                break;
+        }
     }
 
     void UIManager_UnitButtonPressed(int unitNum)
@@ -240,24 +290,28 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
     void UIManager_BuildingButtonPressed(sbyte buildingNum)
     {
         Debug.Log($"[StructureManager]: Building button pressed, set structure preview to ${buildingNum}");
-        SetStructurePreviewViewState(structurePreview, false, Vector3.zero);
+        SetStructurePreviewViewState(structurePreview, false, Vector3.zero, rotatePreview);
         structurePreview = buildingNum;
     }
 
     public void OnEnable() {
         UIManager.UnitButtonPressed += UIManager_UnitButtonPressed;
         UIManager.BuildingButtonPressed += UIManager_BuildingButtonPressed;
+
         InputManager.StructureLeftClicked += InputManager_StructureLeftClicked;
         InputManager.MiscLeftClicked += InputManager_MiscLeftClicked;
-        InputManager.EscapeKeyDown += InputManager_EscapeKeyDown;
+        InputManager.KeyDown += InputManager_KeyDown;
+        InputManager.KeyUp += InputManager_KeyUp;
     }
 
     public void OnDisable() {
         UIManager.UnitButtonPressed -= UIManager_UnitButtonPressed;
         UIManager.BuildingButtonPressed -= UIManager_BuildingButtonPressed;
+
         InputManager.StructureLeftClicked -= InputManager_StructureLeftClicked;
         InputManager.MiscLeftClicked -= InputManager_MiscLeftClicked;
-        InputManager.EscapeKeyDown -= InputManager_EscapeKeyDown;
+        InputManager.KeyDown -= InputManager_KeyDown;
+        InputManager.KeyUp -= InputManager_KeyUp;
     }
 
     public void Update()
@@ -268,7 +322,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
             bool hit = Physics.Raycast(ray, out RaycastHit hitInfo, MAX_MOUSE_RAY, groundLayer);
             if(hit)
             {
-                SetStructurePreviewViewState(structurePreview, true, hitInfo.point);
+                SetStructurePreviewViewState(structurePreview, true, hitInfo.point, rotatePreview);
             }
         }
     }
