@@ -13,6 +13,6 @@ public class GeneralStructure : Structure
     {
         var data = so.data;
         this.HP = data.HP;
-        this.prefab = data.prefab;
+        this.Prefab = data.prefab;
     }
 }

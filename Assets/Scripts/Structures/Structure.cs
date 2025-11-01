@@ -2,20 +2,20 @@ using UnityEngine;
 
 public abstract class Structure : MonoBehaviour
 {
-    public int id;
+    public int Id { get; set; }
 
-    public int HP;
+    public int HP { get; protected set; }
 
-    public GameObject prefab;
+    public GameObject Prefab {  get; protected set; }
 
-    public bool isValidPosition = true;
+    public bool IsValidPosition { get; private set; } = true;
 
     private int numCollisions = 0;
 
     public void ResetPositionState()
     {
         numCollisions = 0;
-        isValidPosition = true;
+        IsValidPosition = true;
     }
 
     public abstract void CopyStructureData(StructureSO so);
@@ -25,12 +25,12 @@ public abstract class Structure : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         Debug.Log($"[Structure]: Object {collision.gameObject.name} entered {gameObject.name}");
-        isValidPosition = ++numCollisions == 0;
+        IsValidPosition = ++numCollisions == 0;
     }
 
     private void OnCollisionExit(Collision collision)
     {
-        isValidPosition = --numCollisions == 0;
+        IsValidPosition = --numCollisions == 0;
     }
 
 }

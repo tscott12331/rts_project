@@ -38,7 +38,7 @@ public class TrainingStructure : Structure
         var trainingSO = (TrainableStructureSO)so;
         var data = trainingSO.data;
         this.HP = data.HP;
-        this.prefab = data.prefab;
+        this.Prefab = data.prefab;
 
         this.trainableUnits = trainingSO.trainableUnits;
     }

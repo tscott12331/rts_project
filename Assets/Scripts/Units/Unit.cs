@@ -1,39 +1,20 @@
+using System;
 using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
-    [SerializeField]
-    int _id;
-    [SerializeField]
-    int _hp;
-    [SerializeField]
-    int _speed;
+    public int Id { get; protected set; }
+    public int HP { get; protected set; }
+    public int Speed { get; protected set; }
 
-    [SerializeField]
-    GameObject _prefab;
-
-    public int GetId() {
-        return _id;
-    }
-
-    public GameObject GetPrefab() {
-        return _prefab;
-    }
-
-    public int GetHP() {
-        return _hp;
-    }
-
-    public int GetSpeed() {
-        return _speed;
-    }
+    public GameObject Prefab { get; protected set; }
 
     public void TakeDamage() {
-        
+        throw new NotImplementedException();
     }
 
     public void Attack() {
-
+        throw new NotImplementedException();
     }
 
 }

@@ -17,10 +17,10 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
     const float MAX_SAMPLE_DIST = 100.0f;
 
     const sbyte MAX_PLACEABLE_STRUCTURES = 4;
-    Dictionary<int, StructureSO> placeableStructures = new Dictionary<int, StructureSO>();
-    Dictionary<int, GameObject> structurePreviews = new Dictionary<int, GameObject>();
+    readonly Dictionary<int, StructureSO> placeableStructures = new Dictionary<int, StructureSO>();
+    readonly Dictionary<int, GameObject> structurePreviews = new Dictionary<int, GameObject>();
 
-    Dictionary<int, Structure> structures = new Dictionary<int, Structure>();
+    readonly Dictionary<int, Structure> structures = new Dictionary<int, Structure>();
     private int currentId = 0;
     private Structure selectedStructure = null;
 
@@ -53,7 +53,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
             // make preview blue and transparent
             ChangePreviewMaterial(preview, validPlacementMaterial);
 
-            preview.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+            preview.layer = LayerMask.NameToLayer("Ignore Raycast");
 
             //preview.GetComponent<Collider>().enabled = false;
             preview.TryGetComponent<Collider>(out Collider collider);
@@ -90,7 +90,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
 
         preview.TryGetComponent<Structure>(out Structure structure);
         if (structure == null) return;
-        ChangePreviewMaterial(preview, structure.isValidPosition ? validPlacementMaterial : invalidPlacementMaterial);
+        ChangePreviewMaterial(preview, structure.IsValidPosition ? validPlacementMaterial : invalidPlacementMaterial);
     }
     void ResetStructurePreview()
     {
@@ -113,14 +113,14 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
             UpdatePreviewMaterial(s);
         } else
         {
-            s.GetComponent<Structure>()?.ResetPositionState();
+            s.GetComponent<Structure>().ResetPositionState();
         }
     }
 
     public void AddStructure(Structure structure)
     {
         structures.Add(++currentId, structure);
-        structure.id = currentId;
+        structure.Id = currentId;
     }
 
     public void RemoveStructure(Structure structure)
@@ -130,8 +130,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
 
     public bool SamplePosition(GameObject structure, Vector3 pos, out Vector3 newPos)
     {
-        NavMeshHit navMeshHit;
-        if (NavMesh.SamplePosition(pos, out navMeshHit, MAX_SAMPLE_DIST, NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(pos, out NavMeshHit navMeshHit, MAX_SAMPLE_DIST, NavMesh.AllAreas))
         {
             newPos = navMeshHit.position + new Vector3(0, structure.transform.localScale.y / 2, 0);
             return true;
@@ -163,7 +162,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         // get preview info
         var preview = structurePreviews[structureIndex];
         var structure = preview.GetComponent<Structure>();
-        if (structure == null || !structure.isValidPosition)
+        if (structure == null || !structure.IsValidPosition)
         {
             Debug.Log("[StructureManager]: Invalid structure placement");
             return;
@@ -265,9 +264,8 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
     {
         if(structurePreview != NO_PREVIEW)
         {
-            RaycastHit hitInfo;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY, groundLayer);
+            bool hit = Physics.Raycast(ray, out RaycastHit hitInfo, MAX_MOUSE_RAY, groundLayer);
             if(hit)
             {
                 SetStructurePreviewViewState(structurePreview, true, hitInfo.point);
