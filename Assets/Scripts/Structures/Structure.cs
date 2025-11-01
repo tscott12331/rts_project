@@ -1,5 +1,13 @@
 using UnityEngine;
 
+public enum StructureOwner : byte
+{
+    Unset,
+    None,
+    Player,
+    Enemy,
+}
+
 public abstract class Structure : MonoBehaviour
 {
     public int Id { get; set; }
@@ -9,6 +17,22 @@ public abstract class Structure : MonoBehaviour
     public GameObject Prefab {  get; protected set; }
 
     public bool IsValidPosition { get; private set; } = true;
+
+    private StructureOwner _owner = StructureOwner.Unset;
+    public StructureOwner Owner
+    {
+        get { return _owner; }
+        set
+        {
+            if (_owner == StructureOwner.Unset)
+            {
+                _owner = value;
+            } else
+            {
+                Debug.LogError("[Structure]: Cannot change ownership of a structure");
+            }
+        }
+    }
 
     private int numCollisions = 0;
 
@@ -24,7 +48,6 @@ public abstract class Structure : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log($"[Structure]: Object {collision.gameObject.name} entered {gameObject.name}");
         IsValidPosition = ++numCollisions == 0;
     }
 
