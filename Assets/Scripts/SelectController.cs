@@ -59,7 +59,7 @@ public class SelectController : MonoBehaviour
             float right = selectRect.transform.position.x + halfWidth;
             float top = selectRect.transform.position.y + halfHeight;
             float bottom = selectRect.transform.position.y - halfHeight;
-            foreach(GameObject unit in UnitManager.Instance.GetUnits())
+            foreach(GameObject unit in UnitManager.Instance.Units)
             {
                 Vector2 screenPoint = Camera.main.WorldToScreenPoint(unit.transform.position);
 

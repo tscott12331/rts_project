@@ -9,8 +9,7 @@ public class GameManager : MonoBehaviour
     {
         StructureManager.Instance.LoadPlaceableStructures();
 
-        StructureManager.Instance.PlaceStructure(1, PlayerStartPoint.position);
         StructureManager.Instance.PlaceStructure(1, EnemyStartPoint.position);
-
+        StructureManager.Instance.PlaceStructure(1, PlayerStartPoint.position);
     }
 }
