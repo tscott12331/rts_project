@@ -1,4 +1,5 @@
 using NUnit.Framework.Internal;
+using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -6,8 +7,13 @@ using UnityEngine.AI;
 using UnityEngine.EventSystems;
 using UnityEngine.Video;
 
+public enum Keybind : short
+{
+    Escape,
+    Rotate,
+}
 
-public class InputManager : MonoBehaviour
+public class InputManager : MonoBehaviourSingleton<InputManager>
 {
     public delegate void MiscLeftClickedHandler(Transform miscTransform, Vector3 point);
     public static event MiscLeftClickedHandler MiscLeftClicked;
@@ -18,9 +24,11 @@ public class InputManager : MonoBehaviour
     public delegate void GroundRightClickedHandler(Transform groundTransform, Vector3 point);
     public static event GroundRightClickedHandler GroundRightClicked;
 
-    public delegate void EscapeKeyDownHandler();
-    public static event EscapeKeyDownHandler EscapeKeyDown;
-    
+    public delegate void KeyDownHandler(Keybind action);
+    public static event KeyDownHandler KeyDown;
+
+    public delegate void KeyUpHandler(Keybind action);
+    public static event KeyUpHandler KeyUp;
 
     [SerializeField]
     Transform selectMarkerTransform;
@@ -40,9 +48,18 @@ public class InputManager : MonoBehaviour
         bool leftClicked = Input.GetMouseButtonUp(0);
         bool rightClicked = Input.GetMouseButtonUp(1);
 
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            EscapeKeyDown?.Invoke();
+            KeyDown?.Invoke(Keybind.Escape);
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            KeyDown.Invoke(Keybind.Rotate);
+        }
+        if(Input.GetKeyUp(KeyCode.R))
+        {
+            KeyUp?.Invoke(Keybind.Rotate);
         }
 
         if (leftClicked)
@@ -52,13 +69,13 @@ public class InputManager : MonoBehaviour
             {
                 position = Input.mousePosition
             };
-            
+
             EventSystem.current.RaycastAll(pointerEventData, raycastResults);
             bool hitUI = false;
-            for(int i = 0; i < raycastResults.Count; i++)
+            for (int i = 0; i < raycastResults.Count; i++)
             {
                 var layer = raycastResults[i].gameObject.layer;
-                if((1 << layer) == UILayer)
+                if ((1 << layer) == UILayer)
                 {
                     hitUI = true;
                     break;
@@ -67,22 +84,23 @@ public class InputManager : MonoBehaviour
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             bool hit = Physics.Raycast(ray, out RaycastHit hitInfo, MAX_MOUSE_RAY);
-            if(hit && !hitUI)
+            if (hit && !hitUI)
             {
-                if((1 << hitInfo.transform.gameObject.layer) == structureLayer)
+                if ((1 << hitInfo.transform.gameObject.layer) == structureLayer)
                 {
                     StructureLeftClicked?.Invoke(hitInfo.transform, hitInfo.point);
-                } else
+                }
+                else
                 {
-                    MiscLeftClicked?.Invoke(hitInfo.transform, hitInfo.point); 
+                    MiscLeftClicked?.Invoke(hitInfo.transform, hitInfo.point);
                 }
             }
-        }     
+        }
 
-        if(rightClicked) {
-            RaycastHit hitInfo;
+        if (rightClicked)
+        {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY);
+            bool hit = Physics.Raycast(ray, out RaycastHit hitInfo, MAX_MOUSE_RAY);
 
             if (hit && (1 << hitInfo.transform.gameObject.layer) == groundLayer)
             {
