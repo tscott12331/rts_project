@@ -5,28 +5,13 @@ using TMPro;
 using Unity.VisualScripting;
 using System.Linq;
 
-public class UIManager : MonoBehaviour
+public class UIManager : MonoBehaviourSingleton<UIManager>
 {
-    public delegate void OnUnitButtonPress(int unitNum);
-    public static event OnUnitButtonPress onUnitButtonPress;
+    public delegate void UnitButtonPressedHandler(int unitNum);
+    public static event UnitButtonPressedHandler UnitButtonPressed;
 
-    public delegate void OnBuildingButtonPress(sbyte buildingNum);
-    public static event OnBuildingButtonPress onBuildingButtonPress;
-
-    public static UIManager Instance { get; protected set; }
-
-    void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(this);
-            throw new System.Exception("An instance of this singleton already exists.");
-        }
-        else
-        {
-            Instance = this;
-        }
-    }
+    public delegate void BuildingButtonPressedHandler(sbyte buildingNum);
+    public static event BuildingButtonPressedHandler BuildingButtonPressed;
 
     public GameObject BuildingPanel;
     public GameObject UnitPanel;
@@ -34,15 +19,15 @@ public class UIManager : MonoBehaviour
 
     public void HandleUnitButtonPress(int unitNum)
     {
-        onUnitButtonPress?.Invoke(unitNum);
+        UnitButtonPressed?.Invoke(unitNum);
     }
 
     public void HandleBuildingButtonPress(int buildingNum)
     {
-        onBuildingButtonPress?.Invoke((sbyte) buildingNum);
+        BuildingButtonPressed?.Invoke((sbyte) buildingNum);
     }
 
-    public void populateBuildingPanel(Dictionary<int, StructureSO> placeableStructures)
+    public void PopulateBuildingPanel(Dictionary<int, StructureSO> placeableStructures)
     {
         for(int i = 0; i < BuildingPanel.transform.childCount && i < placeableStructures.Count; i++)
         {
@@ -53,7 +38,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void enableUnitPanel(List<GameObject> units) {
+    public void EnableUnitPanel(List<GameObject> units) {
         UnitPanel.SetActive(true);
 
         for(int i = 0; i < UnitPanel.transform.childCount && i < units.Count; i++)
@@ -64,24 +49,47 @@ public class UIManager : MonoBehaviour
             text.SetText(units[i].name);
         }
     }
-    public void disableUnitPanel() {
+    public void DisableUnitPanel() {
         UnitPanel.SetActive(false);
     }
 
-    public void enableUpgradePanel()
+    public void EnableUpgradePanel()
     {
         UpgradePanel.SetActive(true);
     }
 
-    public void disableUpgradePanel()
+    public void DisableUpgradePanel()
     {
         UpgradePanel.SetActive(false);
     }
 
     public void resetUIPanels()
     {
-        disableUnitPanel();
-        disableUpgradePanel();
+        DisableUnitPanel();
+        DisableUpgradePanel();
+    }
+
+
+    void StructureManager_StructureDeselected(Structure s)
+    {
+        resetUIPanels();
+    }
+
+    void TrainingStructure_TrainingStructureSelected(TrainingStructure s)
+    {
+        EnableUnitPanel(s.trainableUnits);
+    }
+
+    private void OnEnable()
+    {
+        StructureManager.StructureDeselected += StructureManager_StructureDeselected;
+        TrainingStructure.TrainingStructureSelected += TrainingStructure_TrainingStructureSelected;
+    }
+
+    private void OnDisable()
+    {
+        StructureManager.StructureDeselected -= StructureManager_StructureDeselected;
+        TrainingStructure.TrainingStructureSelected -= TrainingStructure_TrainingStructureSelected;
     }
 } 
 

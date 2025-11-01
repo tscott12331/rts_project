@@ -3,12 +3,16 @@ using UnityEngine;
 
 public class GeneralStructure : Structure
 {
-    public override void showStructureUI() {
+    public delegate void GeneralStructureSelectedHandler(GeneralStructure s);
+    public static event GeneralStructureSelectedHandler GeneralStructureSelected;
+    public override void HandleStructureSelect() {
+        GeneralStructureSelected?.Invoke(this);
+        transform.Find("Selected").gameObject.SetActive(true);
     }
-    public override void copyStructureData(StructureSO so)
+    public override void CopyStructureData(StructureSO so)
     {
         var data = so.data;
         this.HP = data.HP;
-        this.prefab = data.prefab;
+        this.Prefab = data.prefab;
     }
 }

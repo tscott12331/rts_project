@@ -1,66 +1,64 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
-public sealed class UnitManager
+public class UnitManager : MonoBehaviourSingleton<UnitManager>
 {
-    private static UnitManager _instance;
-    public static UnitManager Instance
+    public List<GameObject> Units { get; private set; } = new();
+    public List<GameObject> SelectedUnits { get; private set; } = new();
+
+    [SerializeField]
+    Transform selectMarkerTransform;
+
+    public bool UnitIsSelected(GameObject unit)
     {
-        get {
-            if(_instance == null)
-            {
-                _instance = new UnitManager();
-            }
-            return _instance;
-        }
-        private set
-        {
-            _instance = value;
-        }
+        return SelectedUnits.Contains(unit);
     }
 
-    List<GameObject> units = new List<GameObject>();
-    List<GameObject> selectedUnits = new List<GameObject>();
-    
-    public GameObject basicUnitPrefab;
-    
-
-    public List<GameObject> getUnits()
+    public void AddUnit(GameObject unit)
     {
-        return units;
+        Units.Add(unit);
     }
 
-    public List<GameObject> getSelectedUnits() {
-        return selectedUnits;
-    }
-
-    public bool unitIsSelected(GameObject unit)
-    {
-        return selectedUnits.Contains(unit);
-    }
-
-    public void addUnit(GameObject unit)
-    {
-        units.Add(unit);
-    }
-
-    public void selectUnit(GameObject unit)
+    public void SelectUnit(GameObject unit)
     {
         unit.transform.Find("UnitSelected").gameObject.SetActive(true);
-        selectedUnits.Add(unit);
+        SelectedUnits.Add(unit);
     }
 
-    public void deselectUnit(GameObject unit)
+    public void DeselectUnit(GameObject unit)
     {
         unit.transform.Find("UnitSelected").gameObject.SetActive(false);
-        selectedUnits.Remove(unit);
+        SelectedUnits.Remove(unit);
     }
 
-    public void deselectAll()
+    public void DeselectAll()
     {
-        foreach (GameObject unit in units)
+        foreach (GameObject unit in Units)
         {
-            deselectUnit(unit);
+            DeselectUnit(unit);
         }
+    }
+    void InputManager_GroundRightClicked(Transform groundTransform, Vector3 point)
+    { 
+        if(SelectedUnits.Count > 0) {
+            foreach(GameObject unit in SelectedUnits) {
+                unit.GetComponent<NavMeshAgent>().SetDestination(point);
+            }
+
+            selectMarkerTransform.position = point;
+            selectMarkerTransform.gameObject.SetActive(true);
+        }
+
+    }
+
+    void OnEnable()
+    {
+        InputManager.GroundRightClicked += InputManager_GroundRightClicked;
+    }
+
+    void OnDisable()
+    { 
+        InputManager.GroundRightClicked -= InputManager_GroundRightClicked;
     }
 }

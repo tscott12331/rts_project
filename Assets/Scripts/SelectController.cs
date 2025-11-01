@@ -32,7 +32,7 @@ public class SelectController : MonoBehaviour
 
             bool isShifting = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 
-            if(!isShifting) UnitManager.Instance.deselectAll();
+            if(!isShifting) UnitManager.Instance.DeselectAll();
             
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hitInfo;
@@ -40,17 +40,17 @@ public class SelectController : MonoBehaviour
             if(hit)
             {
                 GameObject unit = hitInfo.transform.gameObject;
-                if (isShifting && UnitManager.Instance.unitIsSelected(unit))
+                if (isShifting && UnitManager.Instance.UnitIsSelected(unit))
                 {
-                    UnitManager.Instance.deselectUnit(unit);
+                    UnitManager.Instance.DeselectUnit(unit);
                 } else
                 {
-                    UnitManager.Instance.selectUnit(unit);
+                    UnitManager.Instance.SelectUnit(unit);
                 }
                 // hitInfo.transform.Find("UnitSelected").gameObject.SetActive(true);
             } else
             {
-                if(!isShifting) UnitManager.Instance.deselectAll();
+                if(!isShifting) UnitManager.Instance.DeselectAll();
             }
 
             float halfWidth = selectRect.rect.width / 2;
@@ -59,19 +59,19 @@ public class SelectController : MonoBehaviour
             float right = selectRect.transform.position.x + halfWidth;
             float top = selectRect.transform.position.y + halfHeight;
             float bottom = selectRect.transform.position.y - halfHeight;
-            foreach(GameObject unit in UnitManager.Instance.getUnits())
+            foreach(GameObject unit in UnitManager.Instance.Units)
             {
                 Vector2 screenPoint = Camera.main.WorldToScreenPoint(unit.transform.position);
 
                 if(screenPoint.x >= left && screenPoint.x <= right
                     && screenPoint.y >= bottom && screenPoint.y <= top)
                 {
-                    if (isShifting && UnitManager.Instance.unitIsSelected(unit))
+                    if (isShifting && UnitManager.Instance.UnitIsSelected(unit))
                     {
-                        UnitManager.Instance.deselectUnit(unit);
+                        UnitManager.Instance.DeselectUnit(unit);
                     } else
                     {
-                        UnitManager.Instance.selectUnit(unit);
+                        UnitManager.Instance.SelectUnit(unit);
                     }
                 }
             }
