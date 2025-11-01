@@ -4,17 +4,11 @@ using UnityEngine.AI;
 
 public class UnitManager : MonoBehaviourSingleton<UnitManager>
 {
-    public List<GameObject> Units { get; private set; }
-    public List<GameObject> SelectedUnits { get; private set; }
+    public List<GameObject> Units { get; private set; } = new();
+    public List<GameObject> SelectedUnits { get; private set; } = new();
 
     [SerializeField]
     Transform selectMarkerTransform;
-
-    private void Start()
-    {
-        Units = new List<GameObject>();
-        SelectedUnits = new List<GameObject>();
-    }
 
     public bool UnitIsSelected(GameObject unit)
     {

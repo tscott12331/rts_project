@@ -17,10 +17,10 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
     const float MAX_SAMPLE_DIST = 100.0f;
 
     const sbyte MAX_PLACEABLE_STRUCTURES = 4;
-    readonly Dictionary<int, StructureSO> placeableStructures = new Dictionary<int, StructureSO>();
-    readonly Dictionary<int, GameObject> structurePreviews = new Dictionary<int, GameObject>();
+    readonly Dictionary<int, StructureSO> placeableStructures = new();
+    readonly Dictionary<int, GameObject> structurePreviews = new();
 
-    readonly Dictionary<int, Structure> structures = new Dictionary<int, Structure>();
+    readonly Dictionary<int, Structure> structures = new();
     private int currentId = 0;
     private Structure selectedStructure = null;
 
