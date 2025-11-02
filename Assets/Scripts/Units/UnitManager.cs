@@ -7,12 +7,33 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
     public List<GameObject> Units { get; private set; } = new();
     public List<GameObject> SelectedUnits { get; private set; } = new();
 
+    private const sbyte MAX_TRAINABLE_UNITS = 4;
+    readonly Dictionary<int, UnitSO> trainableUnits = new();
+
     [SerializeField]
     Transform selectMarkerTransform;
+
+    public void LoadTrainableUnits()
+    {
+        var unitSOs = Resources.LoadAll<UnitSO>("ScriptableObjects/Units/");
+
+        for (sbyte i = 0; i < unitSOs.Length && i < MAX_TRAINABLE_UNITS; i++)
+        {
+            // load placeable structure
+            var uso = unitSOs[i];
+            trainableUnits[i] = uso;
+            Debug.Log($"[UnitManager]: Loaded unit {trainableUnits[i].name}");
+        }
+    }
 
     public bool UnitIsSelected(GameObject unit)
     {
         return SelectedUnits.Contains(unit);
+    }
+
+    public void TrainUnit(int unitId)
+    {
+        
     }
 
     public void AddUnit(GameObject unit)
