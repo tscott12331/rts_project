@@ -171,13 +171,14 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         return false;
     }
 
-    public void PlaceStructure(StructureSO so, Vector3 pos, Quaternion rot) {
+    public void PlaceStructure(StructureSO so, Vector3 pos, Quaternion rot, StructureOwner ownership) {
         if(SamplePosition(so.data.prefab, pos, out Vector3 newPos)) {
             var prefab = so.data.prefab;
             var structureGO = Instantiate(prefab, newPos, rot);
             var structure = structureGO.GetComponent<Structure>();
 
             structure.CopyStructureData(so);
+            structure.Owner = ownership;
 
             // select and add new structure
             DeselectStructure(selectedStructure);
@@ -188,7 +189,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         }
     }
 
-    public void PlaceStructure(sbyte structureIndex, Vector3 pos, Quaternion rot) {
+    public void PlaceStructure(sbyte structureIndex, Vector3 pos, Quaternion rot, StructureOwner ownership) {
         // get preview info
         var preview = structurePreviews[structureIndex];
         var structure = preview.GetComponent<Structure>();
@@ -199,7 +200,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         }
 
         var so = placeableStructures[structureIndex];
-        PlaceStructure(so, pos, rot);
+        PlaceStructure(so, pos, rot, ownership);
     }
 
     public void DeselectStructure(Transform structureTransform)
@@ -232,7 +233,8 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
 
     public void SelectStructure(Structure s)
     {
-        if(s == null) return;
+        // if structure is null or now owned by player, ignore
+        if(s == null || s.Owner != StructureOwner.Player) return;
         s.HandleStructureSelect();
         selectedStructure = s;
     }
@@ -250,7 +252,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         {
             var previewTransform = structurePreviews[structurePreview].transform;
             // place a structure
-            PlaceStructure(structurePreview, previewTransform.position, previewTransform.rotation);
+            PlaceStructure(structurePreview, previewTransform.position, previewTransform.rotation, StructureOwner.Player);
         }
         
     }

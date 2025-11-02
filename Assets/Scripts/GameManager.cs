@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviourSingleton<GameManager>
 {
     public Transform PlayerStartPoint;
     public Transform EnemyStartPoint;
@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     {
         StructureManager.Instance.LoadPlaceableStructures();
 
-        StructureManager.Instance.PlaceStructure(1, EnemyStartPoint.position, EnemyStartPoint.rotation);
-        StructureManager.Instance.PlaceStructure(1, PlayerStartPoint.position, PlayerStartPoint.rotation);
+        StructureManager.Instance.PlaceStructure(1, EnemyStartPoint.position, EnemyStartPoint.rotation, StructureOwner.Enemy);
+        StructureManager.Instance.PlaceStructure(1, PlayerStartPoint.position, PlayerStartPoint.rotation, StructureOwner.Player);
     }
 }
