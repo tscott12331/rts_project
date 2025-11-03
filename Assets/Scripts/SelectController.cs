@@ -35,11 +35,11 @@ public class SelectController : MonoBehaviour
             if(!isShifting) UnitManager.Instance.DeselectAll();
             
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hitInfo;
-            bool hit = Physics.Raycast(ray, out hitInfo, MAX_MOUSE_RAY, unitLayer);
+            bool hit = Physics.Raycast(ray, out RaycastHit hitInfo, MAX_MOUSE_RAY, unitLayer);
             if(hit)
             {
-                GameObject unit = hitInfo.transform.gameObject;
+                var unitGO = hitInfo.transform.gameObject;
+                unitGO.TryGetComponent<Unit>(out var unit);
                 if (isShifting && UnitManager.Instance.UnitIsSelected(unit))
                 {
                     UnitManager.Instance.DeselectUnit(unit);
@@ -59,7 +59,7 @@ public class SelectController : MonoBehaviour
             float right = selectRect.transform.position.x + halfWidth;
             float top = selectRect.transform.position.y + halfHeight;
             float bottom = selectRect.transform.position.y - halfHeight;
-            foreach(GameObject unit in UnitManager.Instance.Units)
+            foreach(Unit unit in UnitManager.Instance.Units)
             {
                 Vector2 screenPoint = Camera.main.WorldToScreenPoint(unit.transform.position);
 

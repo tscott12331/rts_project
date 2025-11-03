@@ -38,7 +38,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
         }
     }
 
-    public void EnableUnitPanel(List<GameObject> units) {
+    public void EnableUnitPanel(List<UnitSO> units) {
         UnitPanel.SetActive(true);
 
         for(int i = 0; i < UnitPanel.transform.childCount && i < units.Count; i++)
@@ -46,7 +46,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
             var button = UnitPanel.transform.GetChild(i);
             button.gameObject.SetActive(true);
             var text = button.GetComponentInChildren<TMP_Text>();
-            text.SetText(units[i].name);
+            text.SetText(units[i].Data.Prefab.name);
         }
     }
     public void DisableUnitPanel() {
@@ -70,6 +70,11 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     }
 
 
+    void StructureManager_PlaceableStructuresLoaded(Dictionary<int, StructureSO> structures)
+    {
+        PopulateBuildingPanel(structures);
+    }
+
     void StructureManager_StructureDeselected(Structure s)
     {
         resetUIPanels();
@@ -83,12 +88,16 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     private void OnEnable()
     {
         StructureManager.StructureDeselected += StructureManager_StructureDeselected;
+        StructureManager.PlaceableStructuresLoaded += StructureManager_PlaceableStructuresLoaded;
+
         TrainingStructure.TrainingStructureSelected += TrainingStructure_TrainingStructureSelected;
     }
 
     private void OnDisable()
     {
         StructureManager.StructureDeselected -= StructureManager_StructureDeselected;
+        StructureManager.PlaceableStructuresLoaded -= StructureManager_PlaceableStructuresLoaded;
+
         TrainingStructure.TrainingStructureSelected -= TrainingStructure_TrainingStructureSelected;
     }
 } 

@@ -8,34 +8,25 @@ public class TrainingStructure : Structure
     public delegate void TrainingStructureSelectedHandler(TrainingStructure s);
     public static event TrainingStructureSelectedHandler TrainingStructureSelected;
 
+    public delegate void TrainUnitHandler(UnitSO unitSO, Transform position, Transform destination);
+    public static event TrainUnitHandler TrainUnit;
+
     public Transform spawnPositionTransform;
     public Transform walkPositionTransform;
     public LayerMask groundLayer;
 
-    public List<GameObject> trainableUnits;
+    public List<UnitSO> trainableUnits;
 
-    const float MAX_SAMPLE_DIST = 100.0f;
-
-    public void Train(int id)
+    public void Train(int buttonId)
     {
-        if (id > -1 && id < trainableUnits.Count) {
-            GameObject unitPrefab = trainableUnits[id];
-
-            NavMeshHit navMeshHit;
-            if(NavMesh.SamplePosition(spawnPositionTransform.position, out navMeshHit, MAX_SAMPLE_DIST, NavMesh.AllAreas)) {
-                GameObject unit = Instantiate(unitPrefab, navMeshHit.position, Quaternion.identity);
-                UnitManager.Instance.AddUnit(unit);
-
-                if(NavMesh.SamplePosition(walkPositionTransform.position, out navMeshHit, MAX_SAMPLE_DIST, NavMesh.AllAreas))
-                {
-                    unit.GetComponent<NavMeshAgent>().SetDestination(navMeshHit.position);
-                }
-            }
+        if (buttonId > -1 && buttonId < trainableUnits.Count) {
+            UnitSO unitSO = trainableUnits[buttonId];
+            TrainUnit?.Invoke(unitSO, spawnPositionTransform, walkPositionTransform);
         }
     }
 
     public override void CopyStructureData(StructureSO so) {
-        var trainingSO = (TrainableStructureSO)so;
+        var trainingSO = (TrainableStructureSO) so;
         var data = trainingSO.data;
         this.HP = data.HP;
         this.Prefab = data.prefab;

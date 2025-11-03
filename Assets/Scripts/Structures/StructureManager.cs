@@ -14,6 +14,9 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
     public delegate void StructureDeselectedHandler(Structure structure);
     public static event StructureDeselectedHandler StructureDeselected;
 
+    public delegate void PlaceableStructuresLoadedHandler(Dictionary<int, StructureSO> structures);
+    public static event PlaceableStructuresLoadedHandler PlaceableStructuresLoaded;
+
     const float MAX_MOUSE_RAY = 250.0f;
     const float MAX_SAMPLE_DIST = 100.0f;
 
@@ -72,7 +75,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
             Debug.Log($"[StructureManager]: Instantiated structure {preview.name}'s preview");
         }
 
-        UIManager.Instance.PopulateBuildingPanel(placeableStructures);
+        PlaceableStructuresLoaded?.Invoke(placeableStructures);
     }
 
     public void ChangePreviewMaterial(GameObject preview, Material material)

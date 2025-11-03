@@ -14,9 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainableStructureSO
   data:
     id: 0
-    prefab: {fileID: 8282126221494494500, guid: 0ef22acd4997e5b47842b30bc9f3ae43, type: 3}
-    HP: 1500
-  trainableUnits:
-  - {fileID: 8909066516744522350, guid: a91c778472d716743b4dc9fd5dfbfbdb, type: 3}
-  spawnPosition: {fileID: 0}
-  walkPosition: {fileID: 0}
+    prefab: {fileID: 0}
+    HP: 0
+  trainableUnits: []

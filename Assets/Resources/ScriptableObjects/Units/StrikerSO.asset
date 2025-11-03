@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: StrikerSO
   m_EditorClassIdentifier: Assembly-CSharp::UnitSO
   Data:
-    Id: 1
-    Prefab: {fileID: 8909066516744522350, guid: a91c778472d716743b4dc9fd5dfbfbdb, type: 3}
-    Type: 1
-    HP: 300
-    Damage: 15
-    RateOfAttack: 1.5
-    Range: 10
+    Id: 0
+    Prefab: {fileID: 0}
+    Type: 0
+    HP: 0
+    Speed: 0
+    Damage: 0
+    RateOfAttack: 0
+    Range: 0

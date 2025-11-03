@@ -17,6 +17,8 @@ public class UnitData
 
     public int HP;
 
+    public float Speed;
+
     public int Damage;
 
     public float RateOfAttack;
