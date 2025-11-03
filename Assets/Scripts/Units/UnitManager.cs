@@ -34,8 +34,8 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
     public void TrainUnit(UnitSO unitSO, Transform spawnPositionTransform, Transform walkPositionTransform)
     {
         var unitPrefab = unitSO.Data.Prefab;
-        if(NavMesh.SamplePosition(spawnPositionTransform.position, out NavMeshHit navMeshHit, MAX_SAMPLE_DIST, NavMesh.AllAreas)) {
-            var unitGO = Instantiate(unitPrefab, navMeshHit.position, Quaternion.identity);
+        if(NavMeshUtils.SamplePosition(unitPrefab, spawnPositionTransform.position, out var newPos)) {
+            var unitGO = Instantiate(unitPrefab, newPos, Quaternion.identity);
             unitGO.TryGetComponent<Unit>(out var unit);
             if(unit == null)
             {
@@ -46,9 +46,9 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
             unit.CopyUnitData(unitSO);
             AddUnit(unit);
 
-            if(NavMesh.SamplePosition(walkPositionTransform.position, out navMeshHit, MAX_SAMPLE_DIST, NavMesh.AllAreas))
+            if(NavMeshUtils.SamplePosition(unitPrefab, walkPositionTransform.position, out newPos))
             {
-                unit.GetComponent<NavMeshAgent>().SetDestination(navMeshHit.position);
+                unit.GetComponent<NavMeshAgent>().SetDestination(newPos);
             }
         }
     }

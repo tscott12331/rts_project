@@ -18,7 +18,6 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
     public static event PlaceableStructuresLoadedHandler PlaceableStructuresLoaded;
 
     const float MAX_MOUSE_RAY = 250.0f;
-    const float MAX_SAMPLE_DIST = 100.0f;
 
     const sbyte MAX_PLACEABLE_STRUCTURES = 4;
     readonly Dictionary<int, StructureSO> placeableStructures = new();
@@ -121,7 +120,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
             if(rotate)
             {
                 s.transform.Rotate(Vector3.up, Input.mousePositionDelta.x);
-            } else if (SamplePosition(s, pos, out Vector3 newPos))
+            } else if (NavMeshUtils.SamplePosition(s, pos, out Vector3 newPos))
             {
                 
                 s.transform.position = newPos;
@@ -161,21 +160,8 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         structures.Remove(currentId);
     }
 
-    public bool SamplePosition(GameObject structure, Vector3 pos, out Vector3 newPos)
-    {
-        if (NavMesh.SamplePosition(pos, out NavMeshHit navMeshHit, MAX_SAMPLE_DIST, NavMesh.AllAreas))
-        {
-            newPos = navMeshHit.position + new Vector3(0, structure.transform.localScale.y / 2, 0);
-            return true;
-        }
-
-        newPos = new Vector3(pos.x, pos.y, pos.z);
-
-        return false;
-    }
-
     public void PlaceStructure(StructureSO so, Vector3 pos, Quaternion rot, StructureOwner ownership) {
-        if(SamplePosition(so.data.prefab, pos, out Vector3 newPos)) {
+        if(NavMeshUtils.SamplePosition(so.data.prefab, pos, out Vector3 newPos)) {
             var prefab = so.data.prefab;
             var structureGO = Instantiate(prefab, newPos, rot);
             var structure = structureGO.GetComponent<Structure>();
