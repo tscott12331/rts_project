@@ -4,35 +4,46 @@ using UnityEngine.AI;
 
 public class UnitManager : MonoBehaviourSingleton<UnitManager>
 {
+    public delegate void TrainableUnitsLoadedHandler(Dictionary<int, UnitSO> trainableUnits);
+    public static event TrainableUnitsLoadedHandler TrainableUnitsLoaded;
+
     public List<Unit> Units { get; private set; } = new();
     public List<Unit> SelectedUnits { get; private set; } = new();
 
-    private const float MAX_SAMPLE_DIST = 100.0f;
-    //readonly Dictionary<int, UnitSO> trainableUnits = new();
+    readonly Dictionary<int, UnitSO> trainableUnits = new();
+    private const sbyte MAX_TRAINABLE_UNITS = 4;
 
     [SerializeField]
     Transform selectMarkerTransform;
 
-    //public void LoadTrainableUnits()
-    //{
-    //    var unitSOs = Resources.LoadAll<UnitSO>("ScriptableObjects/Units/");
+    public void LoadTrainableUnits()
+    {
+        var unitSOs = Resources.LoadAll<UnitSO>("ScriptableObjects/Units/");
 
-    //    for (sbyte i = 0; i < unitSOs.Length && i < MAX_TRAINABLE_UNITS; i++)
-    //    {
-    //        // load placeable structure
-    //        var uso = unitSOs[i];
-    //        trainableUnits[i] = uso;
-    //        Debug.Log($"[UnitManager]: Loaded unit {trainableUnits[i].name}");
-    //    }
-    //}
+        for (sbyte i = 0; i < unitSOs.Length && i < MAX_TRAINABLE_UNITS; i++)
+        {
+            // load placeable structure
+            var uso = unitSOs[i];
+            trainableUnits[i] = uso;
+            Debug.Log($"[UnitManager]: Loaded unit {trainableUnits[i].name} with id {trainableUnits[i].Data.Id}");
+        }
+
+        TrainableUnitsLoaded?.Invoke(trainableUnits);
+    }
 
     public bool UnitIsSelected(Unit unit)
     {
         return SelectedUnits.Contains(unit);
     }
 
-    public void TrainUnit(UnitSO unitSO, Transform spawnPositionTransform, Transform walkPositionTransform)
+    public void TrainUnit(sbyte unitId, Transform spawnPositionTransform, Transform walkPositionTransform)
     {
+        trainableUnits.TryGetValue(unitId, out var unitSO);
+        if(unitSO == null)
+        {
+            Debug.LogError($"[UnitManager.TrainUnit]: Unit Id {unitId} does not match a trainable unit");
+        }
+
         var unitPrefab = unitSO.Data.Prefab;
         if(NavMeshUtils.SamplePosition(unitPrefab, spawnPositionTransform.position, out var newPos)) {
             var unitGO = Instantiate(unitPrefab, newPos, Quaternion.identity);
@@ -122,9 +133,9 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
 
     }
 
-    void TrainingStructure_TrainUnit(UnitSO unitSO, Transform spawnPositionTransform, Transform walkPositionTransform)
+    void TrainingStructure_TrainUnit(sbyte unitId, Transform spawnPositionTransform, Transform walkPositionTransform)
     {
-        TrainUnit(unitSO, spawnPositionTransform, walkPositionTransform);
+        TrainUnit(unitId, spawnPositionTransform, walkPositionTransform);
     }
 
     void OnEnable()

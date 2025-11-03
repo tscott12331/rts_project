@@ -184,7 +184,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         var structure = preview.GetComponent<Structure>();
         if (structure == null || !structure.IsValidPosition)
         {
-            Debug.Log("[StructureManager]: Invalid structure placement");
+            Debug.LogError("[StructureManager]: Invalid structure placement");
             return;
         }
 
@@ -250,12 +250,10 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
     {
         switch (action) {
             case Keybind.Escape:
-                Debug.Log($"[StructureManager]: Escape key pressed, reset structure preview");
                 // reset preview when player hits escape
                 ResetStructurePreview();
                 break;
             case Keybind.Rotate:
-                Debug.Log($"[StructureManager]: Rotate key pressed, switch to rotate mode if preview is showing");
                 SetPreviewRotateMode(structurePreview, true);
                 break;
         }
@@ -266,13 +264,12 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
     {
         switch (action) {
             case Keybind.Rotate:
-                Debug.Log($"[StructureManager]: Rotate key released, turn off rotate mode");
                 SetPreviewRotateMode(structurePreview, false);
                 break;
         }
     }
 
-    void UIManager_UnitButtonPressed(int unitNum)
+    void UIManager_UnitButtonPressed(sbyte unitNum)
     {
         var ts = (TrainingStructure)selectedStructure;
         ts.Train(unitNum);
@@ -280,7 +277,6 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
 
     void UIManager_BuildingButtonPressed(sbyte buildingNum)
     {
-        Debug.Log($"[StructureManager]: Building button pressed, set structure preview to ${buildingNum}");
         SetStructurePreviewViewState(structurePreview, false, Vector3.zero, rotatePreview);
         structurePreview = buildingNum;
     }

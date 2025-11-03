@@ -8,20 +8,20 @@ public class TrainingStructure : Structure
     public delegate void TrainingStructureSelectedHandler(TrainingStructure s);
     public static event TrainingStructureSelectedHandler TrainingStructureSelected;
 
-    public delegate void TrainUnitHandler(UnitSO unitSO, Transform position, Transform destination);
+    public delegate void TrainUnitHandler(sbyte unitId, Transform position, Transform destination);
     public static event TrainUnitHandler TrainUnit;
 
     public Transform spawnPositionTransform;
     public Transform walkPositionTransform;
     public LayerMask groundLayer;
 
-    public List<UnitSO> trainableUnits;
+    public List<sbyte> trainableUnits;
 
-    public void Train(int buttonId)
+    public void Train(sbyte unitNum)
     {
-        if (buttonId > -1 && buttonId < trainableUnits.Count) {
-            UnitSO unitSO = trainableUnits[buttonId];
-            TrainUnit?.Invoke(unitSO, spawnPositionTransform, walkPositionTransform);
+        if (unitNum > -1 && unitNum < trainableUnits.Count) {
+            var unitId = trainableUnits[unitNum];
+            TrainUnit?.Invoke(unitId, spawnPositionTransform, walkPositionTransform);
         }
     }
 
@@ -31,7 +31,10 @@ public class TrainingStructure : Structure
         this.HP = data.HP;
         this.Prefab = data.prefab;
 
-        this.trainableUnits = trainingSO.trainableUnits;
+        foreach(var unit in trainingSO.trainableUnits)
+        {
+            this.trainableUnits.Add((sbyte) unit.Data.Id);
+        }
     }
 
     public override void HandleStructureSelect()

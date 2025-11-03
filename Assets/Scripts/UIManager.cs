@@ -7,11 +7,13 @@ using System.Linq;
 
 public class UIManager : MonoBehaviourSingleton<UIManager>
 {
-    public delegate void UnitButtonPressedHandler(int unitNum);
+    public delegate void UnitButtonPressedHandler(sbyte unitNum);
     public static event UnitButtonPressedHandler UnitButtonPressed;
 
     public delegate void BuildingButtonPressedHandler(sbyte buildingNum);
     public static event BuildingButtonPressedHandler BuildingButtonPressed;
+
+    public Dictionary<int, UnitSO> TrainableUnits { get; private set; } = new();
 
     public GameObject BuildingPanel;
     public GameObject UnitPanel;
@@ -19,7 +21,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
 
     public void HandleUnitButtonPress(int unitNum)
     {
-        UnitButtonPressed?.Invoke(unitNum);
+        UnitButtonPressed?.Invoke((sbyte) unitNum);
     }
 
     public void HandleBuildingButtonPress(int buildingNum)
@@ -38,15 +40,24 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
         }
     }
 
-    public void EnableUnitPanel(List<UnitSO> units) {
+    public void EnableUnitPanel(List<sbyte> unitIds) {
         UnitPanel.SetActive(true);
 
-        for(int i = 0; i < UnitPanel.transform.childCount && i < units.Count; i++)
+        for(int i = 0; i < UnitPanel.transform.childCount && i < unitIds.Count; i++)
         {
+            var unitId = unitIds[i];
+            TrainableUnits.TryGetValue(unitId, out var unitSO);
+            if(unitSO == null)
+            {
+                Debug.LogError($"[UIManager.EnableUnitPanel]: Trainable unit with id {unitId} does not exist");
+                continue;
+            }
+
             var button = UnitPanel.transform.GetChild(i);
             button.gameObject.SetActive(true);
+
             var text = button.GetComponentInChildren<TMP_Text>();
-            text.SetText(units[i].Data.Prefab.name);
+            text.SetText(unitSO.Data.Prefab.name);
         }
     }
     public void DisableUnitPanel() {
@@ -63,7 +74,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
         UpgradePanel.SetActive(false);
     }
 
-    public void resetUIPanels()
+    public void ResetUIPanels()
     {
         DisableUnitPanel();
         DisableUpgradePanel();
@@ -77,12 +88,17 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
 
     void StructureManager_StructureDeselected(Structure s)
     {
-        resetUIPanels();
+        ResetUIPanels();
     }
 
     void TrainingStructure_TrainingStructureSelected(TrainingStructure s)
     {
         EnableUnitPanel(s.trainableUnits);
+    }
+
+    void UnitManager_TrainableUnitsLoaded(Dictionary<int, UnitSO> trainableUnits)
+    {
+        this.TrainableUnits = trainableUnits;
     }
 
     private void OnEnable()
@@ -91,6 +107,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
         StructureManager.PlaceableStructuresLoaded += StructureManager_PlaceableStructuresLoaded;
 
         TrainingStructure.TrainingStructureSelected += TrainingStructure_TrainingStructureSelected;
+        UnitManager.TrainableUnitsLoaded += UnitManager_TrainableUnitsLoaded;
     }
 
     private void OnDisable()
@@ -99,6 +116,8 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
         StructureManager.PlaceableStructuresLoaded -= StructureManager_PlaceableStructuresLoaded;
 
         TrainingStructure.TrainingStructureSelected -= TrainingStructure_TrainingStructureSelected;
+
+        UnitManager.TrainableUnitsLoaded -= UnitManager_TrainableUnitsLoaded;
     }
 } 
 
