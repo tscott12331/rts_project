@@ -6,7 +6,7 @@ public class Unit : MonoBehaviour
 {
     public int Id { get; protected set; }
     public int HP { get; protected set; }
-    public int Speed { get; protected set; }
+    public float Speed { get; protected set; }
 
     public GameObject Prefab { get; protected set; }
 
@@ -16,6 +16,7 @@ public class Unit : MonoBehaviour
         this.Id = data.Id;
         this.HP = data.HP;
         this.Prefab = data.Prefab;
+        this.Speed = data.Speed;
 
         TryGetComponent<NavMeshAgent>(out var navMeshAgent);
         if (navMeshAgent != null)
