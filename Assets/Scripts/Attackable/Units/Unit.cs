@@ -77,7 +77,9 @@ public class Unit : Attackable
                 return;
             }
 
-            if(!target.Value.TakeDamage(this.Damage))
+            var attackable = target.Value;
+
+            if(!attackable.TakeDamage(this.Damage))
             {
                 // target is dead
                 AttackTargets.RemoveFirst();
