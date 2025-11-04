@@ -14,5 +14,6 @@ public class GeneralStructure : Structure
         var data = so.data;
         this.HP = data.HP;
         this.Prefab = data.prefab;
+        this.Type = AttackableType.Structure;
     }
 }

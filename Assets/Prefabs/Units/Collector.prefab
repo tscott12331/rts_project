@@ -98,10 +98,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3369259715763539276}
-  - component: {fileID: 1975094857524050328}
   - component: {fileID: 6481182129433009824}
   - component: {fileID: 1428619941359493569}
   - component: {fileID: 3486567966879035613}
+  - component: {fileID: 72861520879808514}
   m_Layer: 7
   m_Name: Collector
   m_TagString: Untagged
@@ -126,18 +126,6 @@ Transform:
   - {fileID: 7737416260692990750}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1975094857524050328
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3517832994024304808}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 863b777b53b6847c9acf50547ad176b9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Unit
 --- !u!195 &6481182129433009824
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -204,6 +192,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 4
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &72861520879808514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3517832994024304808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 863b777b53b6847c9acf50547ad176b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Unit
 --- !u!1001 &8980913698443755681
 PrefabInstance:
   m_ObjectHideFlags: 0
