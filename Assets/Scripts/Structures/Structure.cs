@@ -8,11 +8,9 @@ public enum StructureOwner : byte
     Enemy,
 }
 
-public abstract class Structure : MonoBehaviour
+public abstract class Structure : Attackable
 {
     public int Id { get; set; }
-
-    public int HP { get; protected set; }
 
     public GameObject Prefab {  get; protected set; }
 

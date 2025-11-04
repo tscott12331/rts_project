@@ -1,11 +1,11 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Unit : MonoBehaviour
+public class Unit : Attackable
 {
     public int Id { get; protected set; }
-    public int HP { get; protected set; }
     public float Speed { get; protected set; }
 
     public GameObject Prefab { get; protected set; }
@@ -19,10 +19,10 @@ public class Unit : MonoBehaviour
         this.Speed = data.Speed;
 
         TryGetComponent<NavMeshAgent>(out var navMeshAgent);
-        if (navMeshAgent != null)
-        {
-            navMeshAgent.speed = data.Speed;
-        }
+        if(navMeshAgent != null) navMeshAgent.speed = data.Speed;
+
+        TryGetComponent<SphereCollider>(out var sphereCollider);
+        if(sphereCollider != null) sphereCollider.radius = data.Range;
     }
 
     public void TakeDamage() {
@@ -33,4 +33,7 @@ public class Unit : MonoBehaviour
         throw new NotImplementedException();
     }
 
+    void OnTriggerEnter(Collider other) {
+        Debug.Log($"[Unit.OnTriggerEnter]: {other.name} collided with {gameObject.name}'s trigger");
+    }
 }
