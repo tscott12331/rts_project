@@ -306,7 +306,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         if(structurePreview != NO_PREVIEW)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            bool hit = Physics.Raycast(ray, out RaycastHit hitInfo, MAX_MOUSE_RAY, groundLayer);
+            bool hit = Physics.Raycast(ray, out RaycastHit hitInfo, MAX_MOUSE_RAY, groundLayer, QueryTriggerInteraction.Ignore);
             if(hit)
             {
                 SetStructurePreviewViewState(structurePreview, true, hitInfo.point, rotatePreview);

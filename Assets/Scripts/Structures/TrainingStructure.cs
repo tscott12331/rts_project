@@ -30,7 +30,7 @@ public class TrainingStructure : Structure
         var data = trainingSO.data;
         this.HP = data.HP;
         this.Prefab = data.prefab;
-        this.Type = AttackableType.Structure;
+        this.AType = AttackableType.Structure;
 
         foreach(var unit in trainingSO.trainableUnits)
         {

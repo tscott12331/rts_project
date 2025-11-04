@@ -35,7 +35,7 @@ public class SelectController : MonoBehaviour
             if(!isShifting) UnitManager.Instance.DeselectAll();
             
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            bool hit = Physics.Raycast(ray, out RaycastHit hitInfo, MAX_MOUSE_RAY, unitLayer);
+            bool hit = Physics.Raycast(ray, out RaycastHit hitInfo, MAX_MOUSE_RAY, unitLayer, QueryTriggerInteraction.Ignore);
             if(hit)
             {
                 var unitGO = hitInfo.transform.gameObject;

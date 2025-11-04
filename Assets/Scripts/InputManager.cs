@@ -1,11 +1,6 @@
-using NUnit.Framework.Internal;
-using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.EventSystems;
-using UnityEngine.Video;
 
 public enum Keybind : short
 {
@@ -83,7 +78,7 @@ public class InputManager : MonoBehaviourSingleton<InputManager>
             }
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            bool hit = Physics.Raycast(ray, out RaycastHit hitInfo, MAX_MOUSE_RAY);
+            bool hit = Physics.Raycast(ray, out RaycastHit hitInfo, MAX_MOUSE_RAY, Physics.AllLayers, QueryTriggerInteraction.Ignore);
             if (hit && !hitUI)
             {
                 if ((1 << hitInfo.transform.gameObject.layer) == structureLayer)
@@ -100,7 +95,7 @@ public class InputManager : MonoBehaviourSingleton<InputManager>
         if (rightClicked)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            bool hit = Physics.Raycast(ray, out RaycastHit hitInfo, MAX_MOUSE_RAY);
+            bool hit = Physics.Raycast(ray, out RaycastHit hitInfo, MAX_MOUSE_RAY, Physics.AllLayers, QueryTriggerInteraction.Ignore);
 
             if (hit && (1 << hitInfo.transform.gameObject.layer) == groundLayer)
             {

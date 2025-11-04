@@ -27,6 +27,10 @@ public class Unit : Attackable
         this.UType = data.Type;
         this.AType = AttackableType.Unit;
 
+        AttackableTypes = this.UType == UnitType.Attacker ?
+        new() { AttackableType.Unit, AttackableType.Structure}
+        : new() { AttackableType.Resource };
+
         TryGetComponent<NavMeshAgent>(out var navMeshAgent);
         if(navMeshAgent != null) navMeshAgent.speed = data.Speed;
 
@@ -34,7 +38,7 @@ public class Unit : Attackable
         if(sphereCollider != null) sphereCollider.radius = data.Range;
     }
 
-    public bool IsAttacktarget(GameObject obj, out Attackable target) {
+    public bool IsAttackTarget(GameObject obj, out Attackable target) {
         target = null;
 
         obj.TryGetComponent<Attackable>(out var attackable);
@@ -54,13 +58,7 @@ public class Unit : Attackable
         Debug.Log($"[Unit.OnTriggerEnter]: {other.name} collided with {gameObject.name}'s trigger");
 
 
-        // if(IsAttackTarget(other.gameObject, out var target)) AttackTargetQueue.Prepend(target);
-    }
-
-    public void Start() {
-        AttackableTypes = this.UType == UnitType.Attacker ?
-        new() { AttackableType.Unit, AttackableType.Structure}
-        : new() { AttackableType.Resource };
+        if(IsAttackTarget(other.gameObject, out var target)) AttackTargetQueue.Prepend(target);
     }
 
 }
