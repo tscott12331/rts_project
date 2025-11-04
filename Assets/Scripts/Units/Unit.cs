@@ -46,22 +46,22 @@ public class Unit : Attackable
         if(sphereCollider != null) sphereCollider.radius = data.Range;
     }
 
-    public bool IsAttackTarget(GameObject obj, out Attackable target) {
+    public bool CanAttack(GameObject obj, out Attackable target) {
         target = null;
 
         obj.TryGetComponent<Attackable>(out var attackable);
         if(attackable == null) {
-            Debug.Log($"[Unit.IsAttackTarget]: Obect is not attackable");
+            Debug.Log($"[Unit.CanAttack]: Obect is not attackable");
             return false;
         }
 
         if(AttackableTypes.Contains(attackable.AType)) {
-            Debug.Log($"[Unit.IsAttackTarget]: {attackable.name} is a valid attack target to {name}");
+            Debug.Log($"[Unit.CanAttack]: {attackable.name} is a valid attack target to {name}");
             target = attackable;
             return true;
         }
 
-        Debug.Log($"[Unit.IsAttackTarget]: {attackable.name} is not correct attackable type");
+        Debug.Log($"[Unit.CanAttack]: {attackable.name} is not correct attackable type");
 
         return false;
     }
@@ -96,13 +96,12 @@ public class Unit : Attackable
     }
 
     public void OnTriggerEnter(Collider other) {
-        Debug.Log($"[Unit.OnTriggerEnter]: {other.name} entered {name}");
-        if (IsAttackTarget(other.gameObject, out var target)) AttackTargets.AddLast(target);
+        if (CanAttack(other.gameObject, out var target)) AttackTargets.AddLast(target);
     }
 
     public void OnTriggerExit(Collider other)
     {
-        if (IsAttackTarget(other.gameObject, out var target)) AttackTargets.Remove(target);
+        if (CanAttack(other.gameObject, out var target)) AttackTargets.Remove(target);
     }
     
     public void Update()

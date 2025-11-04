@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnitSO
   Data:
     Id: 1
-    Prefab: {fileID: 0}
+    Prefab: {fileID: 8909066516744522350, guid: a91c778472d716743b4dc9fd5dfbfbdb, type: 3}
     Type: 1
     HP: 250
     Speed: 7
-    Damage: 15
+    Damage: 500
     RateOfAttack: 1.5
     Range: 10
