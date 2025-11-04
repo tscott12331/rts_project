@@ -9,13 +9,19 @@ public class Unit : Attackable
     public int Id { get; protected set; }
     public float Speed { get; protected set; }
 
+    public int Damage { get; protected set; }
+
+    public float RateOfAttack { get; protected set; }
+
     public GameObject Prefab { get; protected set; }
 
-    public Queue<Attackable> AttackTargetQueue {get; protected set;}= new();
+    public LinkedList<Attackable> AttackTargets {get; protected set;}= new();
 
     public List<AttackableType> AttackableTypes { get; protected set;} = new();
 
     public UnitType UType;
+
+    private float nextAttackTime = 0.0f;
 
     public void CopyUnitData(UnitSO unitSO)
     {
@@ -24,6 +30,8 @@ public class Unit : Attackable
         this.HP = data.HP;
         this.Prefab = data.Prefab;
         this.Speed = data.Speed;
+        this.Damage = data.Damage;
+        this.RateOfAttack = data.RateOfAttack;
         this.UType = data.Type;
         this.AType = AttackableType.Unit;
 
@@ -43,22 +51,61 @@ public class Unit : Attackable
 
         obj.TryGetComponent<Attackable>(out var attackable);
         if(attackable == null) {
+            Debug.Log($"[Unit.IsAttackTarget]: Obect is not attackable");
             return false;
         }
 
         if(AttackableTypes.Contains(attackable.AType)) {
+            Debug.Log($"[Unit.IsAttackTarget]: {attackable.name} is a valid attack target to {name}");
             target = attackable;
             return true;
         }
 
+        Debug.Log($"[Unit.IsAttackTarget]: {attackable.name} is not correct attackable type");
+
         return false;
     }
 
-    public void OnTriggerEnter(Collider other) {
-        Debug.Log($"[Unit.OnTriggerEnter]: {other.name} collided with {gameObject.name}'s trigger");
+    public void TryAttackTarget()
+    {
+        if (AttackTargets.Count > 0 && Time.time > nextAttackTime)
+        {
+            var target = AttackTargets.First;
+            if (target == null)
+            {
+                AttackTargets.RemoveFirst();
+                return;
+            }
 
+            if(!target.Value.TakeDamage(this.Damage))
+            {
+                // target is dead
+                AttackTargets.RemoveFirst();
+                // implement destroy logic
+                //Destroy(target.Value.gameObject);
+            }
 
-        if(IsAttackTarget(other.gameObject, out var target)) AttackTargetQueue.Prepend(target);
+            if (AttackTargets.Count > 0)
+            {
+                nextAttackTime = Time.time + RateOfAttack;
+            } else
+            {
+                nextAttackTime = Time.time;
+            }
+        }
     }
 
+    public void OnTriggerEnter(Collider other) {
+        if (IsAttackTarget(other.gameObject, out var target)) AttackTargets.AddLast(target);
+    }
+
+    public void OnTriggerExit(Collider other)
+    {
+        if (IsAttackTarget(other.gameObject, out var target)) AttackTargets.Remove(target);
+    }
+    
+    public void Update()
+    {
+        TryAttackTarget();
+    }
 }
