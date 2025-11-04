@@ -36,7 +36,7 @@ public class Unit : Attackable
         this.AType = AttackableType.Unit;
 
         AttackableTypes = this.UType == UnitType.Attacker ?
-        new() { AttackableType.Unit, AttackableType.Structure}
+        new() { AttackableType.Unit, AttackableType.Structure }
         : new() { AttackableType.Resource };
 
         TryGetComponent<NavMeshAgent>(out var navMeshAgent);
@@ -96,6 +96,7 @@ public class Unit : Attackable
     }
 
     public void OnTriggerEnter(Collider other) {
+        Debug.Log($"[Unit.OnTriggerEnter]: {other.name} entered {name}");
         if (IsAttackTarget(other.gameObject, out var target)) AttackTargets.AddLast(target);
     }
 
