@@ -10,7 +10,7 @@ public abstract class Attackable : MonoBehaviour
 {
     public AttackableType AType {get; protected set;} = AttackableType.Unit;
 
-    public int HP {get; protected set;}
+    public int HP;
     public virtual bool TakeDamage(int damage) {
         if(HP > 0)
         {

@@ -6,31 +6,26 @@ public class ResourceDeposit : Attackable
 
     public int ResourceCount { get; protected set; }
 
-    public bool TakeResourcesFromDamage(int damage)
+    public int TakeResourcesFromDamage(int damage, out bool depleted)
     {
-        int resourcesTaken = damage / ResourceCapacity;
-        return TakeResources(resourcesTaken);
+        depleted = !TakeDamage(damage);
+
+        int mappedResources = Mathf.FloorToInt(damage * ((float) ResourceCapacity / HP));
+
+        return TakeResources(mappedResources);
     }
 
-    public bool TakeResources(int resourcesTaken)
+    public int TakeResources(int resourcesTaken)
     {
-        int realResourcesTaken = resourcesTaken > ResourceCount ? ResourceCount : resourcesTaken;
-        ResourceCount -= realResourcesTaken;
-        Debug.Log($"[Attackable.TakeResources]: {name} lost {realResourcesTaken} resources. {ResourceCount} remaining resources");
-        return ResourceCount > 0;
-    }
-
-    public override bool TakeDamage(int damage) {
-        if(HP > 0)
+        if(ResourceCount > 0)
         {
-            int realDamage = (damage > HP) ? HP : damage;
-            HP -= realDamage;
-            Debug.Log($"[Attackable.TakeDamage]: {name} took {realDamage} damage. {HP} remaining HP");
-
-            return HP > 0;
+            int realResourcesTaken = resourcesTaken > ResourceCount ? ResourceCount : resourcesTaken;
+            ResourceCount -= realResourcesTaken;
+            Debug.Log($"[ResourceDeposit.TakeResources]: {name} lost {realResourcesTaken} resources. {ResourceCount} remaining resources");
+            return realResourcesTaken;
         } else
         {
-            return false;
+            return 0;
         }
     }
     private void Start()

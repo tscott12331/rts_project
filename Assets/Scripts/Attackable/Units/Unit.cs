@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Unit : Attackable
+public abstract class Unit : Attackable
 {
     public int Id { get; protected set; }
     public float Speed { get; protected set; }
@@ -15,9 +15,9 @@ public class Unit : Attackable
 
     public GameObject Prefab { get; protected set; }
 
-    public LinkedList<Attackable> AttackTargets {get; protected set;}= new();
+    public LinkedList<Attackable> AttackTargets { get; protected set; } = new();
 
-    public List<AttackableType> AttackableTypes { get; protected set;} = new();
+    public List<AttackableType> AttackableTypes { get; protected set; }
 
     public UnitType UType;
 
@@ -35,27 +35,26 @@ public class Unit : Attackable
         this.UType = data.Type;
         this.AType = AttackableType.Unit;
 
-        AttackableTypes = this.UType == UnitType.Attacker ?
-        new() { AttackableType.Unit, AttackableType.Structure }
-        : new() { AttackableType.Resource };
-
         TryGetComponent<NavMeshAgent>(out var navMeshAgent);
-        if(navMeshAgent != null) navMeshAgent.speed = data.Speed;
+        if (navMeshAgent != null) navMeshAgent.speed = data.Speed;
 
         TryGetComponent<SphereCollider>(out var sphereCollider);
-        if(sphereCollider != null) sphereCollider.radius = data.Range;
+        if (sphereCollider != null) sphereCollider.radius = data.Range;
     }
 
-    public bool CanAttack(GameObject obj, out Attackable target) {
+    public bool CanAttack(GameObject obj, out Attackable target)
+    {
         target = null;
 
         obj.TryGetComponent<Attackable>(out var attackable);
-        if(attackable == null) {
+        if (attackable == null)
+        {
             Debug.Log($"[Unit.CanAttack]: Obect is not attackable");
             return false;
         }
 
-        if(AttackableTypes.Contains(attackable.AType)) {
+        if (AttackableTypes.Contains(attackable.AType))
+        {
             Debug.Log($"[Unit.CanAttack]: {attackable.name} is a valid attack target to {name}");
             target = attackable;
             return true;
@@ -66,46 +65,48 @@ public class Unit : Attackable
         return false;
     }
 
+    public abstract void AttackTarget(Attackable target);
+
     public void TryAttackTarget()
     {
+        //Debug.Log($"[Unit.TryAttackTarget]: count = {AttackTargets.Count}, time = {Time.time}, next attack time = {nextAttackTime}");
         if (AttackTargets.Count > 0 && Time.time > nextAttackTime)
         {
+            //Debug.Log($"[Unit.TryAttackTarget]: Unit can attack");
             var target = AttackTargets.First;
             if (target == null)
             {
+                Debug.Log($"[Unit.TryAttackTarget]: attack target was null");
                 AttackTargets.RemoveFirst();
                 return;
             }
 
             var attackable = target.Value;
-
-            if(!attackable.TakeDamage(this.Damage))
-            {
-                // target is dead
-                AttackTargets.RemoveFirst();
-                // implement destroy logic
-                //Destroy(target.Value.gameObject);
-            }
+            AttackTarget(attackable);
 
             if (AttackTargets.Count > 0)
             {
                 nextAttackTime = Time.time + RateOfAttack;
-            } else
+            }
+            else
             {
                 nextAttackTime = Time.time;
             }
         }
     }
 
-    public void OnTriggerEnter(Collider other) {
+    public void OnTriggerEnter(Collider other)
+    {
         if (CanAttack(other.gameObject, out var target)) AttackTargets.AddLast(target);
+        //Debug.Log($"[Unit.OnTriggerEnter]: attack targets count = {AttackTargets.Count}");
     }
 
     public void OnTriggerExit(Collider other)
     {
         if (CanAttack(other.gameObject, out var target)) AttackTargets.Remove(target);
+        //Debug.Log($"[Unit.OnTriggerExit]: attack targets count = {AttackTargets.Count}");
     }
-    
+
     public void Update()
     {
         TryAttackTarget();
