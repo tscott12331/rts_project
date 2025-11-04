@@ -6,9 +6,33 @@ public enum AttackableType {
     Resource,
 }
 
+public enum ObjectOwner : byte
+{
+    Unset,
+    None,
+    Player,
+    Enemy,
+}
+
 public abstract class Attackable : MonoBehaviour
 {
     public AttackableType AType {get; protected set;} = AttackableType.Unit;
+
+    private ObjectOwner _owner = ObjectOwner.Unset;
+    public ObjectOwner Owner
+    {
+        get { return _owner; }
+        set
+        {
+            if (_owner == ObjectOwner.Unset)
+            {
+                _owner = value;
+            } else
+            {
+                Debug.LogError("[Attackable]: Cannot change ownership of a structure");
+            }
+        }
+    }
 
     public int HP;
     public virtual bool TakeDamage(int damage) {

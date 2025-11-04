@@ -160,7 +160,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         structures.Remove(currentId);
     }
 
-    public void PlaceStructure(StructureSO so, Vector3 pos, Quaternion rot, StructureOwner ownership) {
+    public void PlaceStructure(StructureSO so, Vector3 pos, Quaternion rot, ObjectOwner ownership) {
         if(NavMeshUtils.SamplePosition(so.data.prefab, pos, out Vector3 newPos)) {
             var prefab = so.data.prefab;
             var structureGO = Instantiate(prefab, newPos, rot);
@@ -178,7 +178,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         }
     }
 
-    public void PlaceStructure(sbyte structureIndex, Vector3 pos, Quaternion rot, StructureOwner ownership) {
+    public void PlaceStructure(sbyte structureIndex, Vector3 pos, Quaternion rot, ObjectOwner ownership) {
         // get preview info
         var preview = structurePreviews[structureIndex];
         var structure = preview.GetComponent<Structure>();
@@ -223,7 +223,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
     public void SelectStructure(Structure s)
     {
         // if structure is null or now owned by player, ignore
-        if(s == null || s.Owner != StructureOwner.Player) return;
+        if(s == null || s.Owner != ObjectOwner.Player) return;
         s.HandleStructureSelect();
         selectedStructure = s;
     }
@@ -241,7 +241,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         {
             var previewTransform = structurePreviews[structurePreview].transform;
             // place a structure
-            PlaceStructure(structurePreview, previewTransform.position, previewTransform.rotation, StructureOwner.Player);
+            PlaceStructure(structurePreview, previewTransform.position, previewTransform.rotation, ObjectOwner.Player);
         }
         
     }

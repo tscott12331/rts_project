@@ -36,7 +36,7 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
         return SelectedUnits.Contains(unit);
     }
 
-    public void TrainUnit(sbyte unitId, Transform spawnPositionTransform, Transform walkPositionTransform)
+    public void TrainUnit(sbyte unitId, Transform spawnPositionTransform, Transform walkPositionTransform, ObjectOwner owner)
     {
         trainableUnits.TryGetValue(unitId, out var unitSO);
         if(unitSO == null)
@@ -55,6 +55,7 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
             }
 
             unit.CopyUnitData(unitSO);
+            unit.Owner = owner;
             AddUnit(unit);
 
             if(NavMeshUtils.SamplePosition(unitPrefab, walkPositionTransform.position, out newPos))
@@ -133,9 +134,9 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
 
     }
 
-    void TrainingStructure_TrainUnit(sbyte unitId, Transform spawnPositionTransform, Transform walkPositionTransform)
+    void TrainingStructure_TrainUnit(sbyte unitId, Transform spawnPositionTransform, Transform walkPositionTransform, ObjectOwner owner)
     {
-        TrainUnit(unitId, spawnPositionTransform, walkPositionTransform);
+        TrainUnit(unitId, spawnPositionTransform, walkPositionTransform, owner);
     }
 
     void OnEnable()

@@ -32,5 +32,6 @@ public class ResourceDeposit : Attackable
     {
         this.AType = AttackableType.Resource;
         this.ResourceCount = ResourceCapacity;
+        this.Owner = ObjectOwner.None;
     }
 }

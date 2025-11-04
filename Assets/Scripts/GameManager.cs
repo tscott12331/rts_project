@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
 
         StructureManager.Instance.LoadPlaceableStructures();
 
-        StructureManager.Instance.PlaceStructure(1, EnemyStartPoint.position, EnemyStartPoint.rotation, StructureOwner.Enemy);
-        StructureManager.Instance.PlaceStructure(1, PlayerStartPoint.position, PlayerStartPoint.rotation, StructureOwner.Player);
+        StructureManager.Instance.PlaceStructure(1, EnemyStartPoint.position, EnemyStartPoint.rotation, ObjectOwner.Enemy);
+        StructureManager.Instance.PlaceStructure(1, PlayerStartPoint.position, PlayerStartPoint.rotation, ObjectOwner.Player);
     }
 }

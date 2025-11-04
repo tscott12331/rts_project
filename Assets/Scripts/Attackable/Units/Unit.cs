@@ -53,7 +53,7 @@ public abstract class Unit : Attackable
             return false;
         }
 
-        if (AttackableTypes.Contains(attackable.AType))
+        if (AttackableTypes.Contains(attackable.AType) && attackable.Owner != Owner)
         {
             Debug.Log($"[Unit.CanAttack]: {attackable.name} is a valid attack target to {name}");
             target = attackable;
