@@ -18,6 +18,6 @@ MonoBehaviour:
     Type: 1
     HP: 250
     Speed: 7
-    Damage: 500
-    RateOfAttack: 1.5
+    Damage: 2
+    RateOfAttack: 5
     Range: 10
