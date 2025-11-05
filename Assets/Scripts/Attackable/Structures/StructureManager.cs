@@ -157,7 +157,14 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
 
     public void RemoveStructure(Structure structure)
     {
-        structures.Remove(currentId);
+        structures.Remove(structure.Id);
+    }
+
+    public void DestroyStructure(Structure structure)
+    {
+        DeselectStructure(structure); // deselect if applicable
+        RemoveStructure(structure); // remove from tracked structures
+        Destroy(structure.gameObject);
     }
 
     public void PlaceStructure(StructureSO so, Vector3 pos, Quaternion rot, ObjectOwner ownership) {
@@ -200,7 +207,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
 
     public void DeselectStructure(Structure s)
     {
-        if(s == null) return;
+        if(s == null || selectedStructure != s) return;
         s.transform.Find("Selected").gameObject.SetActive(false);
         selectedStructure = null;
         StructureDeselected?.Invoke(s);
@@ -281,6 +288,11 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         structurePreview = buildingNum;
     }
 
+    void AttackUnit_StructureDestroyed(Structure structure)
+    {
+        DestroyStructure(structure);
+    }
+
     public void OnEnable() {
         UIManager.UnitButtonPressed += UIManager_UnitButtonPressed;
         UIManager.BuildingButtonPressed += UIManager_BuildingButtonPressed;
@@ -289,6 +301,8 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         InputManager.MiscLeftClicked += InputManager_MiscLeftClicked;
         InputManager.KeyDown += InputManager_KeyDown;
         InputManager.KeyUp += InputManager_KeyUp;
+
+        AttackUnit.StructureDestroyed += AttackUnit_StructureDestroyed;
     }
 
     public void OnDisable() {
@@ -299,6 +313,8 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         InputManager.MiscLeftClicked -= InputManager_MiscLeftClicked;
         InputManager.KeyDown -= InputManager_KeyDown;
         InputManager.KeyUp -= InputManager_KeyUp;
+
+        AttackUnit.StructureDestroyed -= AttackUnit_StructureDestroyed;
     }
 
     public void Update()

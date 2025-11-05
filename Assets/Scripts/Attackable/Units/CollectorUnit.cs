@@ -29,7 +29,7 @@ public class CollectorUnit : Unit
             // target is dead
             AttackTargets.RemoveFirst();
             // implement destroy logic
-            //Destroy(target.Value.gameObject);
+            Destroy(resourceDeposit.gameObject);
         }
     }
     private void Start()

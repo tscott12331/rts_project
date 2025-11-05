@@ -40,12 +40,19 @@ public class SelectController : MonoBehaviour
             {
                 var unitGO = hitInfo.transform.gameObject;
                 unitGO.TryGetComponent<Unit>(out var unit);
-                if (isShifting && UnitManager.Instance.UnitIsSelected(unit))
+                if(unit.Owner == ObjectOwner.Player)
                 {
-                    UnitManager.Instance.DeselectUnit(unit);
+                    if (isShifting && UnitManager.Instance.UnitIsSelected(unit))
+                    {
+                        UnitManager.Instance.DeselectUnit(unit);
+                    }
+                    else
+                    {
+                        UnitManager.Instance.SelectUnit(unit);
+                    }
                 } else
                 {
-                    UnitManager.Instance.SelectUnit(unit);
+                    if(!isShifting) UnitManager.Instance.DeselectAll();
                 }
                 // hitInfo.transform.Find("UnitSelected").gameObject.SetActive(true);
             } else
@@ -61,6 +68,8 @@ public class SelectController : MonoBehaviour
             float bottom = selectRect.transform.position.y - halfHeight;
             foreach(Unit unit in UnitManager.Instance.Units)
             {
+                if (unit.Owner != ObjectOwner.Player) continue;
+
                 Vector2 screenPoint = Camera.main.WorldToScreenPoint(unit.transform.position);
 
                 if(screenPoint.x >= left && screenPoint.x <= right

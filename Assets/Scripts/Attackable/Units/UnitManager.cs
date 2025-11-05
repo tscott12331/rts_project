@@ -36,6 +36,13 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
         return SelectedUnits.Contains(unit);
     }
 
+    public void DestroyUnit(Unit unit)
+    {
+        DeselectUnit(unit);
+        RemoveUnit(unit);
+        Destroy(unit.gameObject);
+    }
+
     public void TrainUnit(sbyte unitId, Transform spawnPositionTransform, Transform walkPositionTransform, ObjectOwner owner)
     {
         trainableUnits.TryGetValue(unitId, out var unitSO);
@@ -74,6 +81,11 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
         }
 
         Units.Add(unit);
+    }
+
+    public void RemoveUnit(Unit unit)
+    {
+        Units.Remove(unit);
     }
 
     public void SelectUnit(Unit unit)
@@ -139,11 +151,18 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
         TrainUnit(unitId, spawnPositionTransform, walkPositionTransform, owner);
     }
 
+    void AttackUnit_UnitDestroyed(Unit unit)
+    {
+        DestroyUnit(unit);
+    }
+
     void OnEnable()
     {
         TrainingStructure.TrainUnit += TrainingStructure_TrainUnit;
 
         InputManager.GroundRightClicked += InputManager_GroundRightClicked;
+
+        AttackUnit.UnitDestroyed += AttackUnit_UnitDestroyed;
     }
 
     void OnDisable()
@@ -151,5 +170,7 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
         TrainingStructure.TrainUnit -= TrainingStructure_TrainUnit;
 
         InputManager.GroundRightClicked -= InputManager_GroundRightClicked;
+
+        AttackUnit.UnitDestroyed -= AttackUnit_UnitDestroyed;
     }
 }

@@ -6,6 +6,9 @@ using UnityEngine.AI;
 
 public abstract class Unit : Attackable
 {
+    public delegate void ResourceDepositDestroyedHandler(ResourceDeposit structure);
+    public static event ResourceDepositDestroyedHandler ResourceDepositDestroyed;
+
     public int Id { get; protected set; }
     public float Speed { get; protected set; }
 
@@ -17,7 +20,7 @@ public abstract class Unit : Attackable
 
     public LinkedList<Attackable> AttackTargets { get; protected set; } = new();
 
-    public List<AttackableType> AttackableTypes { get; protected set; }
+    public List<AttackableType> AttackableTypes { get; protected set; } = new();
 
     public UnitType UType;
 
