@@ -17,6 +17,8 @@ public abstract class Unit : Attackable
     public LinkedList<Attackable> AttackTargets { get; protected set; } = new();
     public List<AttackableType> AttackableTypes { get; protected set; } = new();
     public UnitType UType;
+
+    public float AttackTime { get; protected set; }
     private float nextAttackTime = 0.0f;
 
     public void CopyUnitData(UnitSO unitSO)
@@ -28,6 +30,7 @@ public abstract class Unit : Attackable
         this.Speed = data.Speed;
         this.Damage = data.Damage;
         this.RateOfAttack = data.RateOfAttack;
+        this.AttackTime = 1 / this.RateOfAttack;
         this.UType = data.Type;
         this.AType = AttackableType.Unit;
 
@@ -70,7 +73,7 @@ public abstract class Unit : Attackable
         {
             //Debug.Log($"[Unit.TryAttackTarget]: Unit can attack");
             var target = AttackTargets.First;
-            if (target == null)
+            if (target == null || target.Value == null)
             {
                 Dbx.CtxLog($"Attack target was null");
                 AttackTargets.RemoveFirst();
@@ -82,7 +85,7 @@ public abstract class Unit : Attackable
 
             if (AttackTargets.Count > 0)
             {
-                nextAttackTime = Time.time + RateOfAttack;
+                nextAttackTime = Time.time + AttackTime;
             }
             else
             {
@@ -96,14 +99,14 @@ public abstract class Unit : Attackable
         if (target == null || AttackTargets.Contains(target)) return;
         AttackTargets.AddLast(target);
         Dbx.CtxLog($"Add attack target {target.name}");
-        Dbx.LogCollection(AttackTargets, a => a.name);
+        Dbx.LogCollection(AttackTargets, a => a != null ? a.name : "null");
     }
 
     public void RemoveAttackTarget(Attackable target)
     {
         AttackTargets.Remove(target);
         Dbx.CtxLog($"Remove attack target {target.name}");
-        Dbx.LogCollection(AttackTargets, a => a.name);
+        Dbx.LogCollection(AttackTargets, a => a != null ? a.name : "null");
     }
 
     public void OnTriggerEnter(Collider other)

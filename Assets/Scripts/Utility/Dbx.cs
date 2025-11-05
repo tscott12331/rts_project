@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using System.Diagnostics;
+using UnityEditor;
 
 public class Dbx : UnityEngine.Debug
 {
@@ -21,15 +22,21 @@ public class Dbx : UnityEngine.Debug
 
     public static void LogCollection<T>(ICollection<T> list, Func<T, string> itemToString)
     {
+        StackTrace stackTrace = new();
+
+        if(list == null)
+        {
+            CtxLog("List is null", stackTrace);
+        }
+
         string str = $"List {list}\n";
         for (int i = 0; i < list.Count; i++)
         {
-            var item = list.ElementAt(i);
+            var item = list.ElementAtOrDefault(i);
             var itemStr = item != null ? itemToString(item) : "null";
             str += $"{i}: {itemStr}\n";
         }
 
-        StackTrace stackTrace = new();
         CtxLog(str, stackTrace);
     }
 }

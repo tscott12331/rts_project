@@ -137,7 +137,10 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
     { 
         if(SelectedUnits.Count > 0) {
             foreach(Unit unit in SelectedUnits) {
-                unit.GetComponent<NavMeshAgent>().SetDestination(point);
+                unit.TryGetComponent<NavMeshAgent>(out var navMeshAgent);
+                if (navMeshAgent == null) continue;
+                navMeshAgent.isStopped = false;
+                navMeshAgent.SetDestination(point);
             }
 
             selectMarkerTransform.position = point;
