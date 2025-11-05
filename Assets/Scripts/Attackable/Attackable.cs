@@ -29,7 +29,7 @@ public abstract class Attackable : MonoBehaviour
                 _owner = value;
             } else
             {
-                Debug.LogError("[Attackable]: Cannot change ownership of a structure");
+                Dbx.CtxLog("Cannot change ownership of a structure");
             }
         }
     }
@@ -39,7 +39,7 @@ public abstract class Attackable : MonoBehaviour
         if(HP > 0)
         {
             HP -= damage;
-            Debug.Log($"[Attackable.TakeDamage]: {name} took {damage} damage. {HP} remaining HP");
+            //Debug.Log($"[Attackable.TakeDamage]: {name} took {damage} damage. {HP} remaining HP");
             return HP > 0;
         } else
         {

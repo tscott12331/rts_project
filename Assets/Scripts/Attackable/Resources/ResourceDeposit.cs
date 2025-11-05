@@ -21,7 +21,7 @@ public class ResourceDeposit : Attackable
         {
             int realResourcesTaken = resourcesTaken > ResourceCount ? ResourceCount : resourcesTaken;
             ResourceCount -= realResourcesTaken;
-            Debug.Log($"[ResourceDeposit.TakeResources]: {name} lost {realResourcesTaken} resources. {ResourceCount} remaining resources");
+            //Dbx.CtxLog($"{name} lost {realResourcesTaken} resources. {ResourceCount} remaining resources");
             return realResourcesTaken;
         } else
         {

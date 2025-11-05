@@ -11,19 +11,12 @@ public abstract class Unit : Attackable
 
     public int Id { get; protected set; }
     public float Speed { get; protected set; }
-
     public int Damage { get; protected set; }
-
     public float RateOfAttack { get; protected set; }
-
     public GameObject Prefab { get; protected set; }
-
     public LinkedList<Attackable> AttackTargets { get; protected set; } = new();
-
     public List<AttackableType> AttackableTypes { get; protected set; } = new();
-
     public UnitType UType;
-
     private float nextAttackTime = 0.0f;
 
     public void CopyUnitData(UnitSO unitSO)
@@ -52,18 +45,18 @@ public abstract class Unit : Attackable
         obj.TryGetComponent<Attackable>(out var attackable);
         if (attackable == null)
         {
-            Debug.Log($"[Unit.CanAttack]: Obect is not attackable");
+            //Dbx.CtxLog($"Obect is not attackable");
             return false;
         }
 
         if (AttackableTypes.Contains(attackable.AType) && attackable.Owner != Owner)
         {
-            Debug.Log($"[Unit.CanAttack]: {attackable.name} is a valid attack target to {name}");
+            //Dbx.CtxLog($"{attackable.name} is a valid attack target to {name}");
             target = attackable;
             return true;
         }
 
-        Debug.Log($"[Unit.CanAttack]: {attackable.name} is not correct attackable type");
+        //Dbx.CtxLog($"{attackable.name} is invalid attackable type to {name}");
 
         return false;
     }
@@ -79,7 +72,7 @@ public abstract class Unit : Attackable
             var target = AttackTargets.First;
             if (target == null)
             {
-                Debug.Log($"[Unit.TryAttackTarget]: attack target was null");
+                Dbx.CtxLog($"Attack target was null");
                 AttackTargets.RemoveFirst();
                 return;
             }
@@ -98,16 +91,29 @@ public abstract class Unit : Attackable
         }
     }
 
+    public void AddAttackTarget(Attackable target)
+    {
+        if (target == null || AttackTargets.Contains(target)) return;
+        AttackTargets.AddLast(target);
+        Dbx.CtxLog($"Add attack target {target.name}");
+        Dbx.LogCollection(AttackTargets, a => a.name);
+    }
+
+    public void RemoveAttackTarget(Attackable target)
+    {
+        AttackTargets.Remove(target);
+        Dbx.CtxLog($"Remove attack target {target.name}");
+        Dbx.LogCollection(AttackTargets, a => a.name);
+    }
+
     public void OnTriggerEnter(Collider other)
     {
-        if (CanAttack(other.gameObject, out var target)) AttackTargets.AddLast(target);
-        //Debug.Log($"[Unit.OnTriggerEnter]: attack targets count = {AttackTargets.Count}");
+        if (CanAttack(other.gameObject, out var target)) AddAttackTarget(target);
     }
 
     public void OnTriggerExit(Collider other)
     {
-        if (CanAttack(other.gameObject, out var target)) AttackTargets.Remove(target);
-        //Debug.Log($"[Unit.OnTriggerExit]: attack targets count = {AttackTargets.Count}");
+        if (CanAttack(other.gameObject, out var target)) RemoveAttackTarget(target);
     }
 
     public void Update()

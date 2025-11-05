@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 public class AttackUnit : Unit
@@ -15,7 +16,8 @@ public class AttackUnit : Unit
         if (!target.TakeDamage(this.Damage))
         {
             // target is dead
-            AttackTargets.RemoveFirst();
+            Dbx.CtxLog($"Killed {target.name}");
+            RemoveAttackTarget(target);
 
             switch (target.AType) {
                 case AttackableType.Structure:

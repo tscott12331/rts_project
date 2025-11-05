@@ -27,7 +27,7 @@ public class CollectorUnit : Unit
         if (depleted)
         {
             // target is dead
-            AttackTargets.RemoveFirst();
+            RemoveAttackTarget(target);
             // implement destroy logic
             Destroy(resourceDeposit.gameObject);
         }
