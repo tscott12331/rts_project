@@ -3,7 +3,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem.Controls;
 
-public class ResourceManager : MonoBehaviourSingleton<ResourceManager>
+public class ResourceDepositManager : MonoBehaviourSingleton<ResourceDepositManager>
 {
     public Transform PlayerResources;
     public Transform EnemyResources;
@@ -45,8 +45,8 @@ public class ResourceManager : MonoBehaviourSingleton<ResourceManager>
             return;
         }
 
-        CreateResourcesFromPlayerResourceContainer(PlayerResources);
-        CreateResourcesFromPlayerResourceContainer(EnemyResources);
+        CreateResourcesFromOwnerResourceContainer(PlayerResources);
+        CreateResourcesFromOwnerResourceContainer(EnemyResources);
     }
 
     public void CreateResourcesFromContainerOfType(Transform container, ResourceType RType)
@@ -64,7 +64,7 @@ public class ResourceManager : MonoBehaviourSingleton<ResourceManager>
         }
     }
 
-    public void CreateResourcesFromPlayerResourceContainer(Transform container)
+    public void CreateResourcesFromOwnerResourceContainer(Transform container)
     {
         if (container == null)
         {
@@ -101,5 +101,20 @@ public class ResourceManager : MonoBehaviourSingleton<ResourceManager>
         }
 
         deposit.CopyData(so);
+    }
+
+    public void CollectorUnit_ResourceDepositDestroyed(ResourceDeposit deposit)
+    {
+        Destroy(deposit.gameObject);
+    }
+
+    private void OnEnable()
+    {
+        CollectorUnit.ResourceDepositDestroyed += CollectorUnit_ResourceDepositDestroyed;
+    }
+
+    private void OnDisable()
+    {
+        CollectorUnit.ResourceDepositDestroyed -= CollectorUnit_ResourceDepositDestroyed;
     }
 }

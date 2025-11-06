@@ -4,7 +4,13 @@ using UnityEngine.AI;
 
 public class CollectorUnit : Unit
 {
-    public int CarriedResources { get; protected set; } = 0;
+    public delegate void ResourceDroppedOffHandler(CollectableResourceCount resourceCount, ObjectOwner owner);
+    public static event ResourceDroppedOffHandler ResourceDroppedOff;
+
+    public delegate void ResourceDepositDestroyedHandler(ResourceDeposit deposit);
+    public static event ResourceDepositDestroyedHandler ResourceDepositDestroyed;
+
+    public CollectableResourceCount CarriedResources { get; protected set; } = new(0, 0);
     public int CarryCapacityMult = 5;
     public int CarryCapacity { get; private set; }
 
@@ -36,14 +42,16 @@ public class CollectorUnit : Unit
         if (sphereCollider != null) sphereCollider.radius = data.Range;
     }
 
-    public void CarryResource(int resourceAmount)
+    public void CarryResource(CollectableResourceCount resourceAmount)
     {
-        CarriedResources = Mathf.Min(CarriedResources + resourceAmount, CarryCapacity);
+        CarriedResources += resourceAmount;
+        //CarriedResources = Mathf.Min(CarriedResources + resourceAmount, CarryCapacity);
     }
 
-    public void DropoffResource(int resourceAmount) {
+    public void DropoffResource(CollectableResourceCount resourceAmount) {
         // temp
-        CarriedResources = 0;
+        ResourceDroppedOff?.Invoke(resourceAmount, Owner);
+        CarriedResources.Reset();
     }
 
     public override void AttackTarget(Attackable target)
@@ -53,7 +61,7 @@ public class CollectorUnit : Unit
         //    $"Target HP: {target.HP}");
         if (target == null || target.HP <= 0) return;
 
-        if(CarriedResources >= CarryCapacity && target != AssignedStructure) {
+        if(CarriedResources.GetTotal() >= CarryCapacity && target != AssignedStructure) {
             // MoveTo(AssignedStructure.transform.position);
             //Dbx.CtxLog("Collector has full capacity");
             previousTarget = target;
@@ -80,15 +88,16 @@ public class CollectorUnit : Unit
 
         var resourceDeposit = target as ResourceDeposit;
 
-        int resourcesTaken = resourceDeposit.TakeResourcesFromDamage(this.Damage, out var depleted);
+        var resourcesTaken = resourceDeposit.TakeResourcesFromDamage(this.Damage, out var depleted);
         CarryResource(resourcesTaken);
 
         if (depleted)
         {
             // target is dead
             RemoveAttackTarget(target);
+
             // implement destroy logic
-            Destroy(resourceDeposit.gameObject);
+            ResourceDepositDestroyed?.Invoke(resourceDeposit);
             SetCommandTarget(AssignedStructure);
             previousTarget = null;
         }

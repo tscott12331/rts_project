@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using Unity.VisualScripting;
 using System.Linq;
+using System.Resources;
 
 public class UIManager : MonoBehaviourSingleton<UIManager>
 {
@@ -18,6 +19,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     public GameObject BuildingPanel;
     public GameObject UnitPanel;
     public GameObject UpgradePanel;
+    public GameObject ResourcePanel;
 
     public void HandleUnitButtonPress(int unitNum)
     {
@@ -80,6 +82,41 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
         DisableUpgradePanel();
     }
 
+    public void UpdateResourcePanel()
+    {
+        if (ResourcePanel == null) return;
+
+        var ytalniumTransform = ResourcePanel.transform.Find("YtalniumAmount");
+        if(ytalniumTransform != null)
+        {
+            ytalniumTransform.TryGetComponent<TMP_Text>(out var textCmp);
+            if (textCmp != null)
+            {
+                textCmp.text = OwnerResourceManager.Instance.PlayerResources.Collected.Ytalnium.ToString();
+            }
+        }
+
+        var nmTransform = ResourcePanel.transform.Find("NaturalMetalAmount");
+        if(nmTransform != null)
+        {
+            nmTransform.TryGetComponent<TMP_Text>(out var textCmp);
+            if (textCmp != null)
+            {
+                textCmp.text = OwnerResourceManager.Instance.PlayerResources.Collected.NaturalMetal.ToString();
+            }
+        }
+
+        var ecTransform = ResourcePanel.transform.Find("EnergyCapacityAmount");
+        if(ecTransform != null)
+        {
+            ecTransform.TryGetComponent<TMP_Text>(out var textCmp);
+            if (textCmp != null)
+            {
+                textCmp.text = OwnerResourceManager.Instance.PlayerResources.EnergyCapacity.ToString();
+            }
+        }
+    }
+
 
     void StructureManager_PlaceableStructuresLoaded(Dictionary<int, StructureSO> structures)
     {
@@ -118,6 +155,11 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
         TrainingStructure.TrainingStructureSelected -= TrainingStructure_TrainingStructureSelected;
 
         UnitManager.TrainableUnitsLoaded -= UnitManager_TrainableUnitsLoaded;
+    }
+
+    private void Update()
+    {
+        UpdateResourcePanel();
     }
 } 
 

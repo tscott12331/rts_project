@@ -3,7 +3,7 @@ using UnityEngine;
 public class ResourceDeposit : Attackable
 {
     public int ResourceCapacity {  get; protected set; }
-    public int ResourceCount { get; protected set; }
+    public CollectableResourceCount ResourceCount { get; protected set; } = new(0, 0);
     public ResourceType RType { get; protected set; }
 
     public void CopyData(ResourceDepositSO so)
@@ -13,10 +13,10 @@ public class ResourceDeposit : Attackable
         this.MaxHP = data.HP;
         this.RType = data.RType;
         this.ResourceCapacity = data.ResourceCapacity;
-        this.ResourceCount = this.ResourceCapacity;
+        this.ResourceCount.SetFromType(this.ResourceCapacity, this.RType);
     }
 
-    public int TakeResourcesFromDamage(int damage, out bool depleted)
+    public CollectableResourceCount TakeResourcesFromDamage(int damage, out bool depleted)
     {
         depleted = !TakeDamage(damage);
 
@@ -25,17 +25,18 @@ public class ResourceDeposit : Attackable
         return TakeResources(mappedResources);
     }
 
-    public int TakeResources(int resourcesTaken)
+    public CollectableResourceCount TakeResources(int resourcesTaken)
     {
-        if(ResourceCount > 0)
+        int numResources = ResourceCount.GetTotalOfType(RType);
+        if(numResources > 0)
         {
-            int realResourcesTaken = resourcesTaken > ResourceCount ? ResourceCount : resourcesTaken;
-            ResourceCount -= realResourcesTaken;
-            Dbx.CtxLog($"{name} lost {realResourcesTaken} resources. {ResourceCount} remaining resources");
-            return realResourcesTaken;
+            var resourcesTakenObj = ResourceCount.SubtractAmountOfType(resourcesTaken, RType);
+
+            Dbx.CtxLog($"{name} lost {resourcesTakenObj.GetTotal()} resources. {ResourceCount.GetTotal()} remaining resources");
+            return resourcesTakenObj;
         } else
         {
-            return 0;
+            return CollectableResourceCount.Zero;
         }
     }
     private void Awake()
