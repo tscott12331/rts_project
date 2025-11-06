@@ -33,6 +33,8 @@ public class TrainingStructure : Structure
         this.Prefab = data.prefab;
         this.AType = AttackableType.Structure;
 
+        this.Cost = new ResourceCount(data.Cost.Ytalnium, data.Cost.NaturalMetal, data.Cost.EnergyCapacity);
+
         foreach(var unit in trainingSO.trainableUnits)
         {
             this.trainableUnits.Add((sbyte) unit.Data.Id);

@@ -8,4 +8,6 @@ public class StructureData
     public GameObject prefab;
 
     public int HP;
+
+    public ObjectCost Cost;
 }

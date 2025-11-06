@@ -173,9 +173,26 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
             var structureGO = Instantiate(prefab, newPos, rot);
             var structure = structureGO.GetComponent<Structure>();
 
+            // check structure position
+            if (structure == null || !structure.IsValidPosition)
+            {
+                Dbx.CtxLog("Invalid structure placement");
+                Destroy(structure.gameObject);
+                return null;
+            }
+
             structure.CopyStructureData(so);
             structure.Owner = ownership;
 
+            // structure is in valid position, attempt to expend resources
+            if(!OwnerResourceManager.Instance.ExpendResources(structure.Cost, structure.Owner))
+            {
+                Dbx.CtxLog("Insufficient resources to place structure");
+                Destroy(structure.gameObject);
+                return null;
+            }
+
+            // structure is in valid position and resources have been expended
             // select and add new structure
             DeselectStructure(selectedStructure);
             AddStructure(structure);
@@ -194,7 +211,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         var structure = preview.GetComponent<Structure>();
         if (structure == null || !structure.IsValidPosition)
         {
-            Debug.LogError("[StructureManager]: Invalid structure placement");
+            Dbx.CtxLog("Invalid structure placement");
             return null;
         }
 

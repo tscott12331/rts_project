@@ -1,4 +1,83 @@
+using NUnit.Framework.Constraints;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+
+public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
+{
+    public ResourceCount PlayerResources { get; private set; } = new(250, 250, 50);
+    public ResourceCount EnemyResources { get; private set; } = new(250, 250, 50);
+    
+
+    public bool ExpendResources(ResourceCount amount, ObjectOwner owner)
+    {
+        if(owner == ObjectOwner.Player)
+        {
+            return PlayerResources.ExpendResources(amount);
+        } else if(owner == ObjectOwner.Enemy)
+        {
+            return EnemyResources.ExpendResources(amount);
+        } else
+        {
+            Dbx.CtxLog($"Owner {owner} cannot expend resources");
+            return false;
+        }
+    }
+
+    public bool CollectResources(CollectableResourceCount collected, ObjectOwner owner)
+    {
+        if(owner == ObjectOwner.Player)
+        {
+            PlayerResources.Collected += collected;
+            return true;
+        }
+        else if(owner == ObjectOwner.Enemy)
+        {
+            EnemyResources.Collected += collected;
+            return true;
+        }
+        else
+        {
+            Dbx.CtxLog($"Owner of type {owner} cannot collect resources");
+            return false;
+        }
+
+    }
+
+    
+    public void CollectorUnit_ResourceDroppedOff(CollectableResourceCount resourceCount, ObjectOwner owner)
+    {
+        if(owner == ObjectOwner.Player)
+        {
+            PlayerResources.Collected += resourceCount;
+        } else if(owner == ObjectOwner.Enemy)
+        {
+            EnemyResources.Collected += resourceCount;
+        }
+    }
+
+    private void OnEnable()
+    {
+        CollectorUnit.ResourceDroppedOff += CollectorUnit_ResourceDroppedOff;
+    }
+
+    private void OnDisable()
+    {
+        CollectorUnit.ResourceDroppedOff -= CollectorUnit_ResourceDroppedOff;
+    }
+
+}
+
+
+
+// for scriptable objects
+[System.Serializable]
+public class ObjectCost
+{
+    public int Ytalnium;
+    public int NaturalMetal;
+    public int EnergyCapacity;
+}
 
 public class CollectableResourceCount
 {
@@ -96,6 +175,24 @@ public class ResourceCount
         EnergyCapacity = e;
     }
 
+    
+    public bool ExpendResources(ResourceCount amount)
+    {
+        var newCount = this - amount;
+        if(newCount.EnergyCapacity < 0 || newCount.Collected.Ytalnium < 0 || newCount.Collected.NaturalMetal < 0)
+        {
+            // insufficient materials to expend
+            return false;
+        } else
+        {
+            // sufficient material amount, expend them
+            this.Collected = newCount.Collected;
+            this.EnergyCapacity = newCount.EnergyCapacity;
+            return true;
+        }
+    }
+
+
     public static ResourceCount operator +(ResourceCount rc1, ResourceCount rc2)
     {
         return new ResourceCount(rc1.Collected + rc2.Collected, rc1.EnergyCapacity + rc2.EnergyCapacity);
@@ -106,51 +203,3 @@ public class ResourceCount
     }
 }
 
-public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
-{
-    public ResourceCount PlayerResources { get; private set; } = new(0, 0, 50);
-    public ResourceCount EnemyResources { get; private set; } = new(0, 0, 50);
-    
-    public bool CollectResources(CollectableResourceCount collected, ObjectOwner owner)
-    {
-        if(owner == ObjectOwner.Player)
-        {
-            PlayerResources.Collected += collected;
-            return true;
-        }
-        else if(owner == ObjectOwner.Enemy)
-        {
-            EnemyResources.Collected += collected;
-            return true;
-        }
-        else
-        {
-            Dbx.CtxLog($"Owner of type {owner} cannot collect resources");
-            return false;
-        }
-
-    }
-
-    
-    public void CollectorUnit_ResourceDroppedOff(CollectableResourceCount resourceCount, ObjectOwner owner)
-    {
-        if(owner == ObjectOwner.Player)
-        {
-            PlayerResources.Collected += resourceCount;
-        } else if(owner == ObjectOwner.Enemy)
-        {
-            EnemyResources.Collected += resourceCount;
-        }
-    }
-
-    private void OnEnable()
-    {
-        CollectorUnit.ResourceDroppedOff += CollectorUnit_ResourceDroppedOff;
-    }
-
-    private void OnDisable()
-    {
-        CollectorUnit.ResourceDroppedOff -= CollectorUnit_ResourceDroppedOff;
-    }
-
-}

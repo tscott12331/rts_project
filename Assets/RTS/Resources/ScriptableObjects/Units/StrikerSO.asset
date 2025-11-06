@@ -15,6 +15,10 @@ MonoBehaviour:
   Data:
     Id: 1
     Prefab: {fileID: 8909066516744522350, guid: a91c778472d716743b4dc9fd5dfbfbdb, type: 3}
+    Cost:
+      Ytalnium: 12
+      NaturalMetal: 12
+      EnergyCapacity: 0
     Type: 1
     HP: 250
     Speed: 7

@@ -31,6 +31,8 @@ public class CollectorUnit : Unit
 
         this.CarryCapacity = Damage * CarryCapacityMult;
 
+        this.Cost = new ResourceCount(data.Cost.Ytalnium, data.Cost.NaturalMetal, data.Cost.EnergyCapacity);
+
         if (NavAgent != null)
         {
             NavAgent.speed = this.Speed;

@@ -32,7 +32,7 @@ public class ResourceDeposit : Attackable
         {
             var resourcesTakenObj = ResourceCount.SubtractAmountOfType(resourcesTaken, RType);
 
-            Dbx.CtxLog($"{name} lost {resourcesTakenObj.GetTotal()} resources. {ResourceCount.GetTotal()} remaining resources");
+            //Dbx.CtxLog($"{name} lost {resourcesTakenObj.GetTotal()} resources. {ResourceCount.GetTotal()} remaining resources");
             return resourcesTakenObj;
         } else
         {

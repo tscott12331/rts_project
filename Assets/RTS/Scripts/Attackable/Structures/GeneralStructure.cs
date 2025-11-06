@@ -16,5 +16,7 @@ public class GeneralStructure : Structure
         this.MaxHP = data.HP;
         this.Prefab = data.prefab;
         this.AType = AttackableType.Structure;
+
+        this.Cost = new ResourceCount(data.Cost.Ytalnium, data.Cost.NaturalMetal, data.Cost.EnergyCapacity);
     }
 }

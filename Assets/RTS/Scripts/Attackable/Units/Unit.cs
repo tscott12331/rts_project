@@ -7,6 +7,8 @@ using UnityEngine.AI;
 public abstract class Unit : Attackable
 {
     public int Id { get; protected set; }
+
+    public ResourceCount Cost;
     public float Speed { get; protected set; }
     public int Damage { get; protected set; }
     public float RateOfAttack { get; protected set; }
@@ -37,8 +39,9 @@ public abstract class Unit : Attackable
         this.AttackTime = 1 / this.RateOfAttack;
         this.UType = data.Type;
         this.AType = AttackableType.Unit;
-
         this.Range = data.Range;
+
+        this.Cost = new ResourceCount(data.Cost.Ytalnium, data.Cost.NaturalMetal, data.Cost.EnergyCapacity);
 
         if (NavAgent != null)
         {
