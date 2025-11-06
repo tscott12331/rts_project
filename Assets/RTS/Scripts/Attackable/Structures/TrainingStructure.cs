@@ -43,7 +43,7 @@ public class TrainingStructure : Structure
 
     public override void HandleStructureSelect()
     {
-        transform.Find("Selected").gameObject.SetActive(true);
         TrainingStructureSelected?.Invoke(this);
+        SetSelectedPreviewState(true);
     }
 }

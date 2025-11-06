@@ -16,7 +16,24 @@ public abstract class Structure : Attackable
 
     public abstract void CopyStructureData(StructureSO so);
 
+    public void SetSelectedPreviewState(bool on)
+    {
+        var selectedTransform = transform.Find("Selected");
+        if (selectedTransform == null)
+        {
+            Dbx.CtxLog("Structure does not have a \"Selected\" child object, cannot display select marker");
+            return;
+        }
+
+        selectedTransform.gameObject.SetActive(on);
+    }
+
     public abstract void HandleStructureSelect();
+
+    public void HandleStructureDeselect()
+    {
+        SetSelectedPreviewState(false);
+    }
 
     private void OnCollisionEnter(Collision collision)
     {

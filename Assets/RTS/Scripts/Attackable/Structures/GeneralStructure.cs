@@ -7,7 +7,7 @@ public class GeneralStructure : Structure
     public static event GeneralStructureSelectedHandler GeneralStructureSelected;
     public override void HandleStructureSelect() {
         GeneralStructureSelected?.Invoke(this);
-        transform.Find("Selected").gameObject.SetActive(true);
+        SetSelectedPreviewState(true);
     }
     public override void CopyStructureData(StructureSO so)
     {

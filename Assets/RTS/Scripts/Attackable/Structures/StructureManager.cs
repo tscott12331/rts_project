@@ -228,7 +228,9 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
     public void DeselectStructure(Structure s)
     {
         if(s == null || selectedStructure != s) return;
-        s.transform.Find("Selected").gameObject.SetActive(false);
+
+        s.HandleStructureDeselect();
+
         selectedStructure = null;
         StructureDeselected?.Invoke(s);
     }
