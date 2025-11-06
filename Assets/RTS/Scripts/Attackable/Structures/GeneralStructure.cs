@@ -13,6 +13,7 @@ public class GeneralStructure : Structure
     {
         var data = so.data;
         this.HP = data.HP;
+        this.MaxHP = data.HP;
         this.Prefab = data.prefab;
         this.AType = AttackableType.Structure;
     }

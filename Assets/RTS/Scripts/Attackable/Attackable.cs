@@ -35,6 +35,8 @@ public abstract class Attackable : MonoBehaviour
     }
 
     public int HP;
+    public int MaxHP;
+
     public virtual bool TakeDamage(int damage) {
         if(HP > 0)
         {

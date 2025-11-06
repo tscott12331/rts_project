@@ -44,7 +44,7 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
         Destroy(unit.gameObject);
     }
 
-    public void TrainUnit(sbyte unitId, Transform spawnPositionTransform, Transform walkPositionTransform, ObjectOwner owner)
+    public void TrainUnit(sbyte unitId, TrainingStructure structure, Transform spawnPositionTransform, Transform walkPositionTransform, ObjectOwner owner)
     {
         trainableUnits.TryGetValue(unitId, out var unitSO);
         if(unitSO == null)
@@ -63,6 +63,7 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
             }
 
             unit.CopyUnitData(unitSO);
+            unit.AssignedStructure = structure;
             unit.Owner = owner;
             AddUnit(unit);
 
@@ -203,9 +204,9 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
     }
 
 
-    void TrainingStructure_TrainUnit(sbyte unitId, Transform spawnPositionTransform, Transform walkPositionTransform, ObjectOwner owner)
+    void TrainingStructure_TrainUnit(sbyte unitId, TrainingStructure structure, Transform spawnPositionTransform, Transform walkPositionTransform, ObjectOwner owner)
     {
-        TrainUnit(unitId, spawnPositionTransform, walkPositionTransform, owner);
+        TrainUnit(unitId, structure, spawnPositionTransform, walkPositionTransform, owner);
     }
 
 

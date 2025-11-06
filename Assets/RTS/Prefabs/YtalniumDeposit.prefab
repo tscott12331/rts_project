@@ -102,8 +102,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d51b0f5decb4fbe4ca7c65c16a8884a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResourceDeposit
-  HP: 2000
-  ResourceCapacity: 1000
+  HP: 200
+  MaxHP: 200
+  ResourceCapacity: 200
 --- !u!1001 &425573073629565457
 PrefabInstance:
   m_ObjectHideFlags: 0

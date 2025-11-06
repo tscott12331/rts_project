@@ -167,7 +167,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         Destroy(structure.gameObject);
     }
 
-    public void PlaceStructure(StructureSO so, Vector3 pos, Quaternion rot, ObjectOwner ownership) {
+    public Structure PlaceStructure(StructureSO so, Vector3 pos, Quaternion rot, ObjectOwner ownership) {
         if(NavMeshUtils.SamplePosition(so.data.prefab, pos, out Vector3 newPos)) {
             var prefab = so.data.prefab;
             var structureGO = Instantiate(prefab, newPos, rot);
@@ -182,21 +182,24 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
             SelectStructure(structure);
 
             ResetStructurePreview();
+            return structure;
         }
+
+        return null;
     }
 
-    public void PlaceStructure(sbyte structureIndex, Vector3 pos, Quaternion rot, ObjectOwner ownership) {
+    public Structure PlaceStructure(sbyte structureIndex, Vector3 pos, Quaternion rot, ObjectOwner ownership) {
         // get preview info
         var preview = structurePreviews[structureIndex];
         var structure = preview.GetComponent<Structure>();
         if (structure == null || !structure.IsValidPosition)
         {
             Debug.LogError("[StructureManager]: Invalid structure placement");
-            return;
+            return null;
         }
 
         var so = placeableStructures[structureIndex];
-        PlaceStructure(so, pos, rot, ownership);
+        return PlaceStructure(so, pos, rot, ownership);
     }
 
     public void DeselectStructure(Transform structureTransform)

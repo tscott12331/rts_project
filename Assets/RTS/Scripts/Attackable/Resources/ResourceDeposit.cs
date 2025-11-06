@@ -10,7 +10,7 @@ public class ResourceDeposit : Attackable
     {
         depleted = !TakeDamage(damage);
 
-        int mappedResources = Mathf.FloorToInt(damage * ((float) ResourceCapacity / HP));
+        int mappedResources = Mathf.FloorToInt(damage * ((float) ResourceCapacity / MaxHP));
 
         return TakeResources(mappedResources);
     }

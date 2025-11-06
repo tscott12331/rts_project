@@ -5,10 +5,11 @@ using UnityEngine.AI;
 public class CollectorUnit : Unit
 {
     public int CarriedResources { get; protected set; } = 0;
-
     public int CarryCapacityMult = 5;
-    
     public int CarryCapacity { get; private set; }
+
+    private Attackable previousTarget;
+
     public override void CopyUnitData(UnitSO unitSO)
     {
         var data = unitSO.Data;
@@ -40,19 +41,40 @@ public class CollectorUnit : Unit
         CarriedResources = Mathf.Min(CarriedResources + resourceAmount, CarryCapacity);
     }
 
+    public void DropoffResource(int resourceAmount) {
+        // temp
+        CarriedResources = 0;
+    }
+
     public override void AttackTarget(Attackable target)
     {
         //Dbx.CtxLog($"\ntarget is {(target == null ? "null" : "not null")}\n" +
         //    $"CarriedResources: {CarriedResources}, CarryCapacity: {CarryCapacity}\n" +
         //    $"Target HP: {target.HP}");
-        if (target == null || CarriedResources >= CarryCapacity 
-            || target.HP <= 0) return;
+        if (target == null || target.HP <= 0) return;
+
+        if(CarriedResources >= CarryCapacity && target != AssignedStructure) {
+            // MoveTo(AssignedStructure.transform.position);
+            Dbx.CtxLog("Collector has full capacity");
+            previousTarget = target;
+            SetCommandTarget(AssignedStructure);
+            return;
+        }
 
         if(!AttackTargets.Contains(target))
         {
             // target is not yet in unit's range, set destination
             MoveTo(target.transform.position, true);
             return; // don't attack yet
+        }
+
+        // drop off resources if target is assigned structure
+        if (target == AssignedStructure) {
+            Dbx.CtxLog($"Collector target is assigned structure {target.name}, dropping off");
+            DropoffResource(CarriedResources);
+            RemoveAttackTarget(target);
+            SetCommandTarget(previousTarget);
+            return;
         }
 
         var resourceDeposit = target as ResourceDeposit;
