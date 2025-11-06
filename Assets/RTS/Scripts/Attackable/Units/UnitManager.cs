@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -67,7 +68,7 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
 
             if(NavMeshUtils.SamplePosition(unitPrefab, walkPositionTransform.position, out newPos))
             {
-                unit.GetComponent<NavMeshAgent>().SetDestination(newPos);
+                unit.MoveTo(RandomizeUnitPosition(unit, newPos, 1));
             }
         }
     }
@@ -134,11 +135,29 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
         }
     }
 
+
+    public Vector3 RandomizeUnitPosition(Unit unit, Vector3 position, float amount)
+    {
+        if(position == null) return Vector3.zero;
+        if (unit == null) return position;
+
+        var scale = unit.transform.localScale;
+        var offset = new Vector3(Random.value * amount * scale.x, 0, Random.value * amount * scale.y);
+
+        return position + offset;
+    }
+
     public void MoveSelectedTo(Vector3 point)
     {
-        if(SelectedUnits.Count > 0) {
-            foreach(var unit in SelectedUnits) {
-                unit.MoveTo(point);
+        int count = SelectedUnits.Count;
+        float randomizeAmount = 0.0f;
+        if(count > 0) {
+            for(int i = 0; i < count; i++) {
+                var unit = SelectedUnits.ElementAtOrDefault(i);
+                if (unit == null) continue;
+                randomizeAmount += 0.5f;
+
+                unit.MoveTo(RandomizeUnitPosition(unit, point, randomizeAmount));
             }
 
             selectMarkerTransform.position = point;

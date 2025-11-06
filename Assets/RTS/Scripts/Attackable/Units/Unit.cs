@@ -40,8 +40,12 @@ public abstract class Unit : Attackable
 
         this.Range = data.Range;
 
-        TryGetComponent<NavMeshAgent>(out var navMeshAgent);
-        if (navMeshAgent != null) navMeshAgent.speed = data.Speed;
+        if (NavAgent != null)
+        {
+            NavAgent.speed = this.Speed;
+            var scale = transform.localScale;
+            NavAgent.radius = (scale.x + scale.y) / 4 + 0.2f;
+        }
 
         TryGetComponent<SphereCollider>(out var sphereCollider);
         if (sphereCollider != null) sphereCollider.radius = data.Range;
