@@ -16,6 +16,15 @@ public class InputManager : MonoBehaviourSingleton<InputManager>
     public delegate void StructureLeftClickedHandler(Transform structureTransform, Vector3 point);
     public static event StructureLeftClickedHandler StructureLeftClicked;
 
+    public delegate void StructureRightClickedHandler(Transform structureTransform, Vector3 point);
+    public static event StructureRightClickedHandler StructureRightClicked;
+
+    public delegate void UnitRightClickedHandler(Transform structureTransform, Vector3 point);
+    public static event UnitRightClickedHandler UnitRightClicked;
+
+    public delegate void ResourceRightClickedHandler(Transform structureTransform, Vector3 point);
+    public static event ResourceRightClickedHandler ResourceRightClicked;
+
     public delegate void GroundRightClickedHandler(Transform groundTransform, Vector3 point);
     public static event GroundRightClickedHandler GroundRightClicked;
 
@@ -33,16 +42,17 @@ public class InputManager : MonoBehaviourSingleton<InputManager>
     [SerializeField]
     LayerMask structureLayer;
     [SerializeField]
-    LayerMask UILayer;
+    LayerMask unitLayer;
+    [SerializeField]
+    LayerMask resourceLayer;
     [SerializeField]
     LayerMask groundLayer;
+    [SerializeField]
+    LayerMask UILayer;
 
 
     void Update()
     {
-        bool leftClicked = Input.GetMouseButtonUp(0);
-        bool rightClicked = Input.GetMouseButtonUp(1);
-
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             KeyDown?.Invoke(Keybind.Escape);
@@ -52,13 +62,18 @@ public class InputManager : MonoBehaviourSingleton<InputManager>
         {
             KeyDown.Invoke(Keybind.Rotate);
         }
-        if(Input.GetKeyUp(KeyCode.R))
+        if (Input.GetKeyUp(KeyCode.R))
         {
             KeyUp?.Invoke(Keybind.Rotate);
         }
 
-        if (leftClicked)
+        bool leftClicked = Input.GetMouseButtonUp(0);
+        bool rightClicked = Input.GetMouseButtonUp(1);
+        bool clicked = leftClicked || rightClicked;
+
+        if (clicked)
         {
+            // Check to see if UI was clicked
             var raycastResults = new List<RaycastResult>();
             var pointerEventData = new PointerEventData(EventSystem.current)
             {
@@ -79,28 +94,68 @@ public class InputManager : MonoBehaviourSingleton<InputManager>
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             bool hit = Physics.Raycast(ray, out RaycastHit hitInfo, MAX_MOUSE_RAY, Physics.AllLayers, QueryTriggerInteraction.Ignore);
+
             if (hit && !hitUI)
             {
-                if ((1 << hitInfo.transform.gameObject.layer) == structureLayer)
+                var hitTransform = hitInfo.transform;
+                var hitPoint = hitInfo.point;
+
+                if ((1 << hitTransform.gameObject.layer) == structureLayer)
                 {
-                    StructureLeftClicked?.Invoke(hitInfo.transform, hitInfo.point);
+                    if (leftClicked)
+                    {
+                        StructureLeftClicked?.Invoke(hitTransform, hitPoint);
+                    }
+                    else if (rightClicked)
+                    {
+                        StructureRightClicked?.Invoke(hitTransform, hitPoint);
+                    }
+                }
+                else if ((1 << hitTransform.gameObject.layer) == unitLayer)
+                {
+                    if (leftClicked)
+                    {
+
+                    }
+                    else if (rightClicked)
+                    {
+                        UnitRightClicked?.Invoke(hitTransform, hitPoint);
+                    }
+                }
+                else if((1 << hitTransform.gameObject.layer) == resourceLayer)
+                {
+                    if (leftClicked)
+                    {
+
+                    } else if(rightClicked)
+                    {
+                        ResourceRightClicked?.Invoke(hitTransform, hitPoint);
+                    }
+                }
+                else if ((1 << hitTransform.gameObject.layer) == groundLayer)
+                {
+                    if (leftClicked)
+                    {
+
+                    }
+                    else if (rightClicked)
+                    {
+                        GroundRightClicked?.Invoke(hitTransform, hitPoint);
+                    }
                 }
                 else
                 {
-                    MiscLeftClicked?.Invoke(hitInfo.transform, hitInfo.point);
+                    if (leftClicked)
+                    {
+                        MiscLeftClicked?.Invoke(hitTransform, hitPoint);
+                    }
+                    else if (rightClicked)
+                    {
+
+                    }
                 }
             }
-        }
 
-        if (rightClicked)
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            bool hit = Physics.Raycast(ray, out RaycastHit hitInfo, MAX_MOUSE_RAY, Physics.AllLayers, QueryTriggerInteraction.Ignore);
-
-            if (hit && (1 << hitInfo.transform.gameObject.layer) == groundLayer)
-            {
-                GroundRightClicked?.Invoke(hitInfo.transform, hitInfo.point);
-            }
         }
     }
 }

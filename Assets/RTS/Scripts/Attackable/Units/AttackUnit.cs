@@ -10,18 +10,23 @@ public class AttackUnit : Unit
     public delegate void UnitDestroyedHandler(Unit structure);
     public static event UnitDestroyedHandler UnitDestroyed;
 
-    private NavMeshAgent navMeshAgent;
-
     public Weapon Weapon { get; protected set; }
 
     public override void AttackTarget(Attackable target)
     {
         if (Weapon == null || target == null || target.HP <= 0) return;
 
-        Weapon.Shoot();
-        if (navMeshAgent != null)
+        if(!AttackTargets.Contains(target))
         {
-            navMeshAgent.isStopped = true;
+            // target is not yet in unit's range, set destination
+            MoveTo(target.transform.position, true);
+            return; // don't attack yet
+        }
+
+        Weapon.Shoot();
+        if (NavAgent != null)
+        {
+            //NavAgent.isStopped = true;
             transform.LookAt(target.transform);
         }
 
@@ -42,11 +47,10 @@ public class AttackUnit : Unit
         }
     }
 
-    private void Start()
+    public void Awake()
     {
         this.AttackableTypes = new() { AttackableType.Unit, AttackableType.Structure };
         Weapon = GetComponentInChildren<Weapon>();
-
-        TryGetComponent<NavMeshAgent>(out navMeshAgent);
+        NavAgent = GetComponent<NavMeshAgent>();
     }
 }

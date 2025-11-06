@@ -133,14 +133,12 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
             DeselectUnit(unit);
         }
     }
-    void InputManager_GroundRightClicked(Transform groundTransform, Vector3 point)
-    { 
+
+    public void MoveSelectedTo(Vector3 point)
+    {
         if(SelectedUnits.Count > 0) {
-            foreach(Unit unit in SelectedUnits) {
-                unit.TryGetComponent<NavMeshAgent>(out var navMeshAgent);
-                if (navMeshAgent == null) continue;
-                navMeshAgent.isStopped = false;
-                navMeshAgent.SetDestination(point);
+            foreach(var unit in SelectedUnits) {
+                unit.MoveTo(point);
             }
 
             selectMarkerTransform.position = point;
@@ -149,10 +147,48 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
 
     }
 
+    public void SetSelectedCommand(Transform targetTransform)
+    {
+        if(SelectedUnits.Count > 0)
+        {
+            foreach (var unit in SelectedUnits)
+            {
+                unit.SetCommandTarget(targetTransform);
+            }
+
+            selectMarkerTransform.gameObject.SetActive(false);
+        }
+        
+    }
+
+
+    public void InputManager_StructureRightClicked(Transform hitTransform, Vector3 hitPoint)
+    {
+        SetSelectedCommand(hitTransform);
+    }
+
+    public void InputManager_UnitRightClicked(Transform hitTransform, Vector3 hitPoint)
+    {
+        SetSelectedCommand(hitTransform);
+    }
+
+    public void InputManager_ResourceRightClicked(Transform hitTransform, Vector3 hitPoint)
+    {
+        SetSelectedCommand(hitTransform);
+    }
+
+
+    void InputManager_GroundRightClicked(Transform groundTransform, Vector3 point)
+    {
+        MoveSelectedTo(point);
+    }
+
+
     void TrainingStructure_TrainUnit(sbyte unitId, Transform spawnPositionTransform, Transform walkPositionTransform, ObjectOwner owner)
     {
         TrainUnit(unitId, spawnPositionTransform, walkPositionTransform, owner);
     }
+
 
     void AttackUnit_UnitDestroyed(Unit unit)
     {
@@ -164,6 +200,9 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
         TrainingStructure.TrainUnit += TrainingStructure_TrainUnit;
 
         InputManager.GroundRightClicked += InputManager_GroundRightClicked;
+        InputManager.StructureRightClicked += InputManager_StructureRightClicked;
+        InputManager.UnitRightClicked += InputManager_UnitRightClicked;
+        InputManager.ResourceRightClicked += InputManager_ResourceRightClicked;
 
         AttackUnit.UnitDestroyed += AttackUnit_UnitDestroyed;
     }
@@ -173,6 +212,9 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
         TrainingStructure.TrainUnit -= TrainingStructure_TrainUnit;
 
         InputManager.GroundRightClicked -= InputManager_GroundRightClicked;
+        InputManager.StructureRightClicked -= InputManager_StructureRightClicked;
+        InputManager.UnitRightClicked -= InputManager_UnitRightClicked;
+        InputManager.ResourceRightClicked -= InputManager_ResourceRightClicked;
 
         AttackUnit.UnitDestroyed -= AttackUnit_UnitDestroyed;
     }

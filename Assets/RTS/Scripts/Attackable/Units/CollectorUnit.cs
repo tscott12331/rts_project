@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class CollectorUnit : Unit
 {
@@ -8,6 +9,27 @@ public class CollectorUnit : Unit
     public int CarryCapacityMult = 5;
     
     public int CarryCapacity { get; private set; }
+    public override void CopyUnitData(UnitSO unitSO)
+    {
+        var data = unitSO.Data;
+        this.Id = data.Id;
+        this.HP = data.HP;
+        this.Prefab = data.Prefab;
+        this.Speed = data.Speed;
+        this.Damage = data.Damage;
+        this.RateOfAttack = data.RateOfAttack;
+        this.AttackTime = 1 / this.RateOfAttack;
+        this.UType = data.Type;
+        this.AType = AttackableType.Unit;
+
+        this.CarryCapacity = Damage * CarryCapacityMult;
+
+        TryGetComponent<NavMeshAgent>(out var navMeshAgent);
+        if (navMeshAgent != null) navMeshAgent.speed = data.Speed;
+
+        TryGetComponent<SphereCollider>(out var sphereCollider);
+        if (sphereCollider != null) sphereCollider.radius = data.Range;
+    }
 
     public void CarryResource(int resourceAmount)
     {
@@ -16,8 +38,18 @@ public class CollectorUnit : Unit
 
     public override void AttackTarget(Attackable target)
     {
-        if (target == null || target.AType != AttackableType.Resource
-            || CarriedResources >= CarryCapacity) return;
+        //Dbx.CtxLog($"\ntarget is {(target == null ? "null" : "not null")}\n" +
+        //    $"CarriedResources: {CarriedResources}, CarryCapacity: {CarryCapacity}\n" +
+        //    $"Target HP: {target.HP}");
+        if (target == null || CarriedResources >= CarryCapacity 
+            || target.HP <= 0) return;
+
+        if(!AttackTargets.Contains(target))
+        {
+            // target is not yet in unit's range, set destination
+            MoveTo(target.transform.position, true);
+            return; // don't attack yet
+        }
 
         var resourceDeposit = target as ResourceDeposit;
 
@@ -32,10 +64,10 @@ public class CollectorUnit : Unit
             Destroy(resourceDeposit.gameObject);
         }
     }
-    private void Start()
+    private void Awake()
     {
         this.AttackableTypes = new() { AttackableType.Resource };
-        this.CarryCapacity = Damage * CarryCapacityMult;
+        NavAgent = GetComponent<NavMeshAgent>();
     }
 
 }
