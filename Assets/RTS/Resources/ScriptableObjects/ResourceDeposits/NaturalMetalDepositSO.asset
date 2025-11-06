@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: NaturalMetalDepositSO
   m_EditorClassIdentifier: Assembly-CSharp::ResourceDepositSO
   Data:
-    Id: 0
-    HP: 0
-    ResourceCapacity: 0
-    Prefab: {fileID: 0}
+    Id: 1
+    HP: 2500
+    ResourceCapacity: 2500
+    RType: 1
+    Prefab: {fileID: 206126684534501404, guid: 7726b5565cd2bbf47a685f2ec5a910cf, type: 3}
