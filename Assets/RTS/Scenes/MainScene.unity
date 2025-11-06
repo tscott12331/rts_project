@@ -2860,7 +2860,7 @@ GameObject:
   m_Component:
   - component: {fileID: 729721021}
   m_Layer: 0
-  m_Name: Resources
+  m_Name: _ResourceManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3581,12 +3581,12 @@ MonoBehaviour:
   unitLayer:
     serializedVersion: 2
     m_Bits: 128
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
   resourceLayer:
     serializedVersion: 2
     m_Bits: 512
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
   UILayer:
     serializedVersion: 2
     m_Bits: 32
@@ -7037,6 +7037,7 @@ SceneRoots:
   - {fileID: 889992722}
   - {fileID: 1501451065}
   - {fileID: 704254382}
+  - {fileID: 729721021}
   - {fileID: 1777745011}
   - {fileID: 1131249961}
   - {fileID: 1800734344}
@@ -7045,4 +7046,3 @@ SceneRoots:
   - {fileID: 273533496}
   - {fileID: 1255604769}
   - {fileID: 643593379}
-  - {fileID: 729721021}

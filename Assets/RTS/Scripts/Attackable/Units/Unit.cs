@@ -75,23 +75,14 @@ public abstract class Unit : Attackable
     public void SetCommandTarget(Attackable attackable) {
         if(attackable == null) return;
 
-        if (CanAttack(attackable.gameObject, out var target)) {
-            CommandedTarget = target;
-            Dbx.CtxLog($"Set command target to {target.name}");
-        } else {
-            Dbx.CtxLog("Cannot set command target");
-        }
+        if (CanAttack(attackable.gameObject, out var target)) CommandedTarget = target;
     }
 
     public void SetCommandTarget(Transform targetTransform)
     {
         if(targetTransform == null) return;
-        if (CanAttack(targetTransform.gameObject, out var target)) {
-            CommandedTarget = target;
-            Dbx.CtxLog($"Set command target to {target.name}");
-        } else {
-            Dbx.CtxLog("Cannot set command target");
-        }
+
+        if (CanAttack(targetTransform.gameObject, out var target)) CommandedTarget = target;
     }
 
     public bool CanAttack(Attackable attackable, out Attackable target) {
@@ -165,15 +156,15 @@ public abstract class Unit : Attackable
             AttackTargets.AddLast(target);
         }
 
-        Dbx.CtxLog($"Add attack target {target.name}");
-        Dbx.LogCollection(AttackTargets, a => a != null ? a.name : "null");
+        //Dbx.CtxLog($"Add attack target {target.name}");
+        //Dbx.LogCollection(AttackTargets, a => a != null ? a.name : "null");
     }
 
     public void RemoveAttackTarget(Attackable target)
     {
         AttackTargets.Remove(target);
-        Dbx.CtxLog($"Remove attack target {target.name}");
-        Dbx.LogCollection(AttackTargets, a => a != null ? a.name : "null");
+        //Dbx.CtxLog($"Remove attack target {target.name}");
+        //Dbx.LogCollection(AttackTargets, a => a != null ? a.name : "null");
     }
 
     public void Update()

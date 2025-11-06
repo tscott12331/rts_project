@@ -55,7 +55,7 @@ public class CollectorUnit : Unit
 
         if(CarriedResources >= CarryCapacity && target != AssignedStructure) {
             // MoveTo(AssignedStructure.transform.position);
-            Dbx.CtxLog("Collector has full capacity");
+            //Dbx.CtxLog("Collector has full capacity");
             previousTarget = target;
             SetCommandTarget(AssignedStructure);
             return;
@@ -70,7 +70,7 @@ public class CollectorUnit : Unit
 
         // drop off resources if target is assigned structure
         if (target == AssignedStructure) {
-            Dbx.CtxLog($"Collector target is assigned structure {target.name}, dropping off");
+            //Dbx.CtxLog($"Collector target is assigned structure {target.name}, dropping off");
 
             DropoffResource(CarriedResources);
             RemoveAttackTarget(target);

@@ -2,9 +2,19 @@ using UnityEngine;
 
 public class ResourceDeposit : Attackable
 {
-    public int ResourceCapacity;
-
+    public int ResourceCapacity {  get; protected set; }
     public int ResourceCount { get; protected set; }
+    public ResourceType RType { get; protected set; }
+
+    public void CopyData(ResourceDepositSO so)
+    {
+        var data = so.Data;
+        this.HP = data.HP;
+        this.MaxHP = data.HP;
+        this.RType = data.RType;
+        this.ResourceCapacity = data.ResourceCapacity;
+        this.ResourceCount = this.ResourceCapacity;
+    }
 
     public int TakeResourcesFromDamage(int damage, out bool depleted)
     {
@@ -21,17 +31,16 @@ public class ResourceDeposit : Attackable
         {
             int realResourcesTaken = resourcesTaken > ResourceCount ? ResourceCount : resourcesTaken;
             ResourceCount -= realResourcesTaken;
-            //Dbx.CtxLog($"{name} lost {realResourcesTaken} resources. {ResourceCount} remaining resources");
+            Dbx.CtxLog($"{name} lost {realResourcesTaken} resources. {ResourceCount} remaining resources");
             return realResourcesTaken;
         } else
         {
             return 0;
         }
     }
-    private void Start()
+    private void Awake()
     {
         this.AType = AttackableType.Resource;
-        this.ResourceCount = ResourceCapacity;
         this.Owner = ObjectOwner.None;
     }
 }
