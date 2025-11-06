@@ -71,6 +71,7 @@ public class CollectorUnit : Unit
         // drop off resources if target is assigned structure
         if (target == AssignedStructure) {
             Dbx.CtxLog($"Collector target is assigned structure {target.name}, dropping off");
+
             DropoffResource(CarriedResources);
             RemoveAttackTarget(target);
             SetCommandTarget(previousTarget);
@@ -88,6 +89,8 @@ public class CollectorUnit : Unit
             RemoveAttackTarget(target);
             // implement destroy logic
             Destroy(resourceDeposit.gameObject);
+            SetCommandTarget(AssignedStructure);
+            previousTarget = null;
         }
     }
     private void Awake()
