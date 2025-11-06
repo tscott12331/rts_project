@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ResourceDepositSO
   Data:
     Id: 0
-    HP: 200
-    ResourceCapacity: 200
+    HP: 2000
+    ResourceCapacity: 2000
     RType: 0
     Prefab: {fileID: 6811756353113118178, guid: 555616d87ca46d7428355d80c0956b94, type: 3}
