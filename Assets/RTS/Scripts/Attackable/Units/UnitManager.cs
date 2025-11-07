@@ -25,8 +25,9 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
         {
             // load placeable structure
             var uso = unitSOs[i];
-            trainableUnits[i] = uso;
-            Debug.Log($"[UnitManager]: Loaded unit {trainableUnits[i].name} with id {trainableUnits[i].Data.Id}");
+            var id = uso.Data.Id;
+            trainableUnits[id] = uso;
+            Debug.Log($"[UnitManager]: Loaded unit {trainableUnits[id].name} with id {trainableUnits[id].Data.Id}");
         }
 
         TrainableUnitsLoaded?.Invoke(trainableUnits);

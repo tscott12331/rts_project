@@ -13,9 +13,19 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
 
         StructureManager.Instance.LoadPlaceableStructures();
 
-        Structure EnemyHQ = StructureManager.Instance.PlaceStructure(1, EnemyStartPoint.position, EnemyStartPoint.rotation, ObjectOwner.Enemy);
-        Structure PlayerHQ = StructureManager.Instance.PlaceStructure(1, PlayerStartPoint.position, PlayerStartPoint.rotation, ObjectOwner.Player);
+        Structure EnemyHQStruct = StructureManager.Instance.PlaceStructure(1, EnemyStartPoint.position, EnemyStartPoint.rotation, ObjectOwner.Enemy);
+        var EnemyHQ = EnemyHQStruct as TrainingStructure;
+        UnitManager.Instance.TrainUnit(0, EnemyHQ, EnemyHQ.spawnPositionTransform, EnemyHQ.walkPositionTransform, ObjectOwner.Enemy);
 
-        UnitManager.Instance.TrainUnit(0, EnemyHQ as TrainingStructure, EnemyStartPoint, EnemyStartPoint, ObjectOwner.Enemy);
+        var enemyBarracksPos = EnemyHQ.transform.position + new Vector3(15, 0, 15);
+        Structure EnemyBarracksStruct = StructureManager.Instance.PlaceStructure(0, enemyBarracksPos, EnemyStartPoint.rotation, ObjectOwner.Enemy);
+        var EnemyBarracks = EnemyBarracksStruct as TrainingStructure;
+        for(int i = 0; i < 10; i++)
+        {
+            UnitManager.Instance.TrainUnit(1, EnemyBarracks, EnemyBarracks.spawnPositionTransform, EnemyBarracks.walkPositionTransform, ObjectOwner.Enemy);
+        }
+
+
+        Structure PlayerHQ = StructureManager.Instance.PlaceStructure(1, PlayerStartPoint.position, PlayerStartPoint.rotation, ObjectOwner.Player);
     }
 }

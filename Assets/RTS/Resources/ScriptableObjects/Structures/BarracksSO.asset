@@ -24,3 +24,4 @@ MonoBehaviour:
   trainableUnits:
   - {fileID: 11400000, guid: 68546f331f2dd124ca6e313655d258a8, type: 2}
   - {fileID: 11400000, guid: f8f646addefc8c347bd574945aba48ed, type: 2}
+  - {fileID: 11400000, guid: 6433458182c679e4a99e75a42648a9e0, type: 2}
