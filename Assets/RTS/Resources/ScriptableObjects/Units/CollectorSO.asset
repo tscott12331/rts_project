@@ -24,4 +24,4 @@ MonoBehaviour:
     Speed: 5
     Damage: 10
     RateOfAttack: 1
-    Range: 1
+    Range: 1.5
