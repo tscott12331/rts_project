@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46e9d646e8b48d44abcd60503d9345f6, type: 3}
+  m_Name: SniperSO
+  m_EditorClassIdentifier: Assembly-CSharp::UnitSO
+  Data:
+    Id: 2
+    Prefab: {fileID: 1672201876985998220, guid: 36daffaf10e2f9944a1649efdec5d258, type: 3}
+    Cost:
+      Ytalnium: 15
+      NaturalMetal: 15
+      EnergyCapacity: 0
+    Type: 1
+    HP: 200
+    Speed: 4
+    Damage: 50
+    RateOfAttack: 0.5
+    Range: 40
