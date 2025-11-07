@@ -6,7 +6,7 @@ using UnityEngine;
 public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
 {
     public ResourceCount PlayerResources { get; private set; } = new(2500, 2500, 500);
-    public ResourceCount EnemyResources { get; private set; } = new(250, 250, 50);
+    public ResourceCount EnemyResources { get; private set; } = new(2500, 2500, 500);
 
     private const int energyCapacityIncreaseAmount = 20;
 

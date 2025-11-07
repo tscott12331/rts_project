@@ -4,6 +4,7 @@ public enum UnitType
 {
     Collector,
     Attacker,
+    Healer,
 }
 
 [System.Serializable]

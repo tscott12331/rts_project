@@ -94,8 +94,16 @@ public abstract class Unit : Attackable
             return false;
         }
 
-        if ((AttackableTypes.Contains(attackable.AType) && attackable.Owner != Owner)
-            || (UType == UnitType.Collector && attackable == AssignedStructure))
+        if (
+               (
+                AttackableTypes.Contains(attackable.AType) && 
+                 (
+                 (UType != UnitType.Healer && attackable.Owner != Owner) ||
+                 (UType == UnitType.Healer && attackable.Owner == Owner)
+                 )
+               )
+               ||
+               (UType == UnitType.Collector && attackable == AssignedStructure))
         {
             //Dbx.CtxLog($"{attackable.name} is a valid attack target to {name}");
             target = attackable;

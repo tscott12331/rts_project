@@ -37,6 +37,7 @@ public abstract class Attackable : MonoBehaviour
     public int HP { get; protected set; }
     public int MaxHP { get; protected set; }
 
+    // returns whether or not unit is alive after damage
     public virtual bool TakeDamage(int damage) {
         if(HP > 0)
         {
@@ -47,5 +48,13 @@ public abstract class Attackable : MonoBehaviour
         {
             return false;
         }
+    }
+
+    // returns whether or not HP is full after healing
+    public bool Heal(int amount)
+    {
+        HP = Mathf.Min(HP + amount, MaxHP);
+
+        return HP == MaxHP;
     }
 }
