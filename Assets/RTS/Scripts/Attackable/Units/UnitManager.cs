@@ -55,7 +55,7 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
         }
 
         var unitPrefab = unitSO.Data.Prefab;
-        if(NavMeshUtils.SamplePosition(unitPrefab, spawnPositionTransform.position, out var newPos)) {
+        if(NavMeshUtils.SamplePosition(spawnPositionTransform.position, out var newPos)) {
             var unitGO = Instantiate(unitPrefab, newPos, Quaternion.identity);
             unitGO.TryGetComponent<Unit>(out var unit);
             if(unit == null)
@@ -77,7 +77,7 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
 
             AddUnit(unit);
 
-            if(NavMeshUtils.SamplePosition(unitPrefab, walkPositionTransform.position, out newPos))
+            if(NavMeshUtils.SamplePosition(walkPositionTransform.position, out newPos))
             {
                 unit.MoveTo(RandomizeUnitPosition(unit, newPos, 1));
             }

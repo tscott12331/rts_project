@@ -10,7 +10,7 @@ public class AttackUnit : Unit
     public delegate void UnitDestroyedHandler(Unit structure);
     public static event UnitDestroyedHandler UnitDestroyed;
 
-    public Weapon Weapon { get; protected set; }
+    public Weapon Weapon;
 
     public override void AttackTarget(Attackable target)
     {
@@ -24,11 +24,6 @@ public class AttackUnit : Unit
         }
 
         Weapon.Shoot();
-        if (NavAgent != null)
-        {
-            //NavAgent.isStopped = true;
-            transform.LookAt(target.transform);
-        }
 
         if (!target.TakeDamage(this.Damage))
         {
@@ -50,7 +45,6 @@ public class AttackUnit : Unit
     public void Awake()
     {
         this.AttackableTypes = new() { AttackableType.Unit, AttackableType.Structure };
-        Weapon = GetComponentInChildren<Weapon>();
         NavAgent = GetComponent<NavMeshAgent>();
     }
 }

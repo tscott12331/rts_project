@@ -3,7 +3,7 @@ using UnityEngine.AI;
 
 public class HealerUnit : Unit
 {
-    public Weapon Weapon { get; protected set; }
+    public Weapon Weapon;
 
     public override void AttackTarget(Attackable target)
     {
@@ -17,11 +17,6 @@ public class HealerUnit : Unit
         }
 
         Weapon.Shoot();
-        if (NavAgent != null)
-        {
-            //NavAgent.isStopped = true;
-            transform.LookAt(target.transform);
-        }
 
         if (target.Heal(this.Damage))
         {
@@ -34,7 +29,6 @@ public class HealerUnit : Unit
     public void Awake()
     {
         this.AttackableTypes = new() { AttackableType.Unit };
-        Weapon = GetComponentInChildren<Weapon>();
         NavAgent = GetComponent<NavMeshAgent>();
     }
 }

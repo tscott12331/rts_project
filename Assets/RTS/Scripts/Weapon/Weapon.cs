@@ -1,13 +1,17 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Weapon : MonoBehaviour
 {
-    public Transform Barrel;
+    public List<Transform> Barrels;
 
     public GameObject ShootParticleSystem;
     
     public void Shoot()
     {
-        Instantiate(ShootParticleSystem, Barrel);
+        foreach(var barrel in Barrels)
+        {
+            Instantiate(ShootParticleSystem, barrel);
+        }
     }
 }

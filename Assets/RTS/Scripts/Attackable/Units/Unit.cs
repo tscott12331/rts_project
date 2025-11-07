@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UIElements;
 
 public abstract class Unit : Attackable
 {
@@ -24,6 +25,7 @@ public abstract class Unit : Attackable
     public NavMeshAgent NavAgent { get; protected set; }
 
     public SphereCollider TargetingTrigger;
+    public Transform Model;
 
     public float AttackTime { get; protected set; }
     private float nextAttackTime = 0.0f;
@@ -62,7 +64,7 @@ public abstract class Unit : Attackable
     {
         if (NavAgent == null) return;
 
-        NavMeshUtils.SamplePosition(gameObject, position, out var newPos);
+        NavMeshUtils.SamplePosition(position, out var newPos);
         NavAgent.SetDestination(newPos);
 
         if(preserveCommandTarget)
@@ -131,7 +133,9 @@ public abstract class Unit : Attackable
     public void TryAttackTarget()
     {
         //Debug.Log($"[Unit.TryAttackTarget]: count = {AttackTargets.Count}, time = {Time.time}, next attack time = {nextAttackTime}");
-        if ((AttackTargets.Count > 0 || CommandedTarget != null) && Time.time > nextAttackTime)
+        bool haveTargets = (AttackTargets.Count > 0 || CommandedTarget != null);
+        NavAgent.updateRotation = !haveTargets;
+        if (haveTargets && Time.time > nextAttackTime)
         {
             // prioritize commanded target
             var target = CommandedTarget != null ? CommandedTarget : AttackTargets.First.Value;
@@ -141,6 +145,8 @@ public abstract class Unit : Attackable
                 AttackTargets.RemoveFirst();
                 return;
             }
+
+            Model.LookAt(target.transform);
 
             AttackTarget(target);
 
