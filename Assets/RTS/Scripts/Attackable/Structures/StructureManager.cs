@@ -49,8 +49,9 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         {
             // load placeable structure
             var sso = structureSOs[i];
-            placeableStructures[i] = sso;
-            Debug.Log($"[StructureManager]: Loaded structure {placeableStructures[i].name}");
+            var structId = sso.data.id;
+            placeableStructures[structId] = sso;
+            Debug.Log($"[StructureManager]: Loaded structure {placeableStructures[structId].name}");
 
             // instantiate structure previews
             var preview = Instantiate(sso.data.prefab);
@@ -70,7 +71,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
             preview.TryGetComponent<NavMeshObstacle>(out NavMeshObstacle navMeshObstacle);
             if(navMeshObstacle != null) navMeshObstacle.enabled = false;
 
-            structurePreviews[i] = preview;
+            structurePreviews[structId] = preview;
             Debug.Log($"[StructureManager]: Instantiated structure {preview.name}'s preview");
         }
 
