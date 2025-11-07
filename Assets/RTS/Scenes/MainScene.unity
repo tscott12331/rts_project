@@ -2218,6 +2218,8 @@ MonoBehaviour:
     m_Bits: 64
   validPlacementMaterial: {fileID: 2100000, guid: 864804998b4d16d4e8148bd823aa4e2f, type: 2}
   invalidPlacementMaterial: {fileID: 2100000, guid: 9e213b2163476d3438e2731adeec84aa, type: 2}
+  playerStructureMaterial: {fileID: 2100000, guid: d697aa8eca9a6074e932a13fe7d7f5c1, type: 2}
+  enemyStructureMaterial: {fileID: 2100000, guid: 21583e009529de2498db37e0c7b79bfe, type: 2}
 --- !u!4 &704254382
 Transform:
   m_ObjectHideFlags: 0

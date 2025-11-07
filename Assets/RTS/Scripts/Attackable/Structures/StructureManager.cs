@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
+using UnityEngine.Networking;
 using UnityEngine.UIElements;
 
 public class StructureManager : MonoBehaviourSingleton<StructureManager>
@@ -40,6 +41,8 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
 
     public Material validPlacementMaterial;
     public Material invalidPlacementMaterial;
+    public Material playerStructureMaterial;
+    public Material enemyStructureMaterial;
 
     public void LoadPlaceableStructures()
     {
@@ -57,7 +60,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
             var preview = Instantiate(sso.data.prefab);
             preview.SetActive(false);
             // make preview blue and transparent
-            ChangePreviewMaterial(preview, validPlacementMaterial);
+            ChangeObjectMaterial(preview, validPlacementMaterial);
 
             preview.layer = LayerMask.NameToLayer("Ignore Raycast");
 
@@ -78,16 +81,15 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         PlaceableStructuresLoaded?.Invoke(placeableStructures);
     }
 
-    public void ChangePreviewMaterial(GameObject preview, Material material)
+    public void ChangeObjectMaterial(GameObject obj, Material material)
     {
-            preview.TryGetComponent<Renderer>(out Renderer renderer);
-            if (renderer == null)
+            obj.TryGetComponent<Renderer>(out Renderer renderer);
+            if(renderer != null) renderer.material = material;
+
+            var childRenderers = obj.GetComponentsInChildren<Renderer>();
+            foreach(var r in childRenderers)
             {
-                renderer = preview.GetComponentInChildren<Renderer>();
-                if(renderer != null) renderer.material = material;
-            } else
-            {
-                preview.GetComponent<Renderer>().material = material;
+                r.material = material;
             }
     }
 
@@ -96,8 +98,14 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
 
         preview.TryGetComponent<Structure>(out Structure structure);
         if (structure == null) return;
-        ChangePreviewMaterial(preview, structure.IsValidPosition ? validPlacementMaterial : invalidPlacementMaterial);
+        ChangeObjectMaterial(preview, structure.IsValidPosition ? validPlacementMaterial : invalidPlacementMaterial);
     }
+
+    public void UpdateStructureMaterial(Structure s)
+    {
+        ChangeObjectMaterial(s.gameObject, s.Owner == ObjectOwner.Player ? playerStructureMaterial : enemyStructureMaterial);
+    }
+
     void ResetStructurePreview()
     {
         SetStructurePreviewViewState(structurePreview, false, Vector3.zero, false);
@@ -195,6 +203,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
 
             // structure is in valid position and resources have been expended
             structure.RunStructurePlacedActions();
+            UpdateStructureMaterial(structure);
 
             // select and add new structure
             DeselectStructure(selectedStructure);
