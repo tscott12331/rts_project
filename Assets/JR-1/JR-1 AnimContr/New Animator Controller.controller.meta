@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 621904df90019b248afd6833420c7758
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 182628
+  packageName: Robot JR-1 (animated) + mod1 & mod2
+  packageVersion: 1.0
+  assetPath: Assets/JR-1/JR-1 AnimContr/New Animator Controller.controller
+  uploadId: 400802
