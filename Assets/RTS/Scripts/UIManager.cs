@@ -45,6 +45,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     public void EnableUnitPanel(List<sbyte> unitIds) {
         UnitPanel.SetActive(true);
 
+        // enable needed buttons
         for(int i = 0; i < UnitPanel.transform.childCount && i < unitIds.Count; i++)
         {
             var unitId = unitIds[i];
@@ -61,6 +62,14 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
             var text = button.GetComponentInChildren<TMP_Text>();
             text.SetText(unitSO.Data.Prefab.name);
         }
+        
+        // disable unneeded buttons
+        for(int i = unitIds.Count; i < BuildingPanel.transform.childCount; i++)
+        {
+            var button = UnitPanel.transform.GetChild(i);
+            button.gameObject.SetActive(false);
+        }
+
     }
     public void DisableUnitPanel() {
         UnitPanel.SetActive(false);
