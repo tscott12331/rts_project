@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: RefinerySO
   m_EditorClassIdentifier: Assembly-CSharp::GeneralStructureSO
   data:
-    id: 0
-    prefab: {fileID: 0}
-    HP: 0
+    id: 2
+    prefab: {fileID: 7501869961646403623, guid: d55d00c9857f0e5419c993cdf54b4ec4, type: 3}
+    HP: 500
     Cost:
-      Ytalnium: 0
-      NaturalMetal: 0
+      Ytalnium: 100
+      NaturalMetal: 100
       EnergyCapacity: 0

@@ -13,20 +13,34 @@ public class InputManager : MonoBehaviourSingleton<InputManager>
     public delegate void MiscLeftClickedHandler(Transform miscTransform, Vector3 point);
     public static event MiscLeftClickedHandler MiscLeftClicked;
 
+
     public delegate void StructureLeftClickedHandler(Transform structureTransform, Vector3 point);
     public static event StructureLeftClickedHandler StructureLeftClicked;
 
     public delegate void StructureRightClickedHandler(Transform structureTransform, Vector3 point);
     public static event StructureRightClickedHandler StructureRightClicked;
 
+
+    public delegate void UnitLeftClickedHandler(Transform structureTransform, Vector3 point);
+    public static event UnitLeftClickedHandler UnitLeftClicked;
+
     public delegate void UnitRightClickedHandler(Transform structureTransform, Vector3 point);
     public static event UnitRightClickedHandler UnitRightClicked;
+
+
+    public delegate void ResourceLeftClickedHandler(Transform structureTransform, Vector3 point);
+    public static event ResourceLeftClickedHandler ResourceLeftClicked;
 
     public delegate void ResourceRightClickedHandler(Transform structureTransform, Vector3 point);
     public static event ResourceRightClickedHandler ResourceRightClicked;
 
+
+    public delegate void GroundLeftClickedHandler(Transform groundTransform, Vector3 point);
+    public static event GroundLeftClickedHandler GroundLeftClicked;
+
     public delegate void GroundRightClickedHandler(Transform groundTransform, Vector3 point);
     public static event GroundRightClickedHandler GroundRightClicked;
+
 
     public delegate void KeyDownHandler(Keybind action);
     public static event KeyDownHandler KeyDown;
@@ -115,7 +129,7 @@ public class InputManager : MonoBehaviourSingleton<InputManager>
                 {
                     if (leftClicked)
                     {
-
+                        UnitLeftClicked?.Invoke(hitTransform, hitPoint);
                     }
                     else if (rightClicked)
                     {
@@ -126,7 +140,7 @@ public class InputManager : MonoBehaviourSingleton<InputManager>
                 {
                     if (leftClicked)
                     {
-
+                        ResourceLeftClicked?.Invoke(hitTransform, hitPoint);
                     } else if(rightClicked)
                     {
                         ResourceRightClicked?.Invoke(hitTransform, hitPoint);
@@ -136,7 +150,7 @@ public class InputManager : MonoBehaviourSingleton<InputManager>
                 {
                     if (leftClicked)
                     {
-
+                        GroundLeftClicked?.Invoke(hitTransform, hitPoint);
                     }
                     else if (rightClicked)
                     {

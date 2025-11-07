@@ -8,11 +8,11 @@ using UnityEngine.UIElements;
 
 public class StructureManager : MonoBehaviourSingleton<StructureManager>
 {
-    public delegate void StructureSelectedHandler(Structure structure);
-    public static event StructureSelectedHandler StructureSelected;
+    //public delegate void StructureSelectedHandler(Structure structure);
+    //public static event StructureSelectedHandler StructureSelected;
 
-    public delegate void StructureDeselectedHandler(Structure structure);
-    public static event StructureDeselectedHandler StructureDeselected;
+    //public delegate void StructureDeselectedHandler(Structure structure);
+    //public static event StructureDeselectedHandler StructureDeselected;
 
     public delegate void PlaceableStructuresLoadedHandler(Dictionary<int, StructureSO> structures);
     public static event PlaceableStructuresLoadedHandler PlaceableStructuresLoaded;
@@ -232,7 +232,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         s.HandleStructureDeselect();
 
         selectedStructure = null;
-        StructureDeselected?.Invoke(s);
+        //StructureDeselected?.Invoke(s);
     }
 
     public void SelectStructure(int id)
@@ -262,17 +262,33 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         SelectStructure(structureTransform);
     }
 
-    void InputManager_MiscLeftClicked(Transform miscTransform, Vector3 point)
+    void InputManager_UnitLeftClicked(Transform unitTransform, Vector3 point)
     {
         DeselectStructure(selectedStructure);
-        // deselect structure when misc objects
+    }
+
+    void InputManager_GroundLeftClicked(Transform groundTransform, Vector3 point)
+    {
+        DeselectStructure(selectedStructure);
+
         if (structurePreview != NO_PREVIEW)
         {
             var previewTransform = structurePreviews[structurePreview].transform;
             // place a structure
             PlaceStructure(structurePreview, previewTransform.position, previewTransform.rotation, ObjectOwner.Player);
         }
-        
+    }
+
+    void InputManager_MiscLeftClicked(Transform miscTransform, Vector3 point)
+    {
+        DeselectStructure(selectedStructure);
+
+        if (structurePreview != NO_PREVIEW)
+        {
+            var previewTransform = structurePreviews[structurePreview].transform;
+            // place a structure
+            PlaceStructure(structurePreview, previewTransform.position, previewTransform.rotation, ObjectOwner.Player);
+        }
     }
 
     void InputManager_KeyDown(Keybind action)
@@ -321,6 +337,9 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
 
         InputManager.StructureLeftClicked += InputManager_StructureLeftClicked;
         InputManager.MiscLeftClicked += InputManager_MiscLeftClicked;
+        InputManager.GroundLeftClicked += InputManager_GroundLeftClicked;
+        InputManager.UnitLeftClicked += InputManager_UnitLeftClicked;
+
         InputManager.KeyDown += InputManager_KeyDown;
         InputManager.KeyUp += InputManager_KeyUp;
 
@@ -333,6 +352,9 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
 
         InputManager.StructureLeftClicked -= InputManager_StructureLeftClicked;
         InputManager.MiscLeftClicked -= InputManager_MiscLeftClicked;
+        InputManager.GroundLeftClicked -= InputManager_GroundLeftClicked;
+        InputManager.UnitLeftClicked -= InputManager_UnitLeftClicked;
+
         InputManager.KeyDown -= InputManager_KeyDown;
         InputManager.KeyUp -= InputManager_KeyUp;
 

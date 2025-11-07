@@ -123,14 +123,27 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
         PopulateBuildingPanel(structures);
     }
 
-    void StructureManager_StructureDeselected(Structure s)
-    {
-        ResetUIPanels();
-    }
-
     void TrainingStructure_TrainingStructureSelected(TrainingStructure s)
     {
         EnableUnitPanel(s.trainableUnits);
+    }
+
+    void TrainingStructure_TrainingStructureDeselected(TrainingStructure s)
+    {
+        Dbx.CtxLog("Training structure deselected");
+        DisableUnitPanel();
+    }
+    
+
+    void GeneralStructure_GeneralStructureSelected(GeneralStructure s)
+    {
+        
+    }
+
+    void GeneralStructure_GeneralStructureDeselected(GeneralStructure s)
+    {
+        Dbx.CtxLog("General structure deselected");
+        ResetUIPanels();
     }
 
     void UnitManager_TrainableUnitsLoaded(Dictionary<int, UnitSO> trainableUnits)
@@ -140,19 +153,25 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
 
     private void OnEnable()
     {
-        StructureManager.StructureDeselected += StructureManager_StructureDeselected;
-        StructureManager.PlaceableStructuresLoaded += StructureManager_PlaceableStructuresLoaded;
-
         TrainingStructure.TrainingStructureSelected += TrainingStructure_TrainingStructureSelected;
+        TrainingStructure.TrainingStructureDeselected += TrainingStructure_TrainingStructureDeselected;
+
+        GeneralStructure.GeneralStructureSelected += GeneralStructure_GeneralStructureSelected;
+        GeneralStructure.GeneralStructureDeselected += GeneralStructure_GeneralStructureDeselected;
+
+        StructureManager.PlaceableStructuresLoaded += StructureManager_PlaceableStructuresLoaded;
         UnitManager.TrainableUnitsLoaded += UnitManager_TrainableUnitsLoaded;
     }
 
     private void OnDisable()
     {
-        StructureManager.StructureDeselected -= StructureManager_StructureDeselected;
-        StructureManager.PlaceableStructuresLoaded -= StructureManager_PlaceableStructuresLoaded;
-
         TrainingStructure.TrainingStructureSelected -= TrainingStructure_TrainingStructureSelected;
+        TrainingStructure.TrainingStructureDeselected -= TrainingStructure_TrainingStructureDeselected;
+
+        GeneralStructure.GeneralStructureSelected -= GeneralStructure_GeneralStructureSelected;
+        GeneralStructure.GeneralStructureDeselected -= GeneralStructure_GeneralStructureDeselected;
+
+        StructureManager.PlaceableStructuresLoaded -= StructureManager_PlaceableStructuresLoaded;
 
         UnitManager.TrainableUnitsLoaded -= UnitManager_TrainableUnitsLoaded;
     }

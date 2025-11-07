@@ -5,9 +5,17 @@ public class GeneralStructure : Structure
 {
     public delegate void GeneralStructureSelectedHandler(GeneralStructure s);
     public static event GeneralStructureSelectedHandler GeneralStructureSelected;
+
+    public delegate void GeneralStructureDeselectedHandler(GeneralStructure s);
+    public static event GeneralStructureDeselectedHandler GeneralStructureDeselected;
+
     public override void HandleStructureSelect() {
         GeneralStructureSelected?.Invoke(this);
         SetSelectedPreviewState(true);
+    }
+    public override void HandleStructureDeselect() {
+        GeneralStructureDeselected?.Invoke(this);
+        SetSelectedPreviewState(false);
     }
     public override void CopyStructureData(StructureSO so)
     {

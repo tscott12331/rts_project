@@ -30,10 +30,7 @@ public abstract class Structure : Attackable
 
     public abstract void HandleStructureSelect();
 
-    public void HandleStructureDeselect()
-    {
-        SetSelectedPreviewState(false);
-    }
+    public abstract void HandleStructureDeselect();
 
     private void OnCollisionEnter(Collision collision)
     {

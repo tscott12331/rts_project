@@ -8,6 +8,9 @@ public class TrainingStructure : Structure
     public delegate void TrainingStructureSelectedHandler(TrainingStructure s);
     public static event TrainingStructureSelectedHandler TrainingStructureSelected;
 
+    public delegate void TrainingStructureDeselectedHandler(TrainingStructure s);
+    public static event TrainingStructureDeselectedHandler TrainingStructureDeselected;
+
     public delegate void TrainUnitHandler(sbyte unitId, TrainingStructure structure, Transform position, Transform destination, ObjectOwner owner);
     public static event TrainUnitHandler TrainUnit;
 
@@ -45,5 +48,10 @@ public class TrainingStructure : Structure
     {
         TrainingStructureSelected?.Invoke(this);
         SetSelectedPreviewState(true);
+    }
+
+    public override void HandleStructureDeselect() {
+        TrainingStructureDeselected?.Invoke(this);
+        SetSelectedPreviewState(false);
     }
 }
