@@ -105,7 +105,10 @@ public abstract class Unit : Attackable
                 AttackableTypes.Contains(attackable.AType) && 
                  (
                  (UType != UnitType.Healer && attackable.Owner != Owner) ||
-                 (UType == UnitType.Healer && attackable.Owner == Owner)
+                 (
+                     (UType == UnitType.Healer && attackable.Owner == Owner) &&
+                     (attackable.AType != AttackableType.Unit || (attackable as Unit).UType != UnitType.Healer)
+                 )
                  )
                )
                ||
@@ -135,6 +138,11 @@ public abstract class Unit : Attackable
         //Debug.Log($"[Unit.TryAttackTarget]: count = {AttackTargets.Count}, time = {Time.time}, next attack time = {nextAttackTime}");
         bool haveTargets = (AttackTargets.Count > 0 || CommandedTarget != null);
         NavAgent.updateRotation = !haveTargets;
+        if(!haveTargets)
+        {
+            Model.rotation = Quaternion.LookRotation(transform.forward);
+        }
+
         if (haveTargets && Time.time > nextAttackTime)
         {
             // prioritize commanded target
