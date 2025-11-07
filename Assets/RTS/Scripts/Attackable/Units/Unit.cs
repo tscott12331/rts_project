@@ -23,6 +23,8 @@ public abstract class Unit : Attackable
 
     public NavMeshAgent NavAgent { get; protected set; }
 
+    public SphereCollider TargetingTrigger;
+
     public float AttackTime { get; protected set; }
     private float nextAttackTime = 0.0f;
 
@@ -50,8 +52,10 @@ public abstract class Unit : Attackable
             NavAgent.radius = (scale.x + scale.y) / 4 + 0.2f;
         }
 
-        TryGetComponent<SphereCollider>(out var sphereCollider);
-        if (sphereCollider != null) sphereCollider.radius = data.Range;
+        if(TargetingTrigger != null)
+        {
+            TargetingTrigger.radius = data.Range;
+        }
     }
 
     public void MoveTo(Vector3 position, bool preserveCommandTarget = false)
@@ -180,12 +184,12 @@ public abstract class Unit : Attackable
         TryAttackTarget();
     }
 
-    public void OnTriggerEnter(Collider other)
+    public void HandleTriggerEnter(Collider other)
     {
         if (CanAttack(other.gameObject, out var target)) AddAttackTarget(target);
     }
 
-    public void OnTriggerExit(Collider other)
+    public void HandleTriggerExit(Collider other)
     {
         if (CanAttack(other.gameObject, out var target)) RemoveAttackTarget(target);
     }

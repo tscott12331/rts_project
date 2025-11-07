@@ -40,8 +40,10 @@ public class CollectorUnit : Unit
             NavAgent.radius = (scale.x + scale.y) / 4 + 0.2f;
         }
 
-        TryGetComponent<SphereCollider>(out var sphereCollider);
-        if (sphereCollider != null) sphereCollider.radius = data.Range;
+        if(TargetingTrigger != null)
+        {
+            TargetingTrigger.radius = data.Range;
+        }
     }
 
     public void CarryResource(CollectableResourceCount resourceAmount)
