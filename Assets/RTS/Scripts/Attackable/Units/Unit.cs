@@ -64,7 +64,7 @@ public abstract class Unit : Attackable
     {
         if (NavAgent == null) return;
 
-        NavMeshUtils.SamplePosition(gameObject, position, out var newPos);
+        NavMeshUtils.SamplePosition(position, out var newPos);
         NavAgent.SetDestination(newPos);
 
         if(preserveCommandTarget)

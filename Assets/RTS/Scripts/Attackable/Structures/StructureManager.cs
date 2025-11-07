@@ -121,7 +121,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
             if(rotate)
             {
                 s.transform.Rotate(Vector3.up, Input.mousePositionDelta.x);
-            } else if (NavMeshUtils.SamplePosition(s, pos, out Vector3 newPos))
+            } else if (NavMeshUtils.SamplePosition(pos, out Vector3 newPos))
             {
                 
                 s.transform.position = newPos;
@@ -169,7 +169,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
     }
 
     public Structure PlaceStructure(StructureSO so, Vector3 pos, Quaternion rot, ObjectOwner ownership) {
-        if(NavMeshUtils.SamplePosition(so.data.prefab, pos, out Vector3 newPos)) {
+        if(NavMeshUtils.SamplePosition(pos, out Vector3 newPos)) {
             var prefab = so.data.prefab;
             var structureGO = Instantiate(prefab, newPos, rot);
             var structure = structureGO.GetComponent<Structure>();
