@@ -8,11 +8,11 @@ using UnityEngine.UIElements;
 
 public class StructureManager : MonoBehaviourSingleton<StructureManager>
 {
-    public delegate void StructureSelectedHandler(Structure structure);
-    public static event StructureSelectedHandler StructureSelected;
+    //public delegate void StructureSelectedHandler(Structure structure);
+    //public static event StructureSelectedHandler StructureSelected;
 
-    public delegate void StructureDeselectedHandler(Structure structure);
-    public static event StructureDeselectedHandler StructureDeselected;
+    //public delegate void StructureDeselectedHandler(Structure structure);
+    //public static event StructureDeselectedHandler StructureDeselected;
 
     public delegate void PlaceableStructuresLoadedHandler(Dictionary<int, StructureSO> structures);
     public static event PlaceableStructuresLoadedHandler PlaceableStructuresLoaded;
@@ -167,14 +167,33 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         Destroy(structure.gameObject);
     }
 
-    public void PlaceStructure(StructureSO so, Vector3 pos, Quaternion rot, ObjectOwner ownership) {
+    public Structure PlaceStructure(StructureSO so, Vector3 pos, Quaternion rot, ObjectOwner ownership) {
         if(NavMeshUtils.SamplePosition(so.data.prefab, pos, out Vector3 newPos)) {
             var prefab = so.data.prefab;
             var structureGO = Instantiate(prefab, newPos, rot);
             var structure = structureGO.GetComponent<Structure>();
 
+            // check structure position
+            if (structure == null || !structure.IsValidPosition)
+            {
+                Dbx.CtxLog("Invalid structure placement");
+                Destroy(structure.gameObject);
+                return null;
+            }
+
             structure.CopyStructureData(so);
             structure.Owner = ownership;
+
+            // structure is in valid position, attempt to expend resources
+            if(!OwnerResourceManager.Instance.ExpendResources(structure.Cost, structure.Owner))
+            {
+                Dbx.CtxLog("Insufficient resources to place structure");
+                Destroy(structure.gameObject);
+                return null;
+            }
+
+            // structure is in valid position and resources have been expended
+            structure.RunStructurePlacedActions();
 
             // select and add new structure
             DeselectStructure(selectedStructure);
@@ -182,21 +201,24 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
             SelectStructure(structure);
 
             ResetStructurePreview();
+            return structure;
         }
+
+        return null;
     }
 
-    public void PlaceStructure(sbyte structureIndex, Vector3 pos, Quaternion rot, ObjectOwner ownership) {
+    public Structure PlaceStructure(sbyte structureIndex, Vector3 pos, Quaternion rot, ObjectOwner ownership) {
         // get preview info
         var preview = structurePreviews[structureIndex];
         var structure = preview.GetComponent<Structure>();
         if (structure == null || !structure.IsValidPosition)
         {
-            Debug.LogError("[StructureManager]: Invalid structure placement");
-            return;
+            Dbx.CtxLog("Invalid structure placement");
+            return null;
         }
 
         var so = placeableStructures[structureIndex];
-        PlaceStructure(so, pos, rot, ownership);
+        return PlaceStructure(so, pos, rot, ownership);
     }
 
     public void DeselectStructure(Transform structureTransform)
@@ -208,9 +230,11 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
     public void DeselectStructure(Structure s)
     {
         if(s == null || selectedStructure != s) return;
-        s.transform.Find("Selected").gameObject.SetActive(false);
+
+        s.HandleStructureDeselect();
+
         selectedStructure = null;
-        StructureDeselected?.Invoke(s);
+        //StructureDeselected?.Invoke(s);
     }
 
     public void SelectStructure(int id)
@@ -240,17 +264,33 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         SelectStructure(structureTransform);
     }
 
-    void InputManager_MiscLeftClicked(Transform miscTransform, Vector3 point)
+    void InputManager_UnitLeftClicked(Transform unitTransform, Vector3 point)
     {
         DeselectStructure(selectedStructure);
-        // deselect structure when misc objects
+    }
+
+    void InputManager_GroundLeftClicked(Transform groundTransform, Vector3 point)
+    {
+        DeselectStructure(selectedStructure);
+
         if (structurePreview != NO_PREVIEW)
         {
             var previewTransform = structurePreviews[structurePreview].transform;
             // place a structure
             PlaceStructure(structurePreview, previewTransform.position, previewTransform.rotation, ObjectOwner.Player);
         }
-        
+    }
+
+    void InputManager_MiscLeftClicked(Transform miscTransform, Vector3 point)
+    {
+        DeselectStructure(selectedStructure);
+
+        if (structurePreview != NO_PREVIEW)
+        {
+            var previewTransform = structurePreviews[structurePreview].transform;
+            // place a structure
+            PlaceStructure(structurePreview, previewTransform.position, previewTransform.rotation, ObjectOwner.Player);
+        }
     }
 
     void InputManager_KeyDown(Keybind action)
@@ -299,6 +339,9 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
 
         InputManager.StructureLeftClicked += InputManager_StructureLeftClicked;
         InputManager.MiscLeftClicked += InputManager_MiscLeftClicked;
+        InputManager.GroundLeftClicked += InputManager_GroundLeftClicked;
+        InputManager.UnitLeftClicked += InputManager_UnitLeftClicked;
+
         InputManager.KeyDown += InputManager_KeyDown;
         InputManager.KeyUp += InputManager_KeyUp;
 
@@ -311,6 +354,9 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
 
         InputManager.StructureLeftClicked -= InputManager_StructureLeftClicked;
         InputManager.MiscLeftClicked -= InputManager_MiscLeftClicked;
+        InputManager.GroundLeftClicked -= InputManager_GroundLeftClicked;
+        InputManager.UnitLeftClicked -= InputManager_UnitLeftClicked;
+
         InputManager.KeyDown -= InputManager_KeyDown;
         InputManager.KeyUp -= InputManager_KeyUp;
 

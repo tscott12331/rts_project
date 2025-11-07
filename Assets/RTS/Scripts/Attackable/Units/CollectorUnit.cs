@@ -4,11 +4,18 @@ using UnityEngine.AI;
 
 public class CollectorUnit : Unit
 {
-    public int CarriedResources { get; protected set; } = 0;
+    public delegate void ResourceDroppedOffHandler(CollectableResourceCount resourceCount, ObjectOwner owner);
+    public static event ResourceDroppedOffHandler ResourceDroppedOff;
 
+    public delegate void ResourceDepositDestroyedHandler(ResourceDeposit deposit);
+    public static event ResourceDepositDestroyedHandler ResourceDepositDestroyed;
+
+    public CollectableResourceCount CarriedResources { get; protected set; } = new(0, 0);
     public int CarryCapacityMult = 5;
-    
     public int CarryCapacity { get; private set; }
+
+    private Attackable previousTarget;
+
     public override void CopyUnitData(UnitSO unitSO)
     {
         var data = unitSO.Data;
@@ -24,6 +31,8 @@ public class CollectorUnit : Unit
 
         this.CarryCapacity = Damage * CarryCapacityMult;
 
+        this.Cost = new ResourceCount(data.Cost.Ytalnium, data.Cost.NaturalMetal, data.Cost.EnergyCapacity);
+
         if (NavAgent != null)
         {
             NavAgent.speed = this.Speed;
@@ -35,9 +44,16 @@ public class CollectorUnit : Unit
         if (sphereCollider != null) sphereCollider.radius = data.Range;
     }
 
-    public void CarryResource(int resourceAmount)
+    public void CarryResource(CollectableResourceCount resourceAmount)
     {
-        CarriedResources = Mathf.Min(CarriedResources + resourceAmount, CarryCapacity);
+        CarriedResources += resourceAmount;
+        //CarriedResources = Mathf.Min(CarriedResources + resourceAmount, CarryCapacity);
+    }
+
+    public void DropoffResource(CollectableResourceCount resourceAmount) {
+        // temp
+        ResourceDroppedOff?.Invoke(resourceAmount, Owner);
+        CarriedResources.Reset();
     }
 
     public override void AttackTarget(Attackable target)
@@ -45,8 +61,15 @@ public class CollectorUnit : Unit
         //Dbx.CtxLog($"\ntarget is {(target == null ? "null" : "not null")}\n" +
         //    $"CarriedResources: {CarriedResources}, CarryCapacity: {CarryCapacity}\n" +
         //    $"Target HP: {target.HP}");
-        if (target == null || CarriedResources >= CarryCapacity 
-            || target.HP <= 0) return;
+        if (target == null || target.HP <= 0) return;
+
+        if(CarriedResources.GetTotal() >= CarryCapacity && target != AssignedStructure) {
+            // MoveTo(AssignedStructure.transform.position);
+            //Dbx.CtxLog("Collector has full capacity");
+            previousTarget = target;
+            SetCommandTarget(AssignedStructure);
+            return;
+        }
 
         if(!AttackTargets.Contains(target))
         {
@@ -55,17 +78,30 @@ public class CollectorUnit : Unit
             return; // don't attack yet
         }
 
+        // drop off resources if target is assigned structure
+        if (target == AssignedStructure) {
+            //Dbx.CtxLog($"Collector target is assigned structure {target.name}, dropping off");
+
+            DropoffResource(CarriedResources);
+            RemoveAttackTarget(target);
+            SetCommandTarget(previousTarget);
+            return;
+        }
+
         var resourceDeposit = target as ResourceDeposit;
 
-        int resourcesTaken = resourceDeposit.TakeResourcesFromDamage(this.Damage, out var depleted);
+        var resourcesTaken = resourceDeposit.TakeResourcesFromDamage(this.Damage, out var depleted);
         CarryResource(resourcesTaken);
 
         if (depleted)
         {
             // target is dead
             RemoveAttackTarget(target);
+
             // implement destroy logic
-            Destroy(resourceDeposit.gameObject);
+            ResourceDepositDestroyed?.Invoke(resourceDeposit);
+            SetCommandTarget(AssignedStructure);
+            previousTarget = null;
         }
     }
     private void Awake()

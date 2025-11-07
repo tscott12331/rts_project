@@ -44,12 +44,13 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
         Destroy(unit.gameObject);
     }
 
-    public void TrainUnit(sbyte unitId, Transform spawnPositionTransform, Transform walkPositionTransform, ObjectOwner owner)
+    public void TrainUnit(sbyte unitId, TrainingStructure structure, Transform spawnPositionTransform, Transform walkPositionTransform, ObjectOwner owner)
     {
         trainableUnits.TryGetValue(unitId, out var unitSO);
         if(unitSO == null)
         {
-            Debug.LogError($"[UnitManager.TrainUnit]: Unit Id {unitId} does not match a trainable unit");
+            Dbx.CtxLog($"Unit Id {unitId} does not match a trainable unit");
+            return;
         }
 
         var unitPrefab = unitSO.Data.Prefab;
@@ -58,12 +59,21 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
             unitGO.TryGetComponent<Unit>(out var unit);
             if(unit == null)
             {
-                Debug.LogError($"[UnitManager.TrainUnit]: Instantiated unit does not contain Unit script");
+                Dbx.CtxLog($"Instantiated unit does not contain Unit script");
                 return;
             }
 
             unit.CopyUnitData(unitSO);
+            unit.AssignedStructure = structure;
             unit.Owner = owner;
+
+            if(!OwnerResourceManager.Instance.ExpendResources(unit.Cost, unit.Owner))
+            {
+                Dbx.CtxLog("Insufficient resources to train unit");
+                Destroy(unit.gameObject);
+                return;
+            }
+
             AddUnit(unit);
 
             if(NavMeshUtils.SamplePosition(unitPrefab, walkPositionTransform.position, out newPos))
@@ -77,7 +87,7 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
     {
         if(unit == null)
         {
-            Debug.LogError($"[UnitManager.AddUnit]: Unit is null");
+            Dbx.CtxLog($"Unit is null");
             return;
         }
 
@@ -93,14 +103,14 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
     {
         if(unit == null)
         {
-            Debug.LogError($"[UnitManager.SelectUnit]: Unit is null");
+            Dbx.CtxLog($"Unit is null");
             return;
         }
 
         var selectedTransform = unit.transform.Find("UnitSelected");
         if (selectedTransform == null)
         {
-            Debug.LogError($"UnitManager.SelectUnit]: Cannot find UnitSelected object");
+            Dbx.CtxLog($"Cannot find UnitSelected object");
             return;
         }
 
@@ -112,14 +122,14 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
     {
         if(unit == null)
         {
-            Debug.LogError($"[UnitManager.DeselectUnit]: Unit is null");
+            Dbx.CtxLog($"Unit is null");
             return;
         }
 
         var selectedTransform = unit.transform.Find("UnitSelected");
         if (selectedTransform == null)
         {
-            Debug.LogError($"UnitManager.DeselectUnit]: Cannot find UnitSelected object");
+            Dbx.CtxLog($"Cannot find UnitSelected object");
             return;
         }
 
@@ -203,9 +213,9 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
     }
 
 
-    void TrainingStructure_TrainUnit(sbyte unitId, Transform spawnPositionTransform, Transform walkPositionTransform, ObjectOwner owner)
+    void TrainingStructure_TrainUnit(sbyte unitId, TrainingStructure structure, Transform spawnPositionTransform, Transform walkPositionTransform, ObjectOwner owner)
     {
-        TrainUnit(unitId, spawnPositionTransform, walkPositionTransform, owner);
+        TrainUnit(unitId, structure, spawnPositionTransform, walkPositionTransform, owner);
     }
 
 

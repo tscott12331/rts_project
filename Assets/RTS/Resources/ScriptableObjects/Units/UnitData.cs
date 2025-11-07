@@ -12,6 +12,8 @@ public class UnitData
     public int Id;
     
     public GameObject Prefab;
+
+    public ObjectCost Cost;
     
     public UnitType Type;
 

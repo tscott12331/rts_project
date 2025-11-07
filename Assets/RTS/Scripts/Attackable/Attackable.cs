@@ -34,7 +34,9 @@ public abstract class Attackable : MonoBehaviour
         }
     }
 
-    public int HP;
+    public int HP { get; protected set; }
+    public int MaxHP { get; protected set; }
+
     public virtual bool TakeDamage(int damage) {
         if(HP > 0)
         {

@@ -7,13 +7,15 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        ResourceDepositManager.Instance.LoadResourceDeposits();
+
         UnitManager.Instance.LoadTrainableUnits();
 
         StructureManager.Instance.LoadPlaceableStructures();
 
-        StructureManager.Instance.PlaceStructure(1, EnemyStartPoint.position, EnemyStartPoint.rotation, ObjectOwner.Enemy);
-        StructureManager.Instance.PlaceStructure(1, PlayerStartPoint.position, PlayerStartPoint.rotation, ObjectOwner.Player);
+        Structure EnemyHQ = StructureManager.Instance.PlaceStructure(1, EnemyStartPoint.position, EnemyStartPoint.rotation, ObjectOwner.Enemy);
+        Structure PlayerHQ = StructureManager.Instance.PlaceStructure(1, PlayerStartPoint.position, PlayerStartPoint.rotation, ObjectOwner.Player);
 
-        UnitManager.Instance.TrainUnit(0, EnemyStartPoint, EnemyStartPoint, ObjectOwner.Enemy);
+        UnitManager.Instance.TrainUnit(0, EnemyHQ as TrainingStructure, EnemyStartPoint, EnemyStartPoint, ObjectOwner.Enemy);
     }
 }

@@ -6,10 +6,9 @@ using UnityEngine.AI;
 
 public abstract class Unit : Attackable
 {
-    public delegate void ResourceDepositDestroyedHandler(ResourceDeposit structure);
-    public static event ResourceDepositDestroyedHandler ResourceDepositDestroyed;
-
     public int Id { get; protected set; }
+
+    public ResourceCount Cost;
     public float Speed { get; protected set; }
     public int Damage { get; protected set; }
     public float RateOfAttack { get; protected set; }
@@ -19,6 +18,8 @@ public abstract class Unit : Attackable
     public Attackable CommandedTarget { get; protected set; }
     public List<AttackableType> AttackableTypes { get; protected set; } = new();
     public UnitType UType;
+
+    public TrainingStructure AssignedStructure { get; set; }
 
     public NavMeshAgent NavAgent { get; protected set; }
 
@@ -30,6 +31,7 @@ public abstract class Unit : Attackable
         var data = unitSO.Data;
         this.Id = data.Id;
         this.HP = data.HP;
+        this.MaxHP = data.HP;
         this.Prefab = data.Prefab;
         this.Speed = data.Speed;
         this.Damage = data.Damage;
@@ -37,8 +39,9 @@ public abstract class Unit : Attackable
         this.AttackTime = 1 / this.RateOfAttack;
         this.UType = data.Type;
         this.AType = AttackableType.Unit;
-
         this.Range = data.Range;
+
+        this.Cost = new ResourceCount(data.Cost.Ytalnium, data.Cost.NaturalMetal, data.Cost.EnergyCapacity);
 
         if (NavAgent != null)
         {
@@ -69,23 +72,30 @@ public abstract class Unit : Attackable
             
     }
 
+    public void SetCommandTarget(Attackable attackable) {
+        if(attackable == null) return;
+
+        if (CanAttack(attackable.gameObject, out var target)) CommandedTarget = target;
+    }
+
     public void SetCommandTarget(Transform targetTransform)
     {
+        if(targetTransform == null) return;
+
         if (CanAttack(targetTransform.gameObject, out var target)) CommandedTarget = target;
     }
 
-    public bool CanAttack(GameObject obj, out Attackable target)
-    {
+    public bool CanAttack(Attackable attackable, out Attackable target) {
         target = null;
 
-        obj.TryGetComponent<Attackable>(out var attackable);
         if (attackable == null)
         {
             //Dbx.CtxLog($"Obect is not attackable");
             return false;
         }
 
-        if (AttackableTypes.Contains(attackable.AType) && attackable.Owner != Owner)
+        if ((AttackableTypes.Contains(attackable.AType) && attackable.Owner != Owner)
+            || (UType == UnitType.Collector && attackable == AssignedStructure))
         {
             //Dbx.CtxLog($"{attackable.name} is a valid attack target to {name}");
             target = attackable;
@@ -95,6 +105,13 @@ public abstract class Unit : Attackable
         //Dbx.CtxLog($"{attackable.name} is invalid attackable type to {name}");
 
         return false;
+    }
+
+    public bool CanAttack(GameObject obj, out Attackable target)
+    {
+        obj.TryGetComponent<Attackable>(out var attackable);
+
+        return CanAttack(attackable, out target);
     }
 
     public abstract void AttackTarget(Attackable target);

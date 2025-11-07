@@ -16,5 +16,9 @@ MonoBehaviour:
     id: 1
     prefab: {fileID: 4806627809971288126, guid: 24a33d19906c5084c879cdd55a0454e2, type: 3}
     HP: 1000
+    Cost:
+      Ytalnium: 100
+      NaturalMetal: 150
+      EnergyCapacity: 10
   trainableUnits:
   - {fileID: 11400000, guid: 68546f331f2dd124ca6e313655d258a8, type: 2}

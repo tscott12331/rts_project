@@ -8,7 +8,10 @@ public class TrainingStructure : Structure
     public delegate void TrainingStructureSelectedHandler(TrainingStructure s);
     public static event TrainingStructureSelectedHandler TrainingStructureSelected;
 
-    public delegate void TrainUnitHandler(sbyte unitId, Transform position, Transform destination, ObjectOwner owner);
+    public delegate void TrainingStructureDeselectedHandler(TrainingStructure s);
+    public static event TrainingStructureDeselectedHandler TrainingStructureDeselected;
+
+    public delegate void TrainUnitHandler(sbyte unitId, TrainingStructure structure, Transform position, Transform destination, ObjectOwner owner);
     public static event TrainUnitHandler TrainUnit;
 
     public Transform spawnPositionTransform;
@@ -21,7 +24,7 @@ public class TrainingStructure : Structure
     {
         if (unitNum > -1 && unitNum < trainableUnits.Count) {
             var unitId = trainableUnits[unitNum];
-            TrainUnit?.Invoke(unitId, spawnPositionTransform, walkPositionTransform, Owner);
+            TrainUnit?.Invoke(unitId, this, spawnPositionTransform, walkPositionTransform, Owner);
         }
     }
 
@@ -29,8 +32,13 @@ public class TrainingStructure : Structure
         var trainingSO = (TrainableStructureSO) so;
         var data = trainingSO.data;
         this.HP = data.HP;
+        this.MaxHP = data.HP;
         this.Prefab = data.prefab;
         this.AType = AttackableType.Structure;
+
+        this.Cost = new ResourceCount(data.Cost.Ytalnium, data.Cost.NaturalMetal, data.Cost.EnergyCapacity);
+
+        this.StructurePlacedActions = data.StructurePlacedActions;
 
         foreach(var unit in trainingSO.trainableUnits)
         {
@@ -40,7 +48,12 @@ public class TrainingStructure : Structure
 
     public override void HandleStructureSelect()
     {
-        transform.Find("Selected").gameObject.SetActive(true);
         TrainingStructureSelected?.Invoke(this);
+        SetSelectedPreviewState(true);
+    }
+
+    public override void HandleStructureDeselect() {
+        TrainingStructureDeselected?.Invoke(this);
+        SetSelectedPreviewState(false);
     }
 }

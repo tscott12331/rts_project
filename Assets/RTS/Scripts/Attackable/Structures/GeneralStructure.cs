@@ -5,15 +5,28 @@ public class GeneralStructure : Structure
 {
     public delegate void GeneralStructureSelectedHandler(GeneralStructure s);
     public static event GeneralStructureSelectedHandler GeneralStructureSelected;
+
+    public delegate void GeneralStructureDeselectedHandler(GeneralStructure s);
+    public static event GeneralStructureDeselectedHandler GeneralStructureDeselected;
+
     public override void HandleStructureSelect() {
         GeneralStructureSelected?.Invoke(this);
-        transform.Find("Selected").gameObject.SetActive(true);
+        SetSelectedPreviewState(true);
+    }
+    public override void HandleStructureDeselect() {
+        GeneralStructureDeselected?.Invoke(this);
+        SetSelectedPreviewState(false);
     }
     public override void CopyStructureData(StructureSO so)
     {
         var data = so.data;
         this.HP = data.HP;
+        this.MaxHP = data.HP;
         this.Prefab = data.prefab;
         this.AType = AttackableType.Structure;
+
+        this.Cost = new ResourceCount(data.Cost.Ytalnium, data.Cost.NaturalMetal, data.Cost.EnergyCapacity);
+
+        this.StructurePlacedActions = data.StructurePlacedActions;
     }
 }
