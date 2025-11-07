@@ -193,6 +193,8 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
             }
 
             // structure is in valid position and resources have been expended
+            structure.RunStructurePlacedActions();
+
             // select and add new structure
             DeselectStructure(selectedStructure);
             AddStructure(structure);

@@ -125,24 +125,23 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
 
     void TrainingStructure_TrainingStructureSelected(TrainingStructure s)
     {
+        EnableUpgradePanel();
         EnableUnitPanel(s.trainableUnits);
     }
 
     void TrainingStructure_TrainingStructureDeselected(TrainingStructure s)
     {
-        Dbx.CtxLog("Training structure deselected");
-        DisableUnitPanel();
+        ResetUIPanels();
     }
     
 
     void GeneralStructure_GeneralStructureSelected(GeneralStructure s)
     {
-        
+        EnableUpgradePanel();
     }
 
     void GeneralStructure_GeneralStructureDeselected(GeneralStructure s)
     {
-        Dbx.CtxLog("General structure deselected");
         ResetUIPanels();
     }
 

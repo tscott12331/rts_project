@@ -26,5 +26,7 @@ public class GeneralStructure : Structure
         this.AType = AttackableType.Structure;
 
         this.Cost = new ResourceCount(data.Cost.Ytalnium, data.Cost.NaturalMetal, data.Cost.EnergyCapacity);
+
+        this.StructurePlacedActions = data.StructurePlacedActions;
     }
 }

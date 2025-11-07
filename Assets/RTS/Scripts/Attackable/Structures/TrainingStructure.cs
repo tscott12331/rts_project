@@ -38,6 +38,8 @@ public class TrainingStructure : Structure
 
         this.Cost = new ResourceCount(data.Cost.Ytalnium, data.Cost.NaturalMetal, data.Cost.EnergyCapacity);
 
+        this.StructurePlacedActions = data.StructurePlacedActions;
+
         foreach(var unit in trainingSO.trainableUnits)
         {
             this.trainableUnits.Add((sbyte) unit.Data.Id);

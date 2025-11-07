@@ -1,4 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
+
+public enum StructurePlacedAction
+{
+    IncreaseEnergyCapacity,
+}
 
 [System.Serializable]
 public class StructureData
@@ -10,4 +16,6 @@ public class StructureData
     public int HP;
 
     public ObjectCost Cost;
+
+    public List<StructurePlacedAction> StructurePlacedActions;
 }

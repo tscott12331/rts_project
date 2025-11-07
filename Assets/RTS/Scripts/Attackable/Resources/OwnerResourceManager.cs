@@ -7,7 +7,8 @@ public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
 {
     public ResourceCount PlayerResources { get; private set; } = new(2500, 2500, 500);
     public ResourceCount EnemyResources { get; private set; } = new(250, 250, 50);
-    
+
+    private const int energyCapacityIncreaseAmount = 20;
 
     public bool ExpendResources(ResourceCount amount, ObjectOwner owner)
     {
@@ -44,7 +45,17 @@ public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
 
     }
 
-    
+    public void IncreaseEnergyCapacity(ObjectOwner owner)
+    {
+        if(owner == ObjectOwner.Player)
+        {
+            PlayerResources.EnergyCapacity += energyCapacityIncreaseAmount;
+        } else if(owner == ObjectOwner.Enemy)
+        {
+            EnemyResources.EnergyCapacity += energyCapacityIncreaseAmount;
+        }
+    }
+
     public void CollectorUnit_ResourceDroppedOff(CollectableResourceCount resourceCount, ObjectOwner owner)
     {
         if(owner == ObjectOwner.Player)
@@ -56,14 +67,23 @@ public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
         }
     }
 
+    public void Structure_IncreaseEnergyCapacity(ObjectOwner owner)
+    {
+        IncreaseEnergyCapacity(owner);
+    }
+
     private void OnEnable()
     {
         CollectorUnit.ResourceDroppedOff += CollectorUnit_ResourceDroppedOff;
+
+        Structure.IncreaseEnergyCapacity += Structure_IncreaseEnergyCapacity;
     }
 
     private void OnDisable()
     {
         CollectorUnit.ResourceDroppedOff -= CollectorUnit_ResourceDroppedOff;
+
+        Structure.IncreaseEnergyCapacity -= Structure_IncreaseEnergyCapacity;
     }
 
 }
