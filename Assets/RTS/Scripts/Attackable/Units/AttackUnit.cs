@@ -4,16 +4,21 @@ using UnityEngine.AI;
 
 public class AttackUnit : Unit
 {
+    // fired when unit destroys structure
     public delegate void StructureDestroyedHandler(Structure structure);
     public static event StructureDestroyedHandler StructureDestroyed;
 
+    // fired when unit destroys unit
     public delegate void UnitDestroyedHandler(Unit structure);
     public static event UnitDestroyedHandler UnitDestroyed;
 
+    // unit's weapon
     public Weapon Weapon;
 
     public override void AttackTarget(Attackable target)
     {
+        // don't attack if we don't have a weapon, if our target is null,
+        // or if the target is dead
         if (Weapon == null || target == null || target.HP <= 0) return;
 
         if(!AttackTargets.Contains(target))
@@ -23,14 +28,17 @@ public class AttackUnit : Unit
             return; // don't attack yet
         }
 
+        // signal weapon's shoot effect
         Weapon.Shoot();
 
+        // if target dies from damage
         if (!target.TakeDamage(this.Damage))
         {
             // target is dead
             Dbx.CtxLog($"Killed {target.name}");
             RemoveAttackTarget(target);
 
+            // invoke appropriate event
             switch (target.AType) {
                 case AttackableType.Structure:
                     StructureDestroyed?.Invoke(target as Structure);
@@ -44,6 +52,7 @@ public class AttackUnit : Unit
 
     public void Awake()
     {
+        // attack unit can attack units and structures
         this.AttackableTypes = new() { AttackableType.Unit, AttackableType.Structure };
         NavAgent = GetComponent<NavMeshAgent>();
     }

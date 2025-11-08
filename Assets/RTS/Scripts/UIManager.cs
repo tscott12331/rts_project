@@ -8,12 +8,15 @@ using System.Resources;
 
 public class UIManager : MonoBehaviourSingleton<UIManager>
 {
+    // fired when a unit button is pressed
     public delegate void UnitButtonPressedHandler(sbyte unitNum);
     public static event UnitButtonPressedHandler UnitButtonPressed;
 
+    // fired when a building button is pressed
     public delegate void BuildingButtonPressedHandler(sbyte buildingNum);
     public static event BuildingButtonPressedHandler BuildingButtonPressed;
 
+    // list of trainable untis (obtained from UnitManager)
     public Dictionary<int, UnitSO> TrainableUnits { get; private set; } = new();
 
     public GameObject BuildingPanel;
@@ -31,24 +34,32 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
         BuildingButtonPressed?.Invoke((sbyte) buildingNum);
     }
 
+    // based on a given dictionary of placeable structures, populate the building panel with buttons
     public void PopulateBuildingPanel(Dictionary<int, StructureSO> placeableStructures)
     {
         for(int i = 0; i < BuildingPanel.transform.childCount && i < placeableStructures.Count; i++)
         {
+            // get a ref to the button
             var button = BuildingPanel.transform.GetChild(i);
+            // enable the button
             button.gameObject.SetActive(true);
+            // get and set the text within the button to the structure prefab name
             var text = button.GetComponentInChildren<TMP_Text>();
             text.SetText(placeableStructures[i].data.prefab.name);
         }
     }
 
+    // based on a list of unitIds, enable and populate the unit panel
     public void EnableUnitPanel(List<sbyte> unitIds) {
         UnitPanel.SetActive(true);
 
         // enable needed buttons
         for(int i = 0; i < UnitPanel.transform.childCount && i < unitIds.Count; i++)
         {
+            // get the unit's id
             var unitId = unitIds[i];
+
+            // using that id, get the correct data for the uniti
             TrainableUnits.TryGetValue(unitId, out var unitSO);
             if(unitSO == null)
             {
@@ -56,14 +67,16 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
                 continue;
             }
 
+            // get a ref to the current button
             var button = UnitPanel.transform.GetChild(i);
             button.gameObject.SetActive(true);
 
+            // get and set the text component of the button to the unit prefab name
             var text = button.GetComponentInChildren<TMP_Text>();
             text.SetText(unitSO.Data.Prefab.name);
         }
         
-        // disable unneeded buttons
+        // disable unused buttons
         for(int i = unitIds.Count; i < BuildingPanel.transform.childCount; i++)
         {
             var button = UnitPanel.transform.GetChild(i);
@@ -95,6 +108,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     {
         if (ResourcePanel == null) return;
 
+        // get the ytalnium text element and set the amount appropriately
         var ytalniumTransform = ResourcePanel.transform.Find("YtalniumAmount");
         if(ytalniumTransform != null)
         {
@@ -105,6 +119,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
             }
         }
 
+        // get the natural metal text element and set the amount appropriately
         var nmTransform = ResourcePanel.transform.Find("NaturalMetalAmount");
         if(nmTransform != null)
         {
@@ -115,6 +130,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
             }
         }
 
+        // get the energy capacity text element and set the amount appropriately
         var ecTransform = ResourcePanel.transform.Find("EnergyCapacityAmount");
         if(ecTransform != null)
         {
@@ -127,38 +143,46 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     }
 
 
+    // populate the building panel whenver the placeable structures are loaded
     void StructureManager_PlaceableStructuresLoaded(Dictionary<int, StructureSO> structures)
     {
         PopulateBuildingPanel(structures);
     }
 
+    // enable the upgrade panel and unit panel with a structure's trainable units
+    // whenever a training structure is selected
     void TrainingStructure_TrainingStructureSelected(TrainingStructure s)
     {
         EnableUpgradePanel();
         EnableUnitPanel(s.trainableUnits);
     }
 
+    // reset panels when training structure is deselected
     void TrainingStructure_TrainingStructureDeselected(TrainingStructure s)
     {
         ResetUIPanels();
     }
     
 
+    // enable the upgrade panel when a general structure is selected
     void GeneralStructure_GeneralStructureSelected(GeneralStructure s)
     {
         EnableUpgradePanel();
     }
 
+    // reset panels when general structure is deselected
     void GeneralStructure_GeneralStructureDeselected(GeneralStructure s)
     {
         ResetUIPanels();
     }
 
+    // set reference to trainable units when they are loaded
     void UnitManager_TrainableUnitsLoaded(Dictionary<int, UnitSO> trainableUnits)
     {
         this.TrainableUnits = trainableUnits;
     }
 
+    // add and remove listeners
     private void OnEnable()
     {
         TrainingStructure.TrainingStructureSelected += TrainingStructure_TrainingStructureSelected;
@@ -186,6 +210,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
 
     private void Update()
     {
+        // try to update resource panel
         UpdateResourcePanel();
     }
 } 
