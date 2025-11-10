@@ -4,18 +4,28 @@ using UnityEngine.AI;
 
 public class CollectorUnit : Unit
 {
+    // fired when collector drops off resource
     public delegate void ResourceDroppedOffHandler(CollectableResourceCount resourceCount, ObjectOwner owner);
     public static event ResourceDroppedOffHandler ResourceDroppedOff;
 
+    // fired when collector destroys a deposit
     public delegate void ResourceDepositDestroyedHandler(ResourceDeposit deposit);
     public static event ResourceDepositDestroyedHandler ResourceDepositDestroyed;
 
+    // amount of resources the collector is carrying
     public CollectableResourceCount CarriedResources { get; protected set; } = new(0, 0);
+
+    // multiplier of damage that determines the carry capacity of the unit
     public int CarryCapacityMult = 5;
+
+    // how many resources the collector can carry
     public int CarryCapacity { get; private set; }
 
+    // ref to the collector's previous target (used for back and forth motion)
     private Attackable previousTarget;
 
+
+    // copy data from scriptable object
     public override void CopyUnitData(UnitSO unitSO)
     {
         var data = unitSO.Data;
@@ -29,6 +39,7 @@ public class CollectorUnit : Unit
         this.UType = data.Type;
         this.AType = AttackableType.Unit;
 
+        // set appropraite carry capacity based on damage and multi
         this.CarryCapacity = Damage * CarryCapacityMult;
 
         this.Cost = new ResourceCount(data.Cost.Ytalnium, data.Cost.NaturalMetal, data.Cost.EnergyCapacity);
@@ -40,21 +51,24 @@ public class CollectorUnit : Unit
             NavAgent.radius = (scale.x + scale.y) / 4 + 0.2f;
         }
 
+        // set radius of targeting trigger
         if(TargetingTrigger != null)
         {
             TargetingTrigger.radius = data.Range;
         }
     }
 
+    // carry an additional resource amount
     public void CarryResource(CollectableResourceCount resourceAmount)
     {
         CarriedResources += resourceAmount;
-        //CarriedResources = Mathf.Min(CarriedResources + resourceAmount, CarryCapacity);
     }
 
+    // drop off a resource amount
     public void DropoffResource(CollectableResourceCount resourceAmount) {
-        // temp
+        // invoke drop off event
         ResourceDroppedOff?.Invoke(resourceAmount, Owner);
+        // reset carried resources
         CarriedResources.Reset();
     }
 
@@ -63,12 +77,18 @@ public class CollectorUnit : Unit
         //Dbx.CtxLog($"\ntarget is {(target == null ? "null" : "not null")}\n" +
         //    $"CarriedResources: {CarriedResources}, CarryCapacity: {CarryCapacity}\n" +
         //    $"Target HP: {target.HP}");
+
+        // if resource doesn't exist or resource is depleted, stop
         if (target == null || target.HP <= 0) return;
 
+        // if collector is full and is not currently targeting it's assigned structure
         if(CarriedResources.GetTotal() >= CarryCapacity && target != AssignedStructure) {
-            // MoveTo(AssignedStructure.transform.position);
             //Dbx.CtxLog("Collector has full capacity");
+
+            // set previous target to what collector is currently targeting
             previousTarget = target;
+
+            // command collector to target its assigned structure
             SetCommandTarget(AssignedStructure);
             return;
         }
@@ -90,9 +110,13 @@ public class CollectorUnit : Unit
             return;
         }
 
+        // interpret target as resource deposit
         var resourceDeposit = target as ResourceDeposit;
 
+        // take resources from deposit
         var resourcesTaken = resourceDeposit.TakeResourcesFromDamage(this.Damage, out var depleted);
+
+        // carry taken resources
         CarryResource(resourcesTaken);
 
         if (depleted)
@@ -100,14 +124,19 @@ public class CollectorUnit : Unit
             // target is dead
             RemoveAttackTarget(target);
 
-            // implement destroy logic
+            // invoke deposit destroyed event
             ResourceDepositDestroyed?.Invoke(resourceDeposit);
+
+            // command target to go back to assigned structure
             SetCommandTarget(AssignedStructure);
+
+            // remove any previous target ref
             previousTarget = null;
         }
     }
     private void Awake()
     {
+        // collector can attack resources
         this.AttackableTypes = new() { AttackableType.Resource };
         NavAgent = GetComponent<NavMeshAgent>();
     }

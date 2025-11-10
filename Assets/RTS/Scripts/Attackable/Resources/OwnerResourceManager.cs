@@ -5,11 +5,13 @@ using UnityEngine;
 
 public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
 {
+    // initial resources for each player
     public ResourceCount PlayerResources { get; private set; } = new(2500, 2500, 500);
     public ResourceCount EnemyResources { get; private set; } = new(2500, 2500, 500);
 
     private const int energyCapacityIncreaseAmount = 20;
 
+    // try to expend an amount of resources
     public bool ExpendResources(ResourceCount amount, ObjectOwner owner)
     {
         if(owner == ObjectOwner.Player)
@@ -25,6 +27,7 @@ public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
         }
     }
 
+    // collect resources for an owner
     public bool CollectResources(CollectableResourceCount collected, ObjectOwner owner)
     {
         if(owner == ObjectOwner.Player)
@@ -45,6 +48,7 @@ public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
 
     }
 
+    // increase energy capacity by a predefined amount for an owner
     public void IncreaseEnergyCapacity(ObjectOwner owner)
     {
         if(owner == ObjectOwner.Player)
@@ -56,6 +60,7 @@ public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
         }
     }
 
+    // collect resources for an owner when a collector drops them off
     public void CollectorUnit_ResourceDroppedOff(CollectableResourceCount resourceCount, ObjectOwner owner)
     {
         if(owner == ObjectOwner.Player)
@@ -67,11 +72,13 @@ public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
         }
     }
 
+    // increase energy capacity for an owner when a structure says to
     public void Structure_IncreaseEnergyCapacity(ObjectOwner owner)
     {
         IncreaseEnergyCapacity(owner);
     }
 
+    // add and remove listeners
     private void OnEnable()
     {
         CollectorUnit.ResourceDroppedOff += CollectorUnit_ResourceDroppedOff;
@@ -99,6 +106,8 @@ public class ObjectCost
     public int EnergyCapacity;
 }
 
+
+// data type for collectable resources (ytalnium and natural metals)
 public class CollectableResourceCount
 {
     public int Ytalnium;
@@ -142,10 +151,12 @@ public class CollectableResourceCount
         if(rt == ResourceType.Ytalnium)
         {
             Ytalnium += amount;
+            // return amount added
             return new CollectableResourceCount(amount, 0);
         } else
         {
             NaturalMetal += amount;
+            // return amount added
             return new CollectableResourceCount(0, amount);
         }
     }
@@ -153,31 +164,41 @@ public class CollectableResourceCount
     {
         if(rt == ResourceType.Ytalnium)
         {
+            // only take what we can
             int realAmount = amount > Ytalnium ? Ytalnium : amount;
             Ytalnium -= realAmount;
+            // return amount subtracted
             return new CollectableResourceCount(realAmount, 0);
         } else
         {
+            // only take what we can
             int realAmount = amount > NaturalMetal ? NaturalMetal : amount;
-            NaturalMetal -= amount;
-            return new CollectableResourceCount(0, amount);
+            NaturalMetal -= realAmount;
+            // return amount subtracted
+            return new CollectableResourceCount(0, realAmount);
         }
     }
 
+    // overload + to add collectable resources
     public static CollectableResourceCount operator +(CollectableResourceCount crc1, CollectableResourceCount crc2)
     {
         return new CollectableResourceCount(crc1.Ytalnium + crc2.Ytalnium, 
             crc1.NaturalMetal + crc2.NaturalMetal);
     }
+    // overload - to subtract collectable resources
     public static CollectableResourceCount operator -(CollectableResourceCount crc1, CollectableResourceCount crc2)
     {
         return new CollectableResourceCount(crc1.Ytalnium - crc2.Ytalnium, 
             crc1.NaturalMetal - crc2.NaturalMetal);
     }
 
+    // static ref representing zero
     public static readonly CollectableResourceCount Zero = new(0, 0);
 }
 
+
+// data type representing an amount of all resources available
+// (ytalnium, natural metals, energy capacity)
 public class ResourceCount
 {
     public CollectableResourceCount Collected;
@@ -196,12 +217,14 @@ public class ResourceCount
     }
 
     
+    // try to expend resources, return success status
     public bool ExpendResources(ResourceCount amount)
     {
         var newCount = this - amount;
         if(newCount.EnergyCapacity < 0 || newCount.Collected.Ytalnium < 0 || newCount.Collected.NaturalMetal < 0)
         {
             // insufficient materials to expend
+            // don't change internal values
             return false;
         } else
         {
@@ -213,10 +236,13 @@ public class ResourceCount
     }
 
 
+    // overload + to add resources
     public static ResourceCount operator +(ResourceCount rc1, ResourceCount rc2)
     {
         return new ResourceCount(rc1.Collected + rc2.Collected, rc1.EnergyCapacity + rc2.EnergyCapacity);
     }
+
+    // overload - to subtract resources
     public static ResourceCount operator -(ResourceCount rc1, ResourceCount rc2)
     {
         return new ResourceCount(rc1.Collected - rc2.Collected, rc1.EnergyCapacity - rc2.EnergyCapacity);

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+// enum for keybinds
 public enum Keybind : short
 {
     Escape,
@@ -10,6 +11,8 @@ public enum Keybind : short
 
 public class InputManager : MonoBehaviourSingleton<InputManager>
 {
+    // various input events
+
     public delegate void MiscLeftClickedHandler(Transform miscTransform, Vector3 point);
     public static event MiscLeftClickedHandler MiscLeftClicked;
 
@@ -67,11 +70,13 @@ public class InputManager : MonoBehaviourSingleton<InputManager>
 
     void Update()
     {
+        // invoke escape keybind when escape is pressed
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             KeyDown?.Invoke(Keybind.Escape);
         }
 
+        // invoke rotate key when R is pressed
         if (Input.GetKeyDown(KeyCode.R))
         {
             KeyDown.Invoke(Keybind.Rotate);
@@ -106,6 +111,7 @@ public class InputManager : MonoBehaviourSingleton<InputManager>
                 }
             }
 
+            // shoot ray from mouse when clicked
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             bool hit = Physics.Raycast(ray, out RaycastHit hitInfo, MAX_MOUSE_RAY, Physics.AllLayers, QueryTriggerInteraction.Ignore);
 
@@ -114,6 +120,7 @@ public class InputManager : MonoBehaviourSingleton<InputManager>
                 var hitTransform = hitInfo.transform;
                 var hitPoint = hitInfo.point;
 
+                // invoke appropriate events based on layer and click type
                 if ((1 << hitTransform.gameObject.layer) == structureLayer)
                 {
                     if (leftClicked)
@@ -157,7 +164,7 @@ public class InputManager : MonoBehaviourSingleton<InputManager>
                         GroundRightClicked?.Invoke(hitTransform, hitPoint);
                     }
                 }
-                else
+                else // layer not checked, misc
                 {
                     if (leftClicked)
                     {

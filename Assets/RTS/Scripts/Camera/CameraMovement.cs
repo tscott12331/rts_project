@@ -22,6 +22,7 @@ public class CameraMovement : MonoBehaviour
 
     Camera Camera;
 
+    // correct the height of the camera when moving around
     void CorrectCamHeight()
     {
         RaycastHit hitInfo;
@@ -36,6 +37,7 @@ public class CameraMovement : MonoBehaviour
 
     }
 
+    // move the camera in a direction by an amount
     public void MoveCamera(Vector2 direction, float amount, bool isDrag)
     {
         Vector2 restrictedDir;
@@ -45,10 +47,12 @@ public class CameraMovement : MonoBehaviour
             restrictedDir = direction;
         } else
         {
+            // normalize direction when using arrow keys
             restrictedDir = direction.normalized;
         }
         transform.Translate(new Vector3(restrictedDir.x, 0, restrictedDir.y) * amount, Space.World);
 
+        // correct height if moved
         if (direction.magnitude > 0 && amount != 0)
         {
             // correct height if cam moved
@@ -61,6 +65,7 @@ public class CameraMovement : MonoBehaviour
         Camera = GetComponent<Camera>();
         CorrectCamHeight();
 
+        // set fov to avg of min and max
         CurFov = (MaxFov + MinFov) / 2;
     }
 
@@ -70,10 +75,12 @@ public class CameraMovement : MonoBehaviour
         CurFov = Mathf.Clamp(CurFov - (Input.mouseScrollDelta.y * ZoomSpeed), MinFov, MaxFov);
         Camera.fieldOfView = CurFov;
 
+        // prioritize dragging
+        // if middle mouse button is pressed, move by drag
         if (Input.GetMouseButton((int)MouseButton.Middle))
         {
             MoveCamera(-Input.mousePositionDelta, DRAG_SPEED, true);
-        } else
+        } else // otherwise, move by arrow keys
         {
             Vector2 moveDirection = Vector3.zero;
             if (Input.GetKey(KeyCode.LeftArrow))

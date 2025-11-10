@@ -14,6 +14,7 @@ public enum ObjectOwner : byte
     Enemy,
 }
 
+// represents an atackable objects
 public abstract class Attackable : MonoBehaviour
 {
     public AttackableType AType {get; protected set;} = AttackableType.Unit;
@@ -24,6 +25,7 @@ public abstract class Attackable : MonoBehaviour
         get { return _owner; }
         set
         {
+            // only allow setting when value is unset
             if (_owner == ObjectOwner.Unset)
             {
                 _owner = value;

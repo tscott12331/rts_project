@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// singleton class that can be attached to a game object
 public abstract class MonoBehaviourSingleton<T> : MonoBehaviour 
     where T : MonoBehaviourSingleton<T>
 {
@@ -14,6 +15,7 @@ public abstract class MonoBehaviourSingleton<T> : MonoBehaviour
 
     void Awake()
     {
+        // destroy new instances
         if (_instance != null && _instance != this)
         {
             Destroy(this);
