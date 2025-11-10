@@ -74,6 +74,7 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
             if(unit == null)
             {
                 Dbx.CtxLog($"Instantiated unit does not contain Unit script");
+                Destroy(unitGO);
                 return;
             }
 
