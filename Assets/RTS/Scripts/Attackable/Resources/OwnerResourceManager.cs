@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
 {
+    public delegate void ResourceChangedHandler(ResourceCount newCount, ResourceCount changedBy, ObjectOwner owner);
+    public static event ResourceChangedHandler ResourceChanged;
+
     // initial resources for each player
     public ResourceCount PlayerResources { get; private set; } = new(2500, 2500, 500);
     public ResourceCount EnemyResources { get; private set; } = new(2500, 2500, 500);
@@ -16,10 +19,14 @@ public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
     {
         if(owner == ObjectOwner.Player)
         {
-            return PlayerResources.ExpendResources(amount);
+            bool success = PlayerResources.ExpendResources(amount);
+            if(success) ResourceChanged?.Invoke(PlayerResources, amount, ObjectOwner.Player);
+            return success;
         } else if(owner == ObjectOwner.Enemy)
         {
-            return EnemyResources.ExpendResources(amount);
+            bool success = EnemyResources.ExpendResources(amount);
+            if(success) ResourceChanged?.Invoke(EnemyResources, amount, ObjectOwner.Enemy);
+            return success;
         } else
         {
             Dbx.CtxLog($"Owner {owner} cannot expend resources");
@@ -33,11 +40,13 @@ public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
         if(owner == ObjectOwner.Player)
         {
             PlayerResources.Collected += collected;
+            ResourceChanged?.Invoke(PlayerResources, new ResourceCount(collected, 0), ObjectOwner.Player);
             return true;
         }
         else if(owner == ObjectOwner.Enemy)
         {
             EnemyResources.Collected += collected;
+            ResourceChanged?.Invoke(EnemyResources, new ResourceCount(collected, 0), ObjectOwner.Enemy);
             return true;
         }
         else
@@ -49,27 +58,29 @@ public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
     }
 
     // increase energy capacity by a predefined amount for an owner
-    public void IncreaseEnergyCapacity(ObjectOwner owner)
+    public bool IncreaseEnergyCapacity(ObjectOwner owner)
     {
         if(owner == ObjectOwner.Player)
         {
             PlayerResources.EnergyCapacity += energyCapacityIncreaseAmount;
+            ResourceChanged?.Invoke(PlayerResources, new ResourceCount(0, 0, energyCapacityIncreaseAmount), ObjectOwner.Player);
+            return true;
         } else if(owner == ObjectOwner.Enemy)
         {
             EnemyResources.EnergyCapacity += energyCapacityIncreaseAmount;
+            ResourceChanged?.Invoke(EnemyResources, new ResourceCount(0, 0, energyCapacityIncreaseAmount), ObjectOwner.Enemy);
+            return true;
+        } else
+        {
+            Dbx.CtxLog($"Owner of type {owner} cannot increase energy capacity");
+            return false;
         }
     }
 
     // collect resources for an owner when a collector drops them off
     public void CollectorUnit_ResourceDroppedOff(CollectableResourceCount resourceCount, ObjectOwner owner)
     {
-        if(owner == ObjectOwner.Player)
-        {
-            PlayerResources.Collected += resourceCount;
-        } else if(owner == ObjectOwner.Enemy)
-        {
-            EnemyResources.Collected += resourceCount;
-        }
+        CollectResources(resourceCount, owner);
     }
 
     // increase energy capacity for an owner when a structure says to
