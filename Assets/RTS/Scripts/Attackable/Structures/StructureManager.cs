@@ -93,6 +93,9 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
             preview.TryGetComponent<Rigidbody>(out Rigidbody rigidbody);
             if(rigidbody != null) rigidbody.isKinematic = true;
 
+            var healthbar = preview.transform.Find("HealthbarStructure");
+            if(healthbar != null) healthbar.gameObject.SetActive(false);
+
             // turn off NavMeshObstacle on preview
             preview.TryGetComponent<NavMeshObstacle>(out NavMeshObstacle navMeshObstacle);
             if(navMeshObstacle != null) navMeshObstacle.enabled = false;
@@ -116,6 +119,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         var childRenderers = obj.GetComponentsInChildren<Renderer>();
         foreach(var r in childRenderers)
         {
+            if (r.CompareTag("StaticMaterial")) continue;
             r.material = material;
         }
     }

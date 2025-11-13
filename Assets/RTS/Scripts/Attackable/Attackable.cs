@@ -39,12 +39,20 @@ public abstract class Attackable : MonoBehaviour
     public int HP { get; protected set; }
     public int MaxHP { get; protected set; }
 
+    public Renderer HealthbarRenderer;
+
     // returns whether or not unit is alive after damage
     public virtual bool TakeDamage(int damage) {
         if(HP > 0)
         {
             HP -= damage;
             //Debug.Log($"[Attackable.TakeDamage]: {name} took {damage} damage. {HP} remaining HP");
+            if(HealthbarRenderer != null)
+            {
+                var percent = (float)HP / (float)MaxHP;
+                Dbx.CtxLog($"Setting HealthPercent in renderer: {percent}");
+                HealthbarRenderer.material.SetFloat("_HealthPercent", (float)HP / (float)MaxHP);
+            }
             return HP > 0;
         } else
         {
