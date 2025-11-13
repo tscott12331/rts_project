@@ -104,7 +104,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
         DisableUpgradePanel();
     }
 
-    public void UpdateResourcePanel()
+    public void UpdateResourcePanel(ResourceCount playerResources)
     {
         if (ResourcePanel == null) return;
 
@@ -115,7 +115,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
             ytalniumTransform.TryGetComponent<TMP_Text>(out var textCmp);
             if (textCmp != null)
             {
-                textCmp.text = OwnerResourceManager.Instance.PlayerResources.Collected.Ytalnium.ToString();
+                textCmp.text = playerResources.Collected.Ytalnium.ToString();
             }
         }
 
@@ -126,7 +126,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
             nmTransform.TryGetComponent<TMP_Text>(out var textCmp);
             if (textCmp != null)
             {
-                textCmp.text = OwnerResourceManager.Instance.PlayerResources.Collected.NaturalMetal.ToString();
+                textCmp.text = playerResources.Collected.NaturalMetal.ToString();
             }
         }
 
@@ -137,7 +137,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
             ecTransform.TryGetComponent<TMP_Text>(out var textCmp);
             if (textCmp != null)
             {
-                textCmp.text = OwnerResourceManager.Instance.PlayerResources.EnergyCapacity.ToString();
+                textCmp.text = playerResources.EnergyCapacity.ToString();
             }
         }
     }
@@ -153,33 +153,43 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     // whenever a training structure is selected
     void TrainingStructure_TrainingStructureSelected(TrainingStructure s)
     {
-        EnableUpgradePanel();
-        EnableUnitPanel(s.trainableUnits);
+        if(s.Owner == ObjectOwner.Player)
+        {
+            EnableUpgradePanel();
+            EnableUnitPanel(s.trainableUnits);
+        }
     }
 
     // reset panels when training structure is deselected
     void TrainingStructure_TrainingStructureDeselected(TrainingStructure s)
     {
-        ResetUIPanels();
+        if(s.Owner == ObjectOwner.Player) ResetUIPanels();
     }
     
 
     // enable the upgrade panel when a general structure is selected
     void GeneralStructure_GeneralStructureSelected(GeneralStructure s)
     {
-        EnableUpgradePanel();
+        if(s.Owner == ObjectOwner.Player) EnableUpgradePanel();
     }
 
     // reset panels when general structure is deselected
     void GeneralStructure_GeneralStructureDeselected(GeneralStructure s)
     {
-        ResetUIPanels();
+        // only if owner
+        if(s.Owner == ObjectOwner.Player) ResetUIPanels();
     }
 
     // set reference to trainable units when they are loaded
     void UnitManager_TrainableUnitsLoaded(Dictionary<int, UnitSO> trainableUnits)
     {
         this.TrainableUnits = trainableUnits;
+    }
+
+
+    void OwnerResourceManager_ResourceChanged(ResourceCount newCount, ResourceCount changedBy, ObjectOwner owner)
+    {
+        if(owner == ObjectOwner.Player) UpdateResourcePanel(newCount);
     }
 
     // add and remove listeners
@@ -193,6 +203,8 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
 
         StructureManager.PlaceableStructuresLoaded += StructureManager_PlaceableStructuresLoaded;
         UnitManager.TrainableUnitsLoaded += UnitManager_TrainableUnitsLoaded;
+
+        OwnerResourceManager.ResourceChanged += OwnerResourceManager_ResourceChanged;
     }
 
     private void OnDisable()
@@ -206,12 +218,8 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
         StructureManager.PlaceableStructuresLoaded -= StructureManager_PlaceableStructuresLoaded;
 
         UnitManager.TrainableUnitsLoaded -= UnitManager_TrainableUnitsLoaded;
-    }
 
-    private void Update()
-    {
-        // try to update resource panel
-        UpdateResourcePanel();
+        OwnerResourceManager.ResourceChanged -= OwnerResourceManager_ResourceChanged;
     }
 } 
 
