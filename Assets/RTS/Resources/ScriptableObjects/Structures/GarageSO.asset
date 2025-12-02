@@ -13,12 +13,14 @@ MonoBehaviour:
   m_Name: GarageSO
   m_EditorClassIdentifier: Assembly-CSharp::TrainableStructureSO
   data:
-    id: 0
-    prefab: {fileID: 0}
-    HP: 0
+    id: 3
+    prefab: {fileID: 636760649013334863, guid: 0c355e43998504f6e8d3eb2d3ad8bf3f, type: 3}
+    HP: 2000
     Cost:
-      Ytalnium: 0
-      NaturalMetal: 0
-      EnergyCapacity: 0
+      Ytalnium: 300
+      NaturalMetal: 400
+      EnergyCapacity: 25
     StructurePlacedActions: 
-  trainableUnits: []
+  trainableUnits:
+  - {fileID: 11400000, guid: a7af7e959284146b6b1cf063cc198ce7, type: 2}
+  - {fileID: 11400000, guid: 562366357bc6c44a2b0f7f58b649b332, type: 2}

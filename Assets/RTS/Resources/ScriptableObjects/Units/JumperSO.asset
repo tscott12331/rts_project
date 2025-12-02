@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: JumperSO
   m_EditorClassIdentifier: Assembly-CSharp::UnitSO
   Data:
-    Id: 0
-    Prefab: {fileID: 0}
+    Id: 4
+    Prefab: {fileID: 9110986376432211771, guid: 8284ee9a66d8845b9a76a1cbe3723c8b, type: 3}
     Cost:
       Ytalnium: 0
       NaturalMetal: 0
       EnergyCapacity: 0
-    Type: 0
-    HP: 0
-    Speed: 0
-    Damage: 0
-    RateOfAttack: 0
-    Range: 0
+    Type: 1
+    HP: 500
+    Speed: 4
+    Damage: 50
+    RateOfAttack: 1
+    Range: 1

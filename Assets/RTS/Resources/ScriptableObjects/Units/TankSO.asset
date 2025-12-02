@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: TankSO
   m_EditorClassIdentifier: Assembly-CSharp::UnitSO
   Data:
-    Id: 0
-    Prefab: {fileID: 0}
+    Id: 5
+    Prefab: {fileID: 7628282534371436142, guid: 70b12c489dc5a4bfbaa2fdeeb396104a, type: 3}
     Cost:
       Ytalnium: 0
       NaturalMetal: 0
       EnergyCapacity: 0
-    Type: 0
-    HP: 0
-    Speed: 0
-    Damage: 0
-    RateOfAttack: 0
-    Range: 0
+    Type: 1
+    HP: 700
+    Speed: 4
+    Damage: 40
+    RateOfAttack: 1
+    Range: 15
