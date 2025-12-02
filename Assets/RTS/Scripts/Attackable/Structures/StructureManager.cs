@@ -66,7 +66,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         // load structure scriptable objects
         var structureSOs = Resources.LoadAll<StructureSO>("ScriptableObjects/Structures/");
 
-        for (sbyte i = 0; i < structureSOs.Length && i < MAX_PLACEABLE_STRUCTURES; i++)
+        for (sbyte i = 0; i < structureSOs.Length; i++)
         {
             // load placeable structure
             var sso = structureSOs[i];

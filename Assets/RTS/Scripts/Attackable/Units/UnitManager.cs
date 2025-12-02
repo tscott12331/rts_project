@@ -28,7 +28,7 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
         // load unit scriptable objects
         var unitSOs = Resources.LoadAll<UnitSO>("ScriptableObjects/Units/");
 
-        for (sbyte i = 0; i < unitSOs.Length && i < MAX_TRAINABLE_UNITS; i++)
+        for (sbyte i = 0; i < unitSOs.Length; i++)
         {
             // load placeable structure
             var uso = unitSOs[i];
