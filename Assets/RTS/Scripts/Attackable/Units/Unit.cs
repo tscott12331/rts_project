@@ -65,8 +65,8 @@ public abstract class Unit : Attackable
         if (NavAgent != null)
         {
             NavAgent.speed = this.Speed;
-            var scale = transform.localScale;
-            NavAgent.radius = (scale.x + scale.y) / 4 + 0.2f;
+            // var scale = transform.localScale;
+            // NavAgent.radius = (scale.x + scale.y) / 4 + 0.2f;
         }
 
         // init radius of targeting trigger collider
