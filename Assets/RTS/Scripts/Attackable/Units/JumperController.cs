@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class JumperController : AttackUnit
 {
+    public ParticleSystem BottomThruster;
+    public ParticleSystem TopThruster;
+
     public override void TryAttackTarget()
     {
         //Debug.Log($"[Unit.TryAttackTarget]: count = {AttackTargets.Count}, time = {Time.time}, next attack time = {nextAttackTime}");
@@ -89,5 +92,21 @@ public class JumperController : AttackUnit
             if(target == CommandedTarget && hasAnimator) UnitAnimator.SetBool("move", false);
             InvokeDestroyEvent(target);
         }
+    }
+
+    public void TopThrusterOn() {
+         TopThruster.Play();
+    }
+
+    public void TopThrusterOff() {
+         TopThruster.Stop();
+    }
+
+    public void BottomThrusterOn() {
+         BottomThruster.Play();
+    }
+
+    public void BottomThrusterOff() {
+         BottomThruster.Stop();
     }
 }
