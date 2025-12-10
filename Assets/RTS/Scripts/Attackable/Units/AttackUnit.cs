@@ -28,26 +28,42 @@ public class AttackUnit : Unit
             return; // don't attack yet
         }
 
-        // signal weapon's shoot effect
-        Weapon.Shoot();
+        // signal weapon's shoot effect if unit doesn't have animator
+        PlayAttackEffect();
 
         // if target dies from damage
+        if (!DealDamage(target))
+        {
+            // invoke appropriate event
+            InvokeDestroyEvent(target);
+        }
+    }
+
+    public void InvokeDestroyEvent(Attackable target) {
+        switch (target.AType) {
+            case AttackableType.Structure:
+                StructureDestroyed?.Invoke(target as Structure);
+                break;
+            case AttackableType.Unit:
+                UnitDestroyed?.Invoke(target as Unit);
+                break;
+        }
+    }
+
+    public bool DealDamage(Attackable target) {
         if (!target.TakeDamage(this.Damage))
         {
             // target is dead
             Dbx.CtxLog($"Killed {target.name}");
             RemoveAttackTarget(target);
-
-            // invoke appropriate event
-            switch (target.AType) {
-                case AttackableType.Structure:
-                    StructureDestroyed?.Invoke(target as Structure);
-                    break;
-                case AttackableType.Unit:
-                    UnitDestroyed?.Invoke(target as Unit);
-                    break;
-            }
+            return false;
         }
+
+        return true;
+    }
+
+    public void PlayAttackEffect() {
+        Weapon.Shoot();
     }
 
     public void Awake()

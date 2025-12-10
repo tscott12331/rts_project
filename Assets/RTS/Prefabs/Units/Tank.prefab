@@ -108,6 +108,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8960545586388679148}
   - {fileID: 2693593781486961245}
   - {fileID: 7478108203202664232}
   m_Father: {fileID: 1437287272316351463}
@@ -145,7 +146,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8960545586388679148}
   - {fileID: 7743991543212904956}
   - {fileID: 494833851855273193}
   - {fileID: 2686338607405968248}
@@ -216,6 +216,8 @@ MonoBehaviour:
   UType: 1
   TargetingTrigger: {fileID: 5969015442019437992}
   Model: {fileID: 494833851855273193}
+  UnitAnimator: {fileID: 0}
+  selectMarker: {fileID: 8960545586388679148}
   Weapon: {fileID: 8367222858810428453}
 --- !u!65 &4620411782809619062
 BoxCollider:
@@ -244,7 +246,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1437287272316351463}
+    m_TransformParent: {fileID: 494833851855273193}
     m_Modifications:
     - target: {fileID: 7399822551691988931, guid: f0b2096476228a3438de1a967ebf69bf, type: 3}
       propertyPath: m_Mesh
@@ -284,15 +286,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8685857771597029178, guid: f0b2096476228a3438de1a967ebf69bf, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 8685857771597029178, guid: f0b2096476228a3438de1a967ebf69bf, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 8685857771597029178, guid: f0b2096476228a3438de1a967ebf69bf, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 8685857771597029178, guid: f0b2096476228a3438de1a967ebf69bf, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

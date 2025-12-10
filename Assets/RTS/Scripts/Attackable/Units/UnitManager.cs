@@ -128,14 +128,7 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
         }
 
         // enable unit selected marker
-        var selectedTransform = unit.transform.Find("UnitSelected");
-        if (selectedTransform == null)
-        {
-            Dbx.CtxLog($"Cannot find UnitSelected object");
-            return;
-        }
-
-        selectedTransform.gameObject.SetActive(true);
+        unit.SetSelected(true);
         SelectedUnits.Add(unit);
     }
 
@@ -148,14 +141,7 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
         }
 
         // disable unit selected marker
-        var selectedTransform = unit.transform.Find("UnitSelected");
-        if (selectedTransform == null)
-        {
-            Dbx.CtxLog($"Cannot find UnitSelected object");
-            return;
-        }
-
-        selectedTransform.gameObject.SetActive(false);
+        unit.SetSelected(false);
         SelectedUnits.Remove(unit);
     }
 
