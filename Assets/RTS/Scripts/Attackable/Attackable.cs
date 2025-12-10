@@ -49,8 +49,6 @@ public abstract class Attackable : MonoBehaviour
             //Debug.Log($"[Attackable.TakeDamage]: {name} took {damage} damage. {HP} remaining HP");
             if(HealthbarRenderer != null)
             {
-                var percent = (float)HP / (float)MaxHP;
-                Dbx.CtxLog($"Setting HealthPercent in renderer: {percent}");
                 HealthbarRenderer.material.SetFloat("_HealthPercent", (float)HP / (float)MaxHP);
             }
             return HP > 0;
@@ -65,6 +63,7 @@ public abstract class Attackable : MonoBehaviour
     {
         HP = Mathf.Min(HP + amount, MaxHP);
 
+        HealthbarRenderer.material.SetFloat("_HealthPercent", (float)HP / (float)MaxHP);
         return HP == MaxHP;
     }
 }

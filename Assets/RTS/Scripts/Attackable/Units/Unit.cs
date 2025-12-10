@@ -22,6 +22,8 @@ public abstract class Unit : Attackable
 
     // target that a unit has been told to attack
     public Attackable CommandedTarget { get; protected set; }
+    private Vector3 moveTargetPosition;
+    private readonly float moveTargetPrecision = 0.5f;
 
     // types of targets that the unit can attack
     public List<AttackableType> AttackableTypes { get; protected set; } = new();
@@ -37,11 +39,17 @@ public abstract class Unit : Attackable
     // visual model of the unit
     public Transform Model;
 
+    // animator for the unit
+    public Animator UnitAnimator;
+
+    // select marker for the unit
+    public Transform selectMarker;
+
     // amount of time an attack takes
     public float AttackTime { get; protected set; }
 
     // next time that a unit is able to attack based on it's rate of fire
-    private float nextAttackTime = 0.0f;
+    protected float nextAttackTime = 0.0f;
 
     // copy data from scriptable object
     public virtual void CopyUnitData(UnitSO unitSO)
@@ -65,8 +73,8 @@ public abstract class Unit : Attackable
         if (NavAgent != null)
         {
             NavAgent.speed = this.Speed;
-            var scale = transform.localScale;
-            NavAgent.radius = (scale.x + scale.y) / 4 + 0.2f;
+            // var scale = transform.localScale;
+            // NavAgent.radius = (scale.x + scale.y) / 4 + 0.2f;
         }
 
         // init radius of targeting trigger collider
@@ -74,12 +82,26 @@ public abstract class Unit : Attackable
         {
             TargetingTrigger.radius = data.Range;
         }
+
+        // set animator attack speed
+        if(UnitAnimator != null) {
+            Dbx.CtxLog($"Setting attack_speed to {this.RateOfAttack}");
+            UnitAnimator.SetFloat("attack_speed", this.RateOfAttack);
+            var setTo = UnitAnimator.GetFloat("attack_speed");
+            Dbx.CtxLog($"Set attack_speed to {setTo}");
+        }
+    }
+
+    public void SetSelected(bool selected) {
+        selectMarker.gameObject.SetActive(selected);
     }
 
     // move to a position
     public void MoveTo(Vector3 position, bool preserveCommandTarget = false)
     {
         if (NavAgent == null) return;
+
+        moveTargetPosition = position;
 
         // find and set destination
         NavMeshUtils.SamplePosition(position, out var newPos);
@@ -164,12 +186,15 @@ public abstract class Unit : Attackable
 
     public abstract void AttackTarget(Attackable target);
 
-    public void TryAttackTarget()
+    public virtual void TryAttackTarget()
     {
         //Debug.Log($"[Unit.TryAttackTarget]: count = {AttackTargets.Count}, time = {Time.time}, next attack time = {nextAttackTime}");
 
         // does the unit have targets?
-        bool haveTargets = (AttackTargets.Count > 0 || CommandedTarget != null);
+        bool hasAttackTargets = AttackTargets.Count > 0;
+        bool haveTargets = hasAttackTargets || CommandedTarget != null;
+
+        if(UnitAnimator != null) UnitAnimator.SetBool("attack", hasAttackTargets);
 
         // we want to disable the agent's rotation when we have targets
         NavAgent.updateRotation = !haveTargets;
@@ -195,7 +220,7 @@ public abstract class Unit : Attackable
             }
 
             // make model look at the target
-            Model.LookAt(target.transform);
+            Model.LookAt(new Vector3(target.transform.position.x, Model.transform.position.y, target.transform.position.z));
 
             // attack the target
             AttackTarget(target);
@@ -241,6 +266,12 @@ public abstract class Unit : Attackable
     {
         // try to attack a target every frame
         TryAttackTarget();
+
+        // play move animation if applicable
+        if(NavAgent != null && UnitAnimator != null) {
+            UnitAnimator.SetBool("move", Vector3.Distance(transform.position, moveTargetPosition) > NavAgent.stoppingDistance + moveTargetPrecision);
+        }
+        
     }
 
     public void HandleTriggerEnter(Collider other)
