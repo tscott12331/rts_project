@@ -20,6 +20,8 @@ public class CameraMovement : MonoBehaviour
     public float ZoomSpeed;
     float CurFov;
 
+    private bool paused;
+
     Camera Camera;
 
     // correct the height of the camera when moving around
@@ -72,6 +74,9 @@ public class CameraMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(paused) return; // ignore if paused
+
+
         CurFov = Mathf.Clamp(CurFov - (Input.mouseScrollDelta.y * ZoomSpeed), MinFov, MaxFov);
         Camera.fieldOfView = CurFov;
 
@@ -104,5 +109,19 @@ public class CameraMovement : MonoBehaviour
 
 
 
+    }
+
+
+    private void GameManager_PauseStateChanged(bool paused) {
+        this.paused = paused;
+    }
+
+    
+    private void OnEnable() {
+        GameManager.PauseStateChanged += GameManager_PauseStateChanged;
+    }
+
+    private void OnDisable() {
+        GameManager.PauseStateChanged -= GameManager_PauseStateChanged;
     }
 }

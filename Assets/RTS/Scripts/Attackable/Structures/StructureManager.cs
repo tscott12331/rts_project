@@ -378,7 +378,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
     void InputManager_KeyDown(Keybind action)
     {
         switch (action) {
-            case Keybind.Escape:
+            case Keybind.Cancel:
                 // reset preview when player hits escape
                 ResetStructurePreview();
                 break;

@@ -13,8 +13,13 @@ public class SelectController : MonoBehaviour
     // start position of select rect
     Vector2 startPosition = Vector2.zero;
 
+    private bool paused;
+
     void Update()
     {
+        if(paused) return; // ignore selections when paused
+
+
         // start making select rect when click
         if(Input.GetMouseButtonDown(0))
         {
@@ -104,4 +109,19 @@ public class SelectController : MonoBehaviour
             selectRect.transform.gameObject.SetActive(false);
         }
     }
+
+
+    private void GameManager_PauseStateChanged(bool paused) {
+        this.paused = paused;
+    }
+
+    
+    private void OnEnable() {
+        GameManager.PauseStateChanged += GameManager_PauseStateChanged;
+    }
+
+    private void OnDisable() {
+        GameManager.PauseStateChanged -= GameManager_PauseStateChanged;
+    }
+
 }

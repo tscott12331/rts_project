@@ -2,9 +2,16 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviourSingleton<GameManager>
 {
+    public delegate void PauseStateChangedHandler(bool paused);
+    public static event PauseStateChangedHandler PauseStateChanged;
+
     public Transform PlayerStartPoint;
     public Transform EnemyStartPoint;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    public Canvas PauseCanvas;
+
+    private bool paused = false;
+
     void Start()
     {
         // load resource deposits
@@ -16,22 +23,65 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
         // load placeable structures and their previews
         StructureManager.Instance.LoadPlaceableStructures();
 
-        // place enemy HQ and train a collector
-        Structure EnemyHQStruct = StructureManager.Instance.PlaceStructure(0, EnemyStartPoint.position, EnemyStartPoint.rotation, ObjectOwner.Enemy);
-        var EnemyHQ = EnemyHQStruct as TrainingStructure;
-        EnemyHQ.Train(0);
+        Player player = new(ObjectOwner.Player, PlayerStartPoint);
+        Player enemy = new(ObjectOwner.Enemy, EnemyStartPoint);
 
-        // place enemy barracks and train a few strikers
-        var enemyBarracksPos = EnemyHQ.transform.position + new Vector3(15, 0, 15);
-        Structure EnemyBarracksStruct = StructureManager.Instance.PlaceStructure(1, enemyBarracksPos, EnemyStartPoint.rotation, ObjectOwner.Enemy);
-        var EnemyBarracks = EnemyBarracksStruct as TrainingStructure;
-        for(int i = 0; i < 3; i++)
-        {
-            EnemyBarracks.Train(0);
+        player.PlaceInitialStructures();
+        enemy.PlaceInitialStructures();
+    }
+
+    private void SetPauseState(bool paused) {
+        this.paused = paused;
+
+        if(paused) {
+            Time.timeScale = 0.0f;
+            PauseCanvas.gameObject.SetActive(true);
+        } else {
+            Time.timeScale = 1.0f;
+            PauseCanvas.gameObject.SetActive(false);
         }
 
+        PauseStateChanged?.Invoke(paused);
+    }
 
-        // place player HQ
-        Structure PlayerHQ = StructureManager.Instance.PlaceStructure(0, PlayerStartPoint.position, PlayerStartPoint.rotation, ObjectOwner.Player);
+
+
+    public void HandleResumeClicked() {
+        SetPauseState(false);
+    }
+
+    public void HandleQuitClicked() {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
+
+
+
+    private void Player_PlayerLost(ObjectOwner owner) {
+        SetPauseState(true);
+        Debug.Log($"{owner} lost");
+    }
+
+    private void InputManager_KeyDown(Keybind action) {
+        switch(action) {
+            case Keybind.Pause:
+                SetPauseState(!paused);
+                break;
+        }
+    }
+
+    private void OnEnable() {
+        Player.PlayerLost += Player_PlayerLost;
+
+        InputManager.KeyDown += InputManager_KeyDown;
+    }
+
+    private void OnDisable() {
+        Player.PlayerLost -= Player_PlayerLost;
+
+        InputManager.KeyDown -= InputManager_KeyDown;
     }
 }
