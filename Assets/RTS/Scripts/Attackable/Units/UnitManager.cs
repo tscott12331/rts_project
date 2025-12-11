@@ -42,6 +42,19 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
         TrainableUnitsLoaded?.Invoke(trainableUnits);
     }
 
+    public void ResetManager() {
+        RemoveAllUnits();
+        selectMarkerTransform.gameObject.SetActive(false);
+    }
+
+    public void RemoveAllUnits() {
+        for(int i = Units.Count - 1; i >= 0; i--) {
+            var unit = Units[i];
+            SelectedUnits.Remove(unit);
+            DestroyUnit(unit);
+        }
+    }
+
     public bool UnitIsSelected(Unit unit)
     {
         return SelectedUnits.Contains(unit);

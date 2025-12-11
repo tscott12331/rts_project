@@ -10,6 +10,9 @@ public class CameraMovement : MonoBehaviour
     [SerializeField]
     float MIN_HEIGHT;
 
+    [SerializeField]
+    Transform InitialPositionTransform;
+
     const float MAX_RAY_DIST = 100.0f;
 
     public float DRAG_SPEED;
@@ -60,6 +63,11 @@ public class CameraMovement : MonoBehaviour
             // correct height if cam moved
             CorrectCamHeight();
         }
+    }
+
+    public void MoveCameraTo(Vector3 position) {
+        transform.position = position;
+        CorrectCamHeight();
     }
 
     private void Start()
@@ -114,6 +122,11 @@ public class CameraMovement : MonoBehaviour
 
     private void GameManager_PauseStateChanged(bool paused) {
         this.paused = paused;
+    }
+
+    private void GameManager_GameBegan() {
+        MoveCameraTo(InitialPositionTransform.position);
+    
     }
 
     

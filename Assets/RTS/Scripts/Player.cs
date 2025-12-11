@@ -17,10 +17,13 @@ public class Player
 
         AttackUnit.StructureDestroyed += AttackUnit_StructureDestroyed;
 
+        GameManager.GameBegan += GameManager_GameBegan;
+
     }
 
     ~Player() {
         AttackUnit.StructureDestroyed -= AttackUnit_StructureDestroyed;
+        GameManager.GameBegan -= GameManager_GameBegan;
     }
 
     public void PlaceInitialStructures() {
@@ -32,6 +35,10 @@ public class Player
 
     private void AttackUnit_StructureDestroyed(Structure structure) {
         if(structure == MainHQ) PlayerLost?.Invoke(Owner);
+    }
+
+    private void GameManager_GameBegan() {
+        PlaceInitialStructures();
     }
 
     

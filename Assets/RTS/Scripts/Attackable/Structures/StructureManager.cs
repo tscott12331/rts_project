@@ -108,6 +108,23 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         PlaceableStructuresLoaded?.Invoke(placeableStructures);
     }
 
+    public void ResetManager() {
+        currentId = 0;
+        selectedStructure = null;
+        structurePreview = NO_PREVIEW;
+        rotatePreview = false;
+        RemoveAllStructures();
+    }
+
+    public void RemoveAllStructures() {
+        var structureList = structures.ToList();
+        for(int i = structures.Count - 1; i >= 0; i--) {
+            DestroyStructure(structureList[i].Value);
+        }
+
+        structures.Clear();
+    }
+
     public void ChangeObjectMaterial(GameObject obj, Material material)
     {
             

@@ -1,16 +1,35 @@
 using UnityEngine;
 
+
+public enum GameState {
+    MainMenu,
+    PauseMenu,
+    Playing,
+}
+
 public class GameManager : MonoBehaviourSingleton<GameManager>
 {
+    public delegate void GameStateChangedHandler(GameState state);
+    public static event GameStateChangedHandler GameStateChanged;
+
     public delegate void PauseStateChangedHandler(bool paused);
     public static event PauseStateChangedHandler PauseStateChanged;
+
+    public delegate void GameBeganHandler();
+    public static event GameBeganHandler GameBegan;
 
     public Transform PlayerStartPoint;
     public Transform EnemyStartPoint;
 
     public Canvas PauseCanvas;
 
+
+
     private bool paused = false;
+    private GameState State;
+
+    private Player player;
+    private Player enemy;
 
     void Start()
     {
@@ -23,11 +42,12 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
         // load placeable structures and their previews
         StructureManager.Instance.LoadPlaceableStructures();
 
-        Player player = new(ObjectOwner.Player, PlayerStartPoint);
-        Player enemy = new(ObjectOwner.Enemy, EnemyStartPoint);
+        // initialize players
+        player = new(ObjectOwner.Player, PlayerStartPoint);
+        enemy = new(ObjectOwner.Enemy, EnemyStartPoint);
 
-        player.PlaceInitialStructures();
-        enemy.PlaceInitialStructures();
+        // send game begin event
+        GameBegan?.Invoke();
     }
 
     private void SetPauseState(bool paused) {
@@ -56,6 +76,13 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
 #else
         Application.Quit();
 #endif
+    }
+
+    public void HandlePlayAgainClicked() {
+        UnitManager.Instance.ResetManager();
+        StructureManager.Instance.ResetManager();
+
+        GameBegan?.Invoke();
     }
 
 
