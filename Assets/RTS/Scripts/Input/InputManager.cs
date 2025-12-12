@@ -58,7 +58,7 @@ public class InputManager : MonoBehaviourSingleton<InputManager>
 
     const float MAX_MOUSE_RAY = 250.0f;
 
-    private bool paused;
+    private bool playing;
 
     [SerializeField]
     LayerMask structureLayer;
@@ -98,7 +98,7 @@ public class InputManager : MonoBehaviourSingleton<InputManager>
         bool rightClicked = Input.GetMouseButtonUp(1);
         bool clicked = leftClicked || rightClicked;
 
-        if (clicked && !paused) // only listen to clicks when not paused
+        if (clicked && playing) // only listen to clicks when not in playing state
         {
             // Check to see if UI was clicked
             var raycastResults = new List<RaycastResult>();
@@ -190,16 +190,16 @@ public class InputManager : MonoBehaviourSingleton<InputManager>
 
 
 
-    private void GameManager_PauseStateChanged(bool paused) {
-        this.paused = paused;
+    private void GameManager_GameStateChanged(GameState state) {
+        this.playing = state == GameState.Playing;
     }
 
     
     private void OnEnable() {
-        GameManager.PauseStateChanged += GameManager_PauseStateChanged;
+        GameManager.GameStateChanged += GameManager_GameStateChanged;
     }
 
     private void OnDisable() {
-        GameManager.PauseStateChanged -= GameManager_PauseStateChanged;
+        GameManager.GameStateChanged -= GameManager_GameStateChanged;
     }
 }

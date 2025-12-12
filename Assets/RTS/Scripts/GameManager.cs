@@ -1,19 +1,18 @@
+using TMPro;
 using UnityEngine;
 
 
 public enum GameState {
     MainMenu,
-    PauseMenu,
+    Paused,
     Playing,
+    GameOver,
 }
 
 public class GameManager : MonoBehaviourSingleton<GameManager>
 {
     public delegate void GameStateChangedHandler(GameState state);
     public static event GameStateChangedHandler GameStateChanged;
-
-    public delegate void PauseStateChangedHandler(bool paused);
-    public static event PauseStateChangedHandler PauseStateChanged;
 
     public delegate void GameBeganHandler();
     public static event GameBeganHandler GameBegan;
@@ -22,10 +21,11 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
     public Transform EnemyStartPoint;
 
     public Canvas PauseCanvas;
+    public Canvas GameOverCanvas;
+    public Canvas MainMenuCanvas;
 
 
 
-    private bool paused = false;
     private GameState State;
 
     private Player player;
@@ -48,26 +48,98 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
 
         // send game begin event
         GameBegan?.Invoke();
+        SetGameState(GameState.Playing);
     }
 
-    private void SetPauseState(bool paused) {
-        this.paused = paused;
-
-        if(paused) {
-            Time.timeScale = 0.0f;
-            PauseCanvas.gameObject.SetActive(true);
-        } else {
-            Time.timeScale = 1.0f;
-            PauseCanvas.gameObject.SetActive(false);
+    private void SetGameState(GameState newState)
+    {
+        switch(newState)
+        {
+            case GameState.Paused:
+                HandlePauseState();
+                break;
+            case GameState.Playing:
+                HandlePlayingState();
+                break;
+            case GameState.GameOver:
+                HandleGameOverState();
+                break;
+            case GameState.MainMenu:
+                HandleMainMenuState();
+                break;
         }
 
-        PauseStateChanged?.Invoke(paused);
+        GameStateChanged?.Invoke(State);
     }
 
+
+    private void HandlePauseState()
+    {
+        SetTimeState(true);
+        PauseCanvas.gameObject.SetActive(true);
+
+        State = GameState.Paused;
+    }
+
+    private void HandlePlayingState()
+    {
+
+        SetTimeState(false);
+
+        // disable panels from potential previous states
+        switch(State)
+        {
+            case GameState.Paused:
+                PauseCanvas.gameObject.SetActive(false);
+                break;
+            case GameState.MainMenu:
+                MainMenuCanvas.gameObject.SetActive(false);
+                break;
+            case GameState.GameOver:
+                GameOverCanvas.gameObject.SetActive(false);
+                break;
+        }
+
+        State = GameState.Playing;
+    }
+
+    private void HandleGameOverState()
+    {
+        SetTimeState(true);
+        GameOverCanvas.gameObject.SetActive(true);
+
+        State = GameState.GameOver;
+    }
+
+    private void HandleMainMenuState()
+    {
+        SetTimeState(false);
+        MainMenuCanvas.gameObject.SetActive(true);
+
+        switch(State)
+        {
+            case GameState.Paused:
+                // quit mid game
+                PauseCanvas.gameObject.SetActive(false);
+                break;
+            case GameState.GameOver:
+                GameOverCanvas.gameObject.SetActive(false);
+                break;
+        }
+
+        State = GameState.MainMenu;
+    }
+
+
+
+    private void SetTimeState(bool paused)
+    {
+        Time.timeScale = paused ? 0.0f : 1.0f;
+    }
 
 
     public void HandleResumeClicked() {
-        SetPauseState(false);
+        SetGameState(GameState.Playing);
     }
 
     public void HandleQuitClicked() {
@@ -82,20 +154,34 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
         UnitManager.Instance.ResetManager();
         StructureManager.Instance.ResetManager();
 
+        SetGameState(GameState.Playing);
+
         GameBegan?.Invoke();
     }
 
 
 
     private void Player_PlayerLost(ObjectOwner owner) {
-        SetPauseState(true);
-        Debug.Log($"{owner} lost");
+        var panel = GameOverCanvas.transform.Find("Panel");
+        var textEl = panel.Find("WinLoseText");
+        var textCmp = textEl.GetComponent<TMP_Text>();
+        textCmp.SetText($"You {(owner == ObjectOwner.Player ? "Lose" : "Win")}!");
+
+        SetGameState(GameState.GameOver);
     }
 
     private void InputManager_KeyDown(Keybind action) {
         switch(action) {
             case Keybind.Pause:
-                SetPauseState(!paused);
+                GameState newState = State;
+                if(State == GameState.Playing)
+                {
+                    newState = GameState.Paused;
+                } else if(State == GameState.Paused)
+                {
+                    newState = GameState.Playing;
+                }
+                SetGameState(newState);
                 break;
         }
     }

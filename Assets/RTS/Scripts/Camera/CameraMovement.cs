@@ -23,7 +23,7 @@ public class CameraMovement : MonoBehaviour
     public float ZoomSpeed;
     float CurFov;
 
-    private bool paused;
+    private bool playing;
 
     Camera Camera;
 
@@ -82,7 +82,7 @@ public class CameraMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(paused) return; // ignore if paused
+        if(!playing) return; // ignore if paused
 
 
         CurFov = Mathf.Clamp(CurFov - (Input.mouseScrollDelta.y * ZoomSpeed), MinFov, MaxFov);
@@ -120,21 +120,22 @@ public class CameraMovement : MonoBehaviour
     }
 
 
-    private void GameManager_PauseStateChanged(bool paused) {
-        this.paused = paused;
+    private void GameManager_GameStateChanged(GameState state) {
+        this.playing = state == GameState.Playing;
     }
 
     private void GameManager_GameBegan() {
         MoveCameraTo(InitialPositionTransform.position);
-    
     }
 
     
     private void OnEnable() {
-        GameManager.PauseStateChanged += GameManager_PauseStateChanged;
+        GameManager.GameStateChanged += GameManager_GameStateChanged;
+        GameManager.GameBegan += GameManager_GameBegan;
     }
 
     private void OnDisable() {
-        GameManager.PauseStateChanged -= GameManager_PauseStateChanged;
+        GameManager.GameStateChanged -= GameManager_GameStateChanged;
+        GameManager.GameBegan -= GameManager_GameBegan;
     }
 }

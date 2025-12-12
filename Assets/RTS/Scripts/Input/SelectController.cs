@@ -13,11 +13,11 @@ public class SelectController : MonoBehaviour
     // start position of select rect
     Vector2 startPosition = Vector2.zero;
 
-    private bool paused;
+    private bool playing;
 
     void Update()
     {
-        if(paused) return; // ignore selections when paused
+        if(!playing) return; // ignore selections when paused
 
 
         // start making select rect when click
@@ -111,17 +111,17 @@ public class SelectController : MonoBehaviour
     }
 
 
-    private void GameManager_PauseStateChanged(bool paused) {
-        this.paused = paused;
+    private void GameManager_GameStateChanged(GameState state) {
+        this.playing = state == GameState.Playing;
     }
 
     
     private void OnEnable() {
-        GameManager.PauseStateChanged += GameManager_PauseStateChanged;
+        GameManager.GameStateChanged += GameManager_GameStateChanged;
     }
 
     private void OnDisable() {
-        GameManager.PauseStateChanged -= GameManager_PauseStateChanged;
+        GameManager.GameStateChanged -= GameManager_GameStateChanged;
     }
 
 }
