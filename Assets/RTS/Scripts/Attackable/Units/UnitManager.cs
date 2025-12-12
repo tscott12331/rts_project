@@ -265,6 +265,12 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
         DestroyUnit(unit);
     }
 
+    void GameManager_GameStateChanged(GameState newState)
+    {
+        if(newState == GameState.MainMenu) ResetManager();
+    }
+
+
     // enable and disable listeners
     void OnEnable()
     {
@@ -276,6 +282,8 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
         InputManager.ResourceRightClicked += InputManager_ResourceRightClicked;
 
         AttackUnit.UnitDestroyed += AttackUnit_UnitDestroyed;
+
+        GameManager.GameStateChanged += GameManager_GameStateChanged;
     }
 
     void OnDisable()
@@ -288,5 +296,7 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
         InputManager.ResourceRightClicked -= InputManager_ResourceRightClicked;
 
         AttackUnit.UnitDestroyed -= AttackUnit_UnitDestroyed;
+
+        GameManager.GameStateChanged -= GameManager_GameStateChanged;
     }
 }

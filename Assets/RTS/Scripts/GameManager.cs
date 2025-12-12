@@ -46,9 +46,7 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
         player = new(ObjectOwner.Player, PlayerStartPoint);
         enemy = new(ObjectOwner.Enemy, EnemyStartPoint);
 
-        // send game begin event
-        GameBegan?.Invoke();
-        SetGameState(GameState.Playing);
+        SetGameState(GameState.MainMenu);
     }
 
     private void SetGameState(GameState newState)
@@ -150,13 +148,15 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
 #endif
     }
 
-    public void HandlePlayAgainClicked() {
-        UnitManager.Instance.ResetManager();
-        StructureManager.Instance.ResetManager();
-
+    public void HandlePlayClicked() {
         SetGameState(GameState.Playing);
 
         GameBegan?.Invoke();
+    }
+
+    public void HandleMainMenuClicked()
+    {
+        SetGameState(GameState.MainMenu);
     }
 
 

@@ -8,9 +8,14 @@ public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
     public delegate void ResourceChangedHandler(ResourceCount newCount, ResourceCount changedBy, ObjectOwner owner);
     public static event ResourceChangedHandler ResourceChanged;
 
+
+    private const int INIT_YTALNIUM = 2500;
+    private const int INIT_NATURAL_METAL = 2500;
+    private const int INIT_ENERGY_CAPACITY = 500;
+
     // initial resources for each player
-    public ResourceCount PlayerResources { get; private set; } = new(2500, 2500, 500);
-    public ResourceCount EnemyResources { get; private set; } = new(2500, 2500, 500);
+    public ResourceCount PlayerResources { get; private set; } = new(INIT_YTALNIUM, INIT_NATURAL_METAL, INIT_ENERGY_CAPACITY);
+    public ResourceCount EnemyResources { get; private set; } = new(INIT_YTALNIUM, INIT_NATURAL_METAL, INIT_ENERGY_CAPACITY);
 
     private const int energyCapacityIncreaseAmount = 20;
 
@@ -77,6 +82,26 @@ public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
         }
     }
 
+    public void ResetPlayerResources(ObjectOwner owner)
+    {
+        if(owner == ObjectOwner.Player)
+        {
+            PlayerResources.Collected.Ytalnium = INIT_YTALNIUM;
+            PlayerResources.Collected.NaturalMetal = INIT_NATURAL_METAL;
+            PlayerResources.EnergyCapacity = INIT_ENERGY_CAPACITY;
+        } else if(owner == ObjectOwner.Enemy)
+        {
+            EnemyResources.Collected.Ytalnium = INIT_YTALNIUM;
+            EnemyResources.Collected.NaturalMetal = INIT_NATURAL_METAL;
+            EnemyResources.EnergyCapacity = INIT_ENERGY_CAPACITY;
+        } else
+        {
+            Dbx.CtxLog($"Owner of type {owner} cannot reset resources");
+        }
+    }
+
+
+
     // collect resources for an owner when a collector drops them off
     public void CollectorUnit_ResourceDroppedOff(CollectableResourceCount resourceCount, ObjectOwner owner)
     {
@@ -89,12 +114,20 @@ public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
         IncreaseEnergyCapacity(owner);
     }
 
+    public void GameManager_GameBegan()
+    {
+        ResetPlayerResources(ObjectOwner.Player);
+        ResetPlayerResources(ObjectOwner.Enemy);
+    }
+
     // add and remove listeners
     private void OnEnable()
     {
         CollectorUnit.ResourceDroppedOff += CollectorUnit_ResourceDroppedOff;
 
         Structure.IncreaseEnergyCapacity += Structure_IncreaseEnergyCapacity;
+
+        GameManager.GameBegan += GameManager_GameBegan;
     }
 
     private void OnDisable()
@@ -102,6 +135,8 @@ public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
         CollectorUnit.ResourceDroppedOff -= CollectorUnit_ResourceDroppedOff;
 
         Structure.IncreaseEnergyCapacity -= Structure_IncreaseEnergyCapacity;
+
+        GameManager.GameBegan -= GameManager_GameBegan;
     }
 
 }

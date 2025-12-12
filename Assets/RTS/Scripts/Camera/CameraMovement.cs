@@ -130,6 +130,9 @@ public class CameraMovement : MonoBehaviour
 
     
     private void OnEnable() {
+        // only enabled when playing begins
+        playing = true;
+
         GameManager.GameStateChanged += GameManager_GameStateChanged;
         GameManager.GameBegan += GameManager_GameBegan;
     }

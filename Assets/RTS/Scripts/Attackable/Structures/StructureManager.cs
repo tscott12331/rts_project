@@ -436,6 +436,11 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
     {
         DestroyStructure(structure);
     }
+    void GameManager_GameStateChanged(GameState newState)
+    {
+        if(newState == GameState.MainMenu) ResetManager();
+    }
+
 
     // enable and disable listeners
     public void OnEnable() {
@@ -451,6 +456,8 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         InputManager.KeyUp += InputManager_KeyUp;
 
         AttackUnit.StructureDestroyed += AttackUnit_StructureDestroyed;
+
+        GameManager.GameStateChanged += GameManager_GameStateChanged;
     }
 
     public void OnDisable() {
@@ -466,6 +473,8 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         InputManager.KeyUp -= InputManager_KeyUp;
 
         AttackUnit.StructureDestroyed -= AttackUnit_StructureDestroyed;
+
+        GameManager.GameStateChanged -= GameManager_GameStateChanged;
     }
 
     public void Update()
