@@ -24,8 +24,18 @@ public class TrainingStructure : Structure
     // structure's trainable unit ids
     public List<sbyte> trainableUnits;
 
+    public List<Unit> trainedUnits;
+
+    public int maxConcurrentUnits;
+
     public void Train(sbyte unitNum)
     {
+        if (trainedUnits.Count >= maxConcurrentUnits)
+        {
+            Dbx.CtxLog("Structure is at max concurrent units, cannot train more.");
+            return;
+        }
+
         // find unitId based on unitNum (unitNum is based on which unit button is pressed)
         if (unitNum > -1 && unitNum < trainableUnits.Count) {
             var unitId = trainableUnits[unitNum];
@@ -51,6 +61,8 @@ public class TrainingStructure : Structure
         {
             this.trainableUnits.Add((sbyte) unit.Data.Id);
         }
+
+        maxConcurrentUnits = trainingSO.maxConcurrentUnits;
     }
 
     public override void HandleStructureSelect()
@@ -66,5 +78,22 @@ public class TrainingStructure : Structure
         TrainingStructureDeselected?.Invoke(this);
         // disable select marker
         SetSelectedPreviewState(false);
+    }
+
+
+    
+    private void AttackUnit_UnitDestroyed(Unit unit)
+    {
+        trainedUnits.Remove(unit);
+    }
+
+    private void OnEnable()
+    {
+        AttackUnit.UnitDestroyed += AttackUnit_UnitDestroyed;
+    }
+
+    private void OnDisable()
+    {
+        AttackUnit.UnitDestroyed -= AttackUnit_UnitDestroyed;
     }
 }

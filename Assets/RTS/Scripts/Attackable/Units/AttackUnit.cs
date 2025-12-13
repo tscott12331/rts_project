@@ -9,7 +9,7 @@ public class AttackUnit : Unit
     public static event StructureDestroyedHandler StructureDestroyed;
 
     // fired when unit destroys unit
-    public delegate void UnitDestroyedHandler(Unit structure);
+    public delegate void UnitDestroyedHandler(Unit unit);
     public static event UnitDestroyedHandler UnitDestroyed;
 
     // unit's weapon

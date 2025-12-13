@@ -24,3 +24,4 @@ MonoBehaviour:
   trainableUnits:
   - {fileID: 11400000, guid: a7af7e959284146b6b1cf063cc198ce7, type: 2}
   - {fileID: 11400000, guid: 562366357bc6c44a2b0f7f58b649b332, type: 2}
+  maxConcurrentUnits: 6

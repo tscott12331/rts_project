@@ -106,6 +106,8 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
 
             // add the unit to list
             AddUnit(unit);
+            // add unit to structure's trained units
+            structure.trainedUnits.Add(unit);
 
             // check to see if walk position if valid
             if(NavMeshUtils.SamplePosition(walkPositionTransform.position, out newPos))
