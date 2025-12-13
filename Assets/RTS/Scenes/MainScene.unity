@@ -3431,6 +3431,7 @@ MonoBehaviour:
   invalidPlacementMaterial: {fileID: 2100000, guid: 9e213b2163476d3438e2731adeec84aa, type: 2}
   playerStructureMaterial: {fileID: 2100000, guid: d697aa8eca9a6074e932a13fe7d7f5c1, type: 2}
   enemyStructureMaterial: {fileID: 2100000, guid: 21583e009529de2498db37e0c7b79bfe, type: 2}
+  PlacementAreaRadius: 50
 --- !u!4 &704254382
 Transform:
   m_ObjectHideFlags: 0

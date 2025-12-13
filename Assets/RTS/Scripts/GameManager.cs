@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
 
         // load placeable structures and their previews
         StructureManager.Instance.LoadPlaceableStructures();
+        StructureManager.Instance.SetOwnerPlacementAreas(PlayerStartPoint, EnemyStartPoint);
 
         // initialize players
         player = new(ObjectOwner.Player, PlayerStartPoint);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -61,6 +62,14 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
     public Material playerStructureMaterial;
     public Material enemyStructureMaterial;
 
+
+    private Transform playerPlacementArea;
+    private Transform enemyPlacementArea;
+
+    public float PlacementAreaRadius = 60.0f;
+
+
+
     public void LoadPlaceableStructures()
     {
         // load structure scriptable objects
@@ -108,6 +117,12 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         PlaceableStructuresLoaded?.Invoke(placeableStructures);
     }
 
+    public void SetOwnerPlacementAreas(Transform playerArea, Transform enemyArea)
+    {
+        playerPlacementArea = playerArea;
+        enemyPlacementArea = enemyArea;
+    }
+
     public void ResetManager() {
         currentId = 0;
         selectedStructure = null;
@@ -147,7 +162,8 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         preview.TryGetComponent<Structure>(out Structure structure);
         if (structure == null) return;
         // change preview's material based on its position's validity
-        ChangeObjectMaterial(preview, structure.IsValidPosition ? validPlacementMaterial : invalidPlacementMaterial);
+        var validPosition = structure.IsValidPosition && PositionWithinPlaceableBounds(preview.transform.position, ObjectOwner.Player);
+        ChangeObjectMaterial(preview, validPosition ? validPlacementMaterial : invalidPlacementMaterial);
     }
 
     public void UpdateStructureMaterial(Structure s)
@@ -244,9 +260,28 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         Destroy(structure.gameObject);
     }
 
+    public bool PositionWithinPlaceableBounds(Vector3 position, ObjectOwner owner)
+    {
+        // forget verticality
+        var flatPosition = new Vector2(position.x, position.z);
+        var placementAreaTransform = owner == ObjectOwner.Player ? playerPlacementArea : enemyPlacementArea;
+        var placementFlatCenter = new Vector2(placementAreaTransform.position.x, placementAreaTransform.position.z);
+
+        var dist = Vector2.Distance(flatPosition, placementFlatCenter);
+
+        return dist <= PlacementAreaRadius;
+    }
+
     public Structure PlaceStructure(StructureSO so, Vector3 pos, Quaternion rot, ObjectOwner ownership) {
         // check to see if structure can be placed on navmesh
         if(NavMeshUtils.SamplePosition(pos, out Vector3 newPos)) {
+
+            // check to see if sampled position is within placeable bounds
+            if (!PositionWithinPlaceableBounds(newPos, ownership)) {
+                Dbx.CtxLog("Invalid structure placement");
+                return null;
+            }
+
             var prefab = so.data.prefab;
             // create structure and get it's Structure object
             var structureGO = Instantiate(prefab, newPos, rot);
