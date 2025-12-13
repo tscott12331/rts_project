@@ -85,10 +85,7 @@ public abstract class Unit : Attackable
 
         // set animator attack speed
         if(UnitAnimator != null) {
-            Dbx.CtxLog($"Setting attack_speed to {this.RateOfAttack}");
             UnitAnimator.SetFloat("attack_speed", this.RateOfAttack);
-            var setTo = UnitAnimator.GetFloat("attack_speed");
-            Dbx.CtxLog($"Set attack_speed to {setTo}");
         }
     }
 

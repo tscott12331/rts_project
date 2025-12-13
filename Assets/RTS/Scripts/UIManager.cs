@@ -23,6 +23,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     public GameObject UnitPanel;
     public GameObject UpgradePanel;
     public GameObject ResourcePanel;
+    public GameObject MapCanvas;
 
     public void HandleUnitButtonPress(int unitNum)
     {
@@ -98,10 +99,49 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
         UpgradePanel.SetActive(false);
     }
 
+
+    public void EnableBuildingPanel()
+    {
+        BuildingPanel.SetActive(true);
+    }
+
+    public void DisableBuildingPanel()
+    {
+        BuildingPanel.SetActive(false);
+    }
+
+    public void EnableResourcePanel()
+    {
+        ResourcePanel.SetActive(true);
+    }
+
+    public void DisableResourcePanel()
+    {
+        ResourcePanel.SetActive(false);
+    }
+
+    public void EnableMapCanvas()
+    {
+        MapCanvas.SetActive(true);
+    }
+    public void DisableMapCanvas()
+    {
+        MapCanvas.SetActive(false);
+    }
+
     public void ResetUIPanels()
     {
         DisableUnitPanel();
         DisableUpgradePanel();
+    }
+
+    public void DisableAllPanels()
+    {
+        DisableBuildingPanel();
+        DisableUnitPanel();
+        DisableUpgradePanel();
+        DisableResourcePanel();
+        DisableMapCanvas();
     }
 
     public void UpdateResourcePanel(ResourceCount playerResources)
@@ -192,6 +232,21 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
         if(owner == ObjectOwner.Player) UpdateResourcePanel(newCount);
     }
 
+    void GameManager_GameStateChanged(GameState newState)
+    {
+        switch(newState)
+        {
+            case GameState.Playing:
+                EnableBuildingPanel();
+                EnableResourcePanel();
+                EnableMapCanvas();
+                break;
+            case GameState.MainMenu:
+                DisableAllPanels();
+                break;
+        }
+    }
+
     // add and remove listeners
     private void OnEnable()
     {
@@ -205,6 +260,8 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
         UnitManager.TrainableUnitsLoaded += UnitManager_TrainableUnitsLoaded;
 
         OwnerResourceManager.ResourceChanged += OwnerResourceManager_ResourceChanged;
+
+        GameManager.GameStateChanged += GameManager_GameStateChanged;
     }
 
     private void OnDisable()
@@ -220,6 +277,8 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
         UnitManager.TrainableUnitsLoaded -= UnitManager_TrainableUnitsLoaded;
 
         OwnerResourceManager.ResourceChanged -= OwnerResourceManager_ResourceChanged;
+
+        GameManager.GameStateChanged -= GameManager_GameStateChanged;
     }
 } 
 

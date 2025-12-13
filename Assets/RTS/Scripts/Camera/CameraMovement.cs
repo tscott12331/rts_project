@@ -10,6 +10,9 @@ public class CameraMovement : MonoBehaviour
     [SerializeField]
     float MIN_HEIGHT;
 
+    [SerializeField]
+    Transform InitialPositionTransform;
+
     const float MAX_RAY_DIST = 100.0f;
 
     public float DRAG_SPEED;
@@ -19,6 +22,8 @@ public class CameraMovement : MonoBehaviour
     public float MaxFov;
     public float ZoomSpeed;
     float CurFov;
+
+    private bool playing;
 
     Camera Camera;
 
@@ -60,6 +65,11 @@ public class CameraMovement : MonoBehaviour
         }
     }
 
+    public void MoveCameraTo(Vector3 position) {
+        transform.position = position;
+        CorrectCamHeight();
+    }
+
     private void Start()
     {
         Camera = GetComponent<Camera>();
@@ -72,6 +82,9 @@ public class CameraMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(!playing) return; // ignore if paused
+
+
         CurFov = Mathf.Clamp(CurFov - (Input.mouseScrollDelta.y * ZoomSpeed), MinFov, MaxFov);
         Camera.fieldOfView = CurFov;
 
@@ -104,5 +117,28 @@ public class CameraMovement : MonoBehaviour
 
 
 
+    }
+
+
+    private void GameManager_GameStateChanged(GameState state) {
+        this.playing = state == GameState.Playing;
+    }
+
+    private void GameManager_GameBegan() {
+        MoveCameraTo(InitialPositionTransform.position);
+    }
+
+    
+    private void OnEnable() {
+        // only enabled when playing begins
+        playing = true;
+
+        GameManager.GameStateChanged += GameManager_GameStateChanged;
+        GameManager.GameBegan += GameManager_GameBegan;
+    }
+
+    private void OnDisable() {
+        GameManager.GameStateChanged -= GameManager_GameStateChanged;
+        GameManager.GameBegan -= GameManager_GameBegan;
     }
 }

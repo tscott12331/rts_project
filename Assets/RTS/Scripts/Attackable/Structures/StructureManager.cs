@@ -108,6 +108,23 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         PlaceableStructuresLoaded?.Invoke(placeableStructures);
     }
 
+    public void ResetManager() {
+        currentId = 0;
+        selectedStructure = null;
+        structurePreview = NO_PREVIEW;
+        rotatePreview = false;
+        RemoveAllStructures();
+    }
+
+    public void RemoveAllStructures() {
+        var structureList = structures.ToList();
+        for(int i = structures.Count - 1; i >= 0; i--) {
+            DestroyStructure(structureList[i].Value);
+        }
+
+        structures.Clear();
+    }
+
     public void ChangeObjectMaterial(GameObject obj, Material material)
     {
             
@@ -378,7 +395,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
     void InputManager_KeyDown(Keybind action)
     {
         switch (action) {
-            case Keybind.Escape:
+            case Keybind.Cancel:
                 // reset preview when player hits escape
                 ResetStructurePreview();
                 break;
@@ -419,6 +436,11 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
     {
         DestroyStructure(structure);
     }
+    void GameManager_GameStateChanged(GameState newState)
+    {
+        if(newState == GameState.MainMenu) ResetManager();
+    }
+
 
     // enable and disable listeners
     public void OnEnable() {
@@ -434,6 +456,8 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         InputManager.KeyUp += InputManager_KeyUp;
 
         AttackUnit.StructureDestroyed += AttackUnit_StructureDestroyed;
+
+        GameManager.GameStateChanged += GameManager_GameStateChanged;
     }
 
     public void OnDisable() {
@@ -449,6 +473,8 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         InputManager.KeyUp -= InputManager_KeyUp;
 
         AttackUnit.StructureDestroyed -= AttackUnit_StructureDestroyed;
+
+        GameManager.GameStateChanged -= GameManager_GameStateChanged;
     }
 
     public void Update()

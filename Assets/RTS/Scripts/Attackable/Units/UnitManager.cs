@@ -42,6 +42,19 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
         TrainableUnitsLoaded?.Invoke(trainableUnits);
     }
 
+    public void ResetManager() {
+        RemoveAllUnits();
+        selectMarkerTransform.gameObject.SetActive(false);
+    }
+
+    public void RemoveAllUnits() {
+        for(int i = Units.Count - 1; i >= 0; i--) {
+            var unit = Units[i];
+            SelectedUnits.Remove(unit);
+            DestroyUnit(unit);
+        }
+    }
+
     public bool UnitIsSelected(Unit unit)
     {
         return SelectedUnits.Contains(unit);
@@ -252,6 +265,12 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
         DestroyUnit(unit);
     }
 
+    void GameManager_GameStateChanged(GameState newState)
+    {
+        if(newState == GameState.MainMenu) ResetManager();
+    }
+
+
     // enable and disable listeners
     void OnEnable()
     {
@@ -263,6 +282,8 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
         InputManager.ResourceRightClicked += InputManager_ResourceRightClicked;
 
         AttackUnit.UnitDestroyed += AttackUnit_UnitDestroyed;
+
+        GameManager.GameStateChanged += GameManager_GameStateChanged;
     }
 
     void OnDisable()
@@ -275,5 +296,7 @@ public class UnitManager : MonoBehaviourSingleton<UnitManager>
         InputManager.ResourceRightClicked -= InputManager_ResourceRightClicked;
 
         AttackUnit.UnitDestroyed -= AttackUnit_UnitDestroyed;
+
+        GameManager.GameStateChanged -= GameManager_GameStateChanged;
     }
 }

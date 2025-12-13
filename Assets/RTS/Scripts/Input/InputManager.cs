@@ -1,12 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.Controls;
 
 // enum for keybinds
 public enum Keybind : short
 {
-    Escape,
+    Cancel,
     Rotate,
+    Pause,
 }
 
 public class InputManager : MonoBehaviourSingleton<InputManager>
@@ -56,6 +58,8 @@ public class InputManager : MonoBehaviourSingleton<InputManager>
 
     const float MAX_MOUSE_RAY = 250.0f;
 
+    private bool playing;
+
     [SerializeField]
     LayerMask structureLayer;
     [SerializeField]
@@ -71,9 +75,13 @@ public class InputManager : MonoBehaviourSingleton<InputManager>
     void Update()
     {
         // invoke escape keybind when escape is pressed
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.C))
         {
-            KeyDown?.Invoke(Keybind.Escape);
+            KeyDown?.Invoke(Keybind.Cancel);
+        }
+
+        if(Input.GetKeyDown(KeyCode.Escape)) {
+            KeyDown?.Invoke(Keybind.Pause);
         }
 
         // invoke rotate key when R is pressed
@@ -90,7 +98,7 @@ public class InputManager : MonoBehaviourSingleton<InputManager>
         bool rightClicked = Input.GetMouseButtonUp(1);
         bool clicked = leftClicked || rightClicked;
 
-        if (clicked)
+        if (clicked && playing) // only listen to clicks when not in playing state
         {
             // Check to see if UI was clicked
             var raycastResults = new List<RaycastResult>();
@@ -178,5 +186,20 @@ public class InputManager : MonoBehaviourSingleton<InputManager>
             }
 
         }
+    }
+
+
+
+    private void GameManager_GameStateChanged(GameState state) {
+        this.playing = state == GameState.Playing;
+    }
+
+    
+    private void OnEnable() {
+        GameManager.GameStateChanged += GameManager_GameStateChanged;
+    }
+
+    private void OnDisable() {
+        GameManager.GameStateChanged -= GameManager_GameStateChanged;
     }
 }
