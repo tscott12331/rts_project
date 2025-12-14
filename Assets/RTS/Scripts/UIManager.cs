@@ -16,6 +16,10 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     public delegate void BuildingButtonPressedHandler(sbyte buildingNum);
     public static event BuildingButtonPressedHandler BuildingButtonPressed;
 
+    // fired when upgrade button is pressed
+    public delegate void UpgradeButtonPressedHandler();
+    public static event UpgradeButtonPressedHandler UpgradeButtonPressed;
+
     // list of trainable untis (obtained from UnitManager)
     public Dictionary<int, UnitSO> TrainableUnits { get; private set; } = new();
 
@@ -33,6 +37,11 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     public void HandleBuildingButtonPress(int buildingNum)
     {
         BuildingButtonPressed?.Invoke((sbyte) buildingNum);
+    }
+
+    public void HandleUpgradeButtonPress()
+    {
+        UpgradeButtonPressed?.Invoke();
     }
 
     // based on a given dictionary of placeable structures, populate the building panel with buttons
@@ -205,6 +214,12 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     {
         if(s.Owner == ObjectOwner.Player) ResetUIPanels();
     }
+
+    // update unit panel whenever training structure is upgraded
+    void TrainingStructure_TrainingStructureUpgraded(TrainingStructure s)
+    {
+        EnableUnitPanel(s.trainableUnits);
+    }
     
 
     // enable the upgrade panel when a general structure is selected
@@ -252,6 +267,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     {
         TrainingStructure.TrainingStructureSelected += TrainingStructure_TrainingStructureSelected;
         TrainingStructure.TrainingStructureDeselected += TrainingStructure_TrainingStructureDeselected;
+        TrainingStructure.TrainingStructureUpgraded += TrainingStructure_TrainingStructureUpgraded;
 
         GeneralStructure.GeneralStructureSelected += GeneralStructure_GeneralStructureSelected;
         GeneralStructure.GeneralStructureDeselected += GeneralStructure_GeneralStructureDeselected;
@@ -268,6 +284,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     {
         TrainingStructure.TrainingStructureSelected -= TrainingStructure_TrainingStructureSelected;
         TrainingStructure.TrainingStructureDeselected -= TrainingStructure_TrainingStructureDeselected;
+        TrainingStructure.TrainingStructureUpgraded -= TrainingStructure_TrainingStructureUpgraded;
 
         GeneralStructure.GeneralStructureSelected -= GeneralStructure_GeneralStructureSelected;
         GeneralStructure.GeneralStructureDeselected -= GeneralStructure_GeneralStructureDeselected;

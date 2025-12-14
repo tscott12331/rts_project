@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class HealthbarController : MonoBehaviour
+public class FaceTowardsCamera : MonoBehaviour
 {
     void Update()
     {
