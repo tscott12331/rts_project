@@ -5,4 +5,10 @@ using System.Collections.Generic;
 public class TrainableStructureSO : StructureSO
 {
     public List<UnitSO> trainableUnits;
+
+    public int maxConcurrentUnits;
+
+    public UpgradeSO enhancedUpgrade;
+
+    public UpgradeSO advancedUpgrade;
 }

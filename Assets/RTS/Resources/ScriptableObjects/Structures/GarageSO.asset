@@ -23,4 +23,6 @@ MonoBehaviour:
     StructurePlacedActions: 
   trainableUnits:
   - {fileID: 11400000, guid: a7af7e959284146b6b1cf063cc198ce7, type: 2}
-  - {fileID: 11400000, guid: 562366357bc6c44a2b0f7f58b649b332, type: 2}
+  maxConcurrentUnits: 6
+  enhancedUpgrade: {fileID: 11400000, guid: aa6ed0028250f804fa7dde4caa95379e, type: 2}
+  advancedUpgrade: {fileID: 11400000, guid: 4c098f26c77d25541a395bb7b4612f75, type: 2}

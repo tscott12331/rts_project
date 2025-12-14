@@ -105,6 +105,9 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
             var healthbar = preview.transform.Find("HealthbarStructure");
             if(healthbar != null) healthbar.gameObject.SetActive(false);
 
+            var unitsTrainedCanvas = preview.transform.Find("UnitsTrainedCanvas");
+            if (unitsTrainedCanvas != null) unitsTrainedCanvas.gameObject.SetActive(false);
+
             // turn off NavMeshObstacle on preview
             preview.TryGetComponent<NavMeshObstacle>(out NavMeshObstacle navMeshObstacle);
             if(navMeshObstacle != null) navMeshObstacle.enabled = false;
@@ -348,6 +351,39 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         return PlaceStructure(so, pos, rot, ownership);
     }
 
+    public void UpgradeStructure()
+    {
+        if (selectedStructure == null)
+        {
+            Dbx.CtxLog("Cannot upgrade null structure");
+            return;
+        }
+
+        var ts = selectedStructure as TrainingStructure;
+        ObjectCost upgradeCost = new();
+        switch(ts.UpgradeState)
+        {
+            case StructureUpgradeState.None:
+                upgradeCost = ts.EnhancedUpgrade.Cost;
+                break;
+            case StructureUpgradeState.Enhanced:
+                upgradeCost = ts.AdvancedUpgrade.Cost;
+                break;
+            case StructureUpgradeState.Advanced:
+                Dbx.CtxLog("Structure already at max upgrade");
+                return;
+        }
+        var upgradeCount = new ResourceCount(upgradeCost.Ytalnium, upgradeCost.NaturalMetal, upgradeCost.EnergyCapacity);
+        if (!OwnerResourceManager.Instance.ExpendResources(upgradeCount, ts.Owner))
+        {
+            Dbx.CtxLog("Insufficient resources to place structure");
+            Destroy(ts.gameObject);
+            return;
+        }
+
+        ts.UpgradeStructure();
+    }
+
     public void DeselectStructure(Transform structureTransform)
     {
         structureTransform.TryGetComponent<Structure>(out Structure s);
@@ -466,6 +502,12 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         structurePreview = buildingNum;
     }
 
+    // upgrade appropriate structure when upgrade button is pressed
+    void UIManager_UpgradeButtonPressed()
+    {
+        UpgradeStructure();
+    }
+
     // destroy a structure when an attack unit says to
     void AttackUnit_StructureDestroyed(Structure structure)
     {
@@ -481,6 +523,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
     public void OnEnable() {
         UIManager.UnitButtonPressed += UIManager_UnitButtonPressed;
         UIManager.BuildingButtonPressed += UIManager_BuildingButtonPressed;
+        UIManager.UpgradeButtonPressed += UIManager_UpgradeButtonPressed;
 
         InputManager.StructureLeftClicked += InputManager_StructureLeftClicked;
         InputManager.MiscLeftClicked += InputManager_MiscLeftClicked;
@@ -498,6 +541,7 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
     public void OnDisable() {
         UIManager.UnitButtonPressed -= UIManager_UnitButtonPressed;
         UIManager.BuildingButtonPressed -= UIManager_BuildingButtonPressed;
+        UIManager.UpgradeButtonPressed -= UIManager_UpgradeButtonPressed;
 
         InputManager.StructureLeftClicked -= InputManager_StructureLeftClicked;
         InputManager.MiscLeftClicked -= InputManager_MiscLeftClicked;

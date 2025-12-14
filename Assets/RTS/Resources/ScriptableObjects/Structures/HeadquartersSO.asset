@@ -20,5 +20,9 @@ MonoBehaviour:
       Ytalnium: 200
       NaturalMetal: 200
       EnergyCapacity: 15
+    StructurePlacedActions: 
   trainableUnits:
   - {fileID: 11400000, guid: 000a470ea2c208c45b026e17c6e6e367, type: 2}
+  maxConcurrentUnits: 16
+  enhancedUpgrade: {fileID: 11400000, guid: bef9b52e6d480654795b6f2a4d7b78ce, type: 2}
+  advancedUpgrade: {fileID: 11400000, guid: 7eb1933fab62176448fab428bdc79868, type: 2}
