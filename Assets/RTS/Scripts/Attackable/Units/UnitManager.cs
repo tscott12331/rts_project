@@ -1,7 +1,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.AI;
+
+
+public enum UnitID : sbyte
+{
+    Collector = 0,
+    Striker = 1,
+    Sniper = 2,
+    Healer = 3,
+    Jumper = 4,
+    Tank = 5,
+}
 
 public class UnitManager : MonoBehaviourSingleton<UnitManager>
 {

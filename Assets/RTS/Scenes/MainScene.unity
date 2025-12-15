@@ -3544,6 +3544,7 @@ MonoBehaviour:
   PauseCanvas: {fileID: 454326061}
   GameOverCanvas: {fileID: 361488785}
   MainMenuCanvas: {fileID: 505742017}
+  EnemyAIDelay: 2
 --- !u!1 &735826007
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,12 +1,17 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
-using UnityEngine.Networking;
-using UnityEngine.UIElements;
+
+
+public enum StructureID : sbyte
+{
+    Headquarters = 0,
+    Barracks = 1,
+    Refinery = 2,
+    Garage = 3,
+}
 
 public class StructureManager : MonoBehaviourSingleton<StructureManager>
 {
@@ -316,9 +321,12 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
             UpdateStructureMaterial(structure);
 
             // select and add new structure
-            DeselectStructure(selectedStructure);
             AddStructure(structure);
-            SelectStructure(structure);
+            if(ownership == ObjectOwner.Player)
+            {
+                DeselectStructure(selectedStructure);
+                SelectStructure(structure);
+            }
 
             // structure placed, reset preview
             ResetStructurePreview();

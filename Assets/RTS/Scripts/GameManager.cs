@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -29,7 +30,10 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
     private GameState State;
 
     private Player player;
-    private Player enemy;
+    private EnemyAI enemy;
+
+    public float EnemyAIDelay = 10.0f;
+    private Coroutine enemyActionsRoutine;
 
     void Start()
     {
@@ -45,7 +49,7 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
 
         // initialize players
         player = new(ObjectOwner.Player, PlayerStartPoint);
-        enemy = new(ObjectOwner.Enemy, EnemyStartPoint);
+        enemy = new(ObjectOwner.Enemy, EnemyStartPoint, player);
 
         SetGameState(GameState.MainMenu);
     }
@@ -104,6 +108,14 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
 
     private void HandleGameOverState()
     {
+        if(enemyActionsRoutine != null)
+        {
+            StopCoroutine(enemyActionsRoutine);
+            enemyActionsRoutine = null;
+        }
+
+        enemy.ClearStructureReferences();
+
         SetTimeState(true);
         GameOverCanvas.gameObject.SetActive(true);
 
@@ -153,12 +165,28 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
         SetGameState(GameState.Playing);
 
         GameBegan?.Invoke();
+
+        if(enemyActionsRoutine != null) StopCoroutine(enemyActionsRoutine);
+
+        enemyActionsRoutine = StartCoroutine(RunEnemyAiActions(EnemyAIDelay));
     }
 
     public void HandleMainMenuClicked()
     {
         SetGameState(GameState.MainMenu);
     }
+
+
+    IEnumerator RunEnemyAiActions(float delay)
+    {
+        while(true)
+        {
+            enemy.RunRandomAction();
+            yield return new WaitForSeconds(delay);
+        }
+    }
+
+
 
 
 
