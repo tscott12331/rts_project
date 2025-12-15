@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public enum GameState {
@@ -25,6 +26,8 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
     public Canvas GameOverCanvas;
     public Canvas MainMenuCanvas;
 
+    public TMP_Dropdown DifficultyDropdown;
+
 
 
     private GameState State;
@@ -32,7 +35,11 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
     private Player player;
     private EnemyAI enemy;
 
-    public float EnemyAIDelay = 10.0f;
+    public float EasyEnemyAIDelay = 10.0f;
+    public float MediumEnemyAIDelay = 5.0f;
+    public float HardEnemyAIDelay = 2.0f;
+
+    private float EnemyAIDelay = 10.0f;
     private Coroutine enemyActionsRoutine;
 
     void Start()
@@ -46,6 +53,13 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
         // load placeable structures and their previews
         StructureManager.Instance.LoadPlaceableStructures();
         StructureManager.Instance.SetOwnerPlacementAreas(PlayerStartPoint, EnemyStartPoint);
+
+
+        DifficultyDropdown.onValueChanged.AddListener(delegate
+        {
+            HandleDifficultySelected(DifficultyDropdown);
+        });
+
 
         // initialize players
         player = new(ObjectOwner.Player, PlayerStartPoint);
@@ -124,6 +138,14 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
 
     private void HandleMainMenuState()
     {
+        if(enemyActionsRoutine != null)
+        {
+            StopCoroutine(enemyActionsRoutine);
+            enemyActionsRoutine = null;
+        }
+
+        enemy.ClearStructureReferences();
+
         SetTimeState(false);
         MainMenuCanvas.gameObject.SetActive(true);
 
@@ -174,6 +196,12 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
     public void HandleMainMenuClicked()
     {
         SetGameState(GameState.MainMenu);
+    }
+
+    public void HandleDifficultySelected(TMP_Dropdown dropdown)
+    {
+        var index = dropdown.value;
+        EnemyAIDelay = index == 0 ? EasyEnemyAIDelay : index == 1 ? MediumEnemyAIDelay : HardEnemyAIDelay;
     }
 
 
