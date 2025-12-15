@@ -127,6 +127,7 @@ public class TrainingStructure : Structure
         }
 
         UpgradeState++;
+        UIManager.Instance.UpdateUpgradeText(this);
 
         switch(UpgradeState)
         {
