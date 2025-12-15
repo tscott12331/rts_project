@@ -165,8 +165,8 @@ public class EnemyAI : Player
             barracks.TrainById(unitId);
 
             // send unit to the goal hq we want to destroy
-            var garUnit = UnitManager.Instance.Units.Where(u => u.Owner == ObjectOwner.Enemy).Last();
-            garUnit.SetCommandTarget(opposingPlayer.MainHQ);
+            var barUnit = UnitManager.Instance.Units.Where(u => u.Owner == ObjectOwner.Enemy).Last();
+            barUnit.MoveTo(opposingPlayer.MainHQ.transform.position);
             return true;
         }
 
@@ -193,7 +193,7 @@ public class EnemyAI : Player
 
             // send unit to the goal hq we want to destroy
             var garUnit = UnitManager.Instance.Units.Where(u => u.Owner == ObjectOwner.Enemy).Last();
-            garUnit.SetCommandTarget(opposingPlayer.MainHQ);
+            garUnit.MoveTo(opposingPlayer.MainHQ.transform.position);
             return true;
         }
 
