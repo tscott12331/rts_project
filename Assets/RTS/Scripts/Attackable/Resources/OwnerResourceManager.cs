@@ -19,20 +19,44 @@ public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
 
     private const int energyCapacityIncreaseAmount = 20;
 
+    public readonly Dictionary<sbyte, ResourceCount> StructureCosts = new();
+    public readonly Dictionary<sbyte, ResourceCount> UnitCosts = new();
+
+
+    public bool CanExpendAmount(ResourceCount amount, ObjectOwner owner)
+    {
+
+        if (owner == ObjectOwner.Player)
+        {
+            return PlayerResources >= amount;
+        }
+        else if (owner == ObjectOwner.Enemy)
+        {
+            return EnemyResources >= amount;
+        }
+        else
+        {
+            Dbx.CtxLog($"Owner {owner} cannot expend resources");
+            return false;
+        }
+    }
+
     // try to expend an amount of resources
     public bool ExpendResources(ResourceCount amount, ObjectOwner owner)
     {
-        if(owner == ObjectOwner.Player)
+        if (owner == ObjectOwner.Player)
         {
             bool success = PlayerResources.ExpendResources(amount);
-            if(success) ResourceChanged?.Invoke(PlayerResources, amount, ObjectOwner.Player);
+            if (success) ResourceChanged?.Invoke(PlayerResources, amount, ObjectOwner.Player);
             return success;
-        } else if(owner == ObjectOwner.Enemy)
+        }
+        else if (owner == ObjectOwner.Enemy)
         {
             bool success = EnemyResources.ExpendResources(amount);
-            if(success) ResourceChanged?.Invoke(EnemyResources, amount, ObjectOwner.Enemy);
+            if (success) ResourceChanged?.Invoke(EnemyResources, amount, ObjectOwner.Enemy);
             return success;
-        } else
+        }
+        else
         {
             Dbx.CtxLog($"Owner {owner} cannot expend resources");
             return false;
@@ -42,13 +66,13 @@ public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
     // collect resources for an owner
     public bool CollectResources(CollectableResourceCount collected, ObjectOwner owner)
     {
-        if(owner == ObjectOwner.Player)
+        if (owner == ObjectOwner.Player)
         {
             PlayerResources.Collected += collected;
             ResourceChanged?.Invoke(PlayerResources, new ResourceCount(collected, 0), ObjectOwner.Player);
             return true;
         }
-        else if(owner == ObjectOwner.Enemy)
+        else if (owner == ObjectOwner.Enemy)
         {
             EnemyResources.Collected += collected;
             ResourceChanged?.Invoke(EnemyResources, new ResourceCount(collected, 0), ObjectOwner.Enemy);
@@ -65,17 +89,19 @@ public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
     // increase energy capacity by a predefined amount for an owner
     public bool IncreaseEnergyCapacity(ObjectOwner owner)
     {
-        if(owner == ObjectOwner.Player)
+        if (owner == ObjectOwner.Player)
         {
             PlayerResources.EnergyCapacity += energyCapacityIncreaseAmount;
             ResourceChanged?.Invoke(PlayerResources, new ResourceCount(0, 0, energyCapacityIncreaseAmount), ObjectOwner.Player);
             return true;
-        } else if(owner == ObjectOwner.Enemy)
+        }
+        else if (owner == ObjectOwner.Enemy)
         {
             EnemyResources.EnergyCapacity += energyCapacityIncreaseAmount;
             ResourceChanged?.Invoke(EnemyResources, new ResourceCount(0, 0, energyCapacityIncreaseAmount), ObjectOwner.Enemy);
             return true;
-        } else
+        }
+        else
         {
             Dbx.CtxLog($"Owner of type {owner} cannot increase energy capacity");
             return false;
@@ -84,17 +110,19 @@ public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
 
     public void ResetPlayerResources(ObjectOwner owner)
     {
-        if(owner == ObjectOwner.Player)
+        if (owner == ObjectOwner.Player)
         {
             PlayerResources.Collected.Ytalnium = INIT_YTALNIUM;
             PlayerResources.Collected.NaturalMetal = INIT_NATURAL_METAL;
             PlayerResources.EnergyCapacity = INIT_ENERGY_CAPACITY;
-        } else if(owner == ObjectOwner.Enemy)
+        }
+        else if (owner == ObjectOwner.Enemy)
         {
             EnemyResources.Collected.Ytalnium = INIT_YTALNIUM;
             EnemyResources.Collected.NaturalMetal = INIT_NATURAL_METAL;
             EnemyResources.EnergyCapacity = INIT_ENERGY_CAPACITY;
-        } else
+        }
+        else
         {
             Dbx.CtxLog($"Owner of type {owner} cannot reset resources");
         }
@@ -120,6 +148,29 @@ public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
         ResetPlayerResources(ObjectOwner.Enemy);
     }
 
+    private void UnitManager_TrainableUnitsLoaded(Dictionary<int, UnitSO> trainableUnits)
+    {
+        foreach(var uso in trainableUnits)
+        {
+            var id = uso.Value.Data.Id;
+
+            var cost = uso.Value.Data.Cost;
+            var count = new ResourceCount(cost.Ytalnium, cost.NaturalMetal, cost.EnergyCapacity);
+            UnitCosts.Add((sbyte) id, count);
+        }
+    }
+    private void StructureManager_PlaceableStructuresLoaded(Dictionary<int, StructureSO> structures)
+    {
+        foreach(var sso in structures)
+        {
+            var id = sso.Value.data.id;
+
+            var cost = sso.Value.data.Cost;
+            var count = new ResourceCount(cost.Ytalnium, cost.NaturalMetal, cost.EnergyCapacity);
+            StructureCosts.Add((sbyte) id, count);
+        }
+    }
+
     // add and remove listeners
     private void OnEnable()
     {
@@ -128,6 +179,10 @@ public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
         Structure.IncreaseEnergyCapacity += Structure_IncreaseEnergyCapacity;
 
         GameManager.GameBegan += GameManager_GameBegan;
+
+        StructureManager.PlaceableStructuresLoaded += StructureManager_PlaceableStructuresLoaded;
+
+        UnitManager.TrainableUnitsLoaded += UnitManager_TrainableUnitsLoaded;
     }
 
     private void OnDisable()
@@ -183,10 +238,11 @@ public class CollectableResourceCount
 
     public void SetFromType(int amount, ResourceType rt)
     {
-        if(rt == ResourceType.Ytalnium)
+        if (rt == ResourceType.Ytalnium)
         {
             Ytalnium = amount;
-        } else
+        }
+        else
         {
             NaturalMetal = amount;
         }
@@ -194,12 +250,13 @@ public class CollectableResourceCount
 
     public CollectableResourceCount AddAmountOfType(int amount, ResourceType rt)
     {
-        if(rt == ResourceType.Ytalnium)
+        if (rt == ResourceType.Ytalnium)
         {
             Ytalnium += amount;
             // return amount added
             return new CollectableResourceCount(amount, 0);
-        } else
+        }
+        else
         {
             NaturalMetal += amount;
             // return amount added
@@ -208,14 +265,15 @@ public class CollectableResourceCount
     }
     public CollectableResourceCount SubtractAmountOfType(int amount, ResourceType rt)
     {
-        if(rt == ResourceType.Ytalnium)
+        if (rt == ResourceType.Ytalnium)
         {
             // only take what we can
             int realAmount = amount > Ytalnium ? Ytalnium : amount;
             Ytalnium -= realAmount;
             // return amount subtracted
             return new CollectableResourceCount(realAmount, 0);
-        } else
+        }
+        else
         {
             // only take what we can
             int realAmount = amount > NaturalMetal ? NaturalMetal : amount;
@@ -228,13 +286,13 @@ public class CollectableResourceCount
     // overload + to add collectable resources
     public static CollectableResourceCount operator +(CollectableResourceCount crc1, CollectableResourceCount crc2)
     {
-        return new CollectableResourceCount(crc1.Ytalnium + crc2.Ytalnium, 
+        return new CollectableResourceCount(crc1.Ytalnium + crc2.Ytalnium,
             crc1.NaturalMetal + crc2.NaturalMetal);
     }
     // overload - to subtract collectable resources
     public static CollectableResourceCount operator -(CollectableResourceCount crc1, CollectableResourceCount crc2)
     {
-        return new CollectableResourceCount(crc1.Ytalnium - crc2.Ytalnium, 
+        return new CollectableResourceCount(crc1.Ytalnium - crc2.Ytalnium,
             crc1.NaturalMetal - crc2.NaturalMetal);
     }
 
@@ -262,23 +320,31 @@ public class ResourceCount
         EnergyCapacity = e;
     }
 
-    
+
     // try to expend resources, return success status
     public bool ExpendResources(ResourceCount amount)
     {
         var newCount = this - amount;
-        if(newCount.EnergyCapacity < 0 || newCount.Collected.Ytalnium < 0 || newCount.Collected.NaturalMetal < 0)
+        if (newCount.EnergyCapacity < 0 || newCount.Collected.Ytalnium < 0 || newCount.Collected.NaturalMetal < 0)
         {
             // insufficient materials to expend
             // don't change internal values
             return false;
-        } else
+        }
+        else
         {
             // sufficient material amount, expend them
             this.Collected = newCount.Collected;
             this.EnergyCapacity = newCount.EnergyCapacity;
             return true;
         }
+    }
+
+    public bool Equals(ResourceCount other)
+    {
+        return this.Collected.Ytalnium == other.Collected.Ytalnium
+            && this.Collected.NaturalMetal == other.Collected.NaturalMetal
+            && this.EnergyCapacity == other.EnergyCapacity;
     }
 
 
@@ -292,6 +358,28 @@ public class ResourceCount
     public static ResourceCount operator -(ResourceCount rc1, ResourceCount rc2)
     {
         return new ResourceCount(rc1.Collected - rc2.Collected, rc1.EnergyCapacity - rc2.EnergyCapacity);
+    }
+
+    public static bool operator <(ResourceCount rc1, ResourceCount rc2)
+    {
+        return (rc1.Collected.Ytalnium < rc2.Collected.Ytalnium)
+            && (rc1.Collected.NaturalMetal < rc2.Collected.NaturalMetal)
+            && (rc1.EnergyCapacity < rc2.EnergyCapacity);
+    }
+    public static bool operator >(ResourceCount rc1, ResourceCount rc2)
+    {
+        return (rc1.Collected.Ytalnium > rc2.Collected.Ytalnium)
+            && (rc1.Collected.NaturalMetal > rc2.Collected.NaturalMetal)
+            && (rc1.EnergyCapacity > rc2.EnergyCapacity);
+    }
+
+    public static bool operator <=(ResourceCount rc1, ResourceCount rc2)
+    {
+        return (rc1 < rc2) || (rc1.Equals(rc2));
+    }
+    public static bool operator >=(ResourceCount rc1, ResourceCount rc2)
+    {
+        return (rc1 > rc2) || (rc1.Equals(rc2));
     }
 }
 

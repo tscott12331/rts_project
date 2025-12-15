@@ -59,6 +59,19 @@ public class TrainingStructure : Structure
     public UpgradeSO EnhancedUpgrade { get; private set; }
     public UpgradeSO AdvancedUpgrade { get; private set; }
 
+    public void TrainById(sbyte unitId)
+    {
+        if (trainedUnits.Count >= maxConcurrentUnits)
+        {
+            Dbx.CtxLog("Structure is at max concurrent units, cannot train more.");
+            return;
+        }
+
+        // invoke TrainUnit event with appropriate unitId
+        TrainUnit?.Invoke(unitId, this, spawnPositionTransform, walkPositionTransform, Owner);
+        UpdateUnitsTrainedText();
+    }
+
     public void Train(sbyte unitNum)
     {
         if (trainedUnits.Count >= maxConcurrentUnits)
@@ -114,6 +127,7 @@ public class TrainingStructure : Structure
         }
 
         UpgradeState++;
+        UIManager.Instance.UpdateUpgradeText(this);
 
         switch(UpgradeState)
         {

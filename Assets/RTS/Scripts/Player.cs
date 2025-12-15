@@ -8,7 +8,7 @@ public class Player
     public ObjectOwner Owner { get; private set; }
     public Transform StartPoint;
 
-    public Structure MainHQ { get; private set; }
+    public Structure MainHQ { get; protected set; }
 
 
     public Player(ObjectOwner owner, Transform startPoint) {
@@ -26,7 +26,7 @@ public class Player
         GameManager.GameBegan -= GameManager_GameBegan;
     }
 
-    public void PlaceInitialStructures() {
+    public virtual void PlaceInitialStructures() {
         // place player HQ
         MainHQ = StructureManager.Instance.PlaceStructure(0, StartPoint.position, StartPoint.rotation, Owner);
     }

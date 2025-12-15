@@ -98,8 +98,17 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
         UnitPanel.SetActive(false);
     }
 
-    public void EnableUpgradePanel()
+    public void UpdateUpgradeText(TrainingStructure s)
     {
+        var textEl = UpgradePanel.GetComponentInChildren<TMP_Text>();
+        if (textEl != null) textEl.SetText(s.UpgradeState == StructureUpgradeState.None ? "Enhance"
+                                        : s.UpgradeState == StructureUpgradeState.Enhanced ? "Advance"
+                                        : "Max Upgrade");
+    }
+
+    public void EnableUpgradePanel(TrainingStructure s)
+    {
+        UpdateUpgradeText(s);
         UpgradePanel.SetActive(true);
     }
 
@@ -204,7 +213,7 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     {
         if(s.Owner == ObjectOwner.Player)
         {
-            EnableUpgradePanel();
+            EnableUpgradePanel(s);
             EnableUnitPanel(s.trainableUnits);
         }
     }
@@ -219,13 +228,6 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
     void TrainingStructure_TrainingStructureUpgraded(TrainingStructure s)
     {
         EnableUnitPanel(s.trainableUnits);
-    }
-    
-
-    // enable the upgrade panel when a general structure is selected
-    void GeneralStructure_GeneralStructureSelected(GeneralStructure s)
-    {
-        if(s.Owner == ObjectOwner.Player) EnableUpgradePanel();
     }
 
     // reset panels when general structure is deselected
@@ -269,7 +271,6 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
         TrainingStructure.TrainingStructureDeselected += TrainingStructure_TrainingStructureDeselected;
         TrainingStructure.TrainingStructureUpgraded += TrainingStructure_TrainingStructureUpgraded;
 
-        GeneralStructure.GeneralStructureSelected += GeneralStructure_GeneralStructureSelected;
         GeneralStructure.GeneralStructureDeselected += GeneralStructure_GeneralStructureDeselected;
 
         StructureManager.PlaceableStructuresLoaded += StructureManager_PlaceableStructuresLoaded;
@@ -286,7 +287,6 @@ public class UIManager : MonoBehaviourSingleton<UIManager>
         TrainingStructure.TrainingStructureDeselected -= TrainingStructure_TrainingStructureDeselected;
         TrainingStructure.TrainingStructureUpgraded -= TrainingStructure_TrainingStructureUpgraded;
 
-        GeneralStructure.GeneralStructureSelected -= GeneralStructure_GeneralStructureSelected;
         GeneralStructure.GeneralStructureDeselected -= GeneralStructure_GeneralStructureDeselected;
 
         StructureManager.PlaceableStructuresLoaded -= StructureManager_PlaceableStructuresLoaded;

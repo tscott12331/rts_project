@@ -1,5 +1,7 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public enum GameState {
@@ -24,12 +26,21 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
     public Canvas GameOverCanvas;
     public Canvas MainMenuCanvas;
 
+    public TMP_Dropdown DifficultyDropdown;
+
 
 
     private GameState State;
 
     private Player player;
-    private Player enemy;
+    private EnemyAI enemy;
+
+    public float EasyEnemyAIDelay = 10.0f;
+    public float MediumEnemyAIDelay = 5.0f;
+    public float HardEnemyAIDelay = 2.0f;
+
+    private float EnemyAIDelay = 10.0f;
+    private Coroutine enemyActionsRoutine;
 
     void Start()
     {
@@ -43,9 +54,16 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
         StructureManager.Instance.LoadPlaceableStructures();
         StructureManager.Instance.SetOwnerPlacementAreas(PlayerStartPoint, EnemyStartPoint);
 
+
+        DifficultyDropdown.onValueChanged.AddListener(delegate
+        {
+            HandleDifficultySelected(DifficultyDropdown);
+        });
+
+
         // initialize players
         player = new(ObjectOwner.Player, PlayerStartPoint);
-        enemy = new(ObjectOwner.Enemy, EnemyStartPoint);
+        enemy = new(ObjectOwner.Enemy, EnemyStartPoint, player);
 
         SetGameState(GameState.MainMenu);
     }
@@ -104,6 +122,14 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
 
     private void HandleGameOverState()
     {
+        if(enemyActionsRoutine != null)
+        {
+            StopCoroutine(enemyActionsRoutine);
+            enemyActionsRoutine = null;
+        }
+
+        enemy.ClearStructureReferences();
+
         SetTimeState(true);
         GameOverCanvas.gameObject.SetActive(true);
 
@@ -112,6 +138,14 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
 
     private void HandleMainMenuState()
     {
+        if(enemyActionsRoutine != null)
+        {
+            StopCoroutine(enemyActionsRoutine);
+            enemyActionsRoutine = null;
+        }
+
+        enemy.ClearStructureReferences();
+
         SetTimeState(false);
         MainMenuCanvas.gameObject.SetActive(true);
 
@@ -153,12 +187,34 @@ public class GameManager : MonoBehaviourSingleton<GameManager>
         SetGameState(GameState.Playing);
 
         GameBegan?.Invoke();
+
+        if(enemyActionsRoutine != null) StopCoroutine(enemyActionsRoutine);
+
+        enemyActionsRoutine = StartCoroutine(RunEnemyAiActions(EnemyAIDelay));
     }
 
     public void HandleMainMenuClicked()
     {
         SetGameState(GameState.MainMenu);
     }
+
+    public void HandleDifficultySelected(TMP_Dropdown dropdown)
+    {
+        var index = dropdown.value;
+        EnemyAIDelay = index == 0 ? EasyEnemyAIDelay : index == 1 ? MediumEnemyAIDelay : HardEnemyAIDelay;
+    }
+
+
+    IEnumerator RunEnemyAiActions(float delay)
+    {
+        while(true)
+        {
+            enemy.RunRandomAction();
+            yield return new WaitForSeconds(delay);
+        }
+    }
+
+
 
 
 
