@@ -385,7 +385,6 @@ public class StructureManager : MonoBehaviourSingleton<StructureManager>
         if (!OwnerResourceManager.Instance.ExpendResources(upgradeCount, ts.Owner))
         {
             Dbx.CtxLog("Insufficient resources to place structure");
-            Destroy(ts.gameObject);
             return;
         }
 

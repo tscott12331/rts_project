@@ -9,9 +9,9 @@ public class OwnerResourceManager : MonoBehaviourSingleton<OwnerResourceManager>
     public static event ResourceChangedHandler ResourceChanged;
 
 
-    private const int INIT_YTALNIUM = 2500;
-    private const int INIT_NATURAL_METAL = 2500;
-    private const int INIT_ENERGY_CAPACITY = 500;
+    private const int INIT_YTALNIUM = 300;
+    private const int INIT_NATURAL_METAL = 300;
+    private const int INIT_ENERGY_CAPACITY = 30;
 
     // initial resources for each player
     public ResourceCount PlayerResources { get; private set; } = new(INIT_YTALNIUM, INIT_NATURAL_METAL, INIT_ENERGY_CAPACITY);

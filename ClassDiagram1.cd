@@ -1,0 +1,622 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Comment CommentText="Utility">
+    <Position X="25.75" Y="2.75" Height="0.75" Width="1.7" />
+  </Comment>
+  <Comment CommentText="Managers">
+    <Position X="5" Y="0.5" Height="0.75" Width="1.7" />
+  </Comment>
+  <Comment CommentText="Scriptable Objeccts">
+    <Position X="25.938" Y="21.996" Height="0.75" Width="1.7" />
+  </Comment>
+  <Comment CommentText="Player Management">
+    <Position X="5.737" Y="17.429" Height="0.75" Width="1.7" />
+  </Comment>
+  <Comment CommentText="Attackables">
+    <Position X="16.15" Y="25.632" Height="0.75" Width="1.7" />
+  </Comment>
+  <Class Name="ResourceDepositData">
+    <Position X="28" Y="24.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAgAIAAAAYAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\RTS\Resources\ScriptableObjects\ResourceDeposits\ResourceDepositData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ResourceDepositSO">
+    <Position X="26.25" Y="24.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\RTS\Resources\ScriptableObjects\ResourceDeposits\ResourceDepositSO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UpgradeSO">
+    <Position X="29" Y="21.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAQAAAAAAAAAABAAAAAAAAACACAAAAAAAAA=</HashCode>
+      <FileName>Assets\RTS\Resources\ScriptableObjects\Structures\Upgrades\UpgradeSO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GeneralStructureSO">
+    <Position X="34.5" Y="25.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\RTS\Resources\ScriptableObjects\Structures\GeneralStructureSO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StructureData">
+    <Position X="33.25" Y="22" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAAAAAAABIAQAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Assets\RTS\Resources\ScriptableObjects\Structures\StructureData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StructureSO">
+    <Position X="33.25" Y="24" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Assets\RTS\Resources\ScriptableObjects\Structures\StructureSO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TrainableStructureSO">
+    <Position X="32" Y="25.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAoAAAAAA=</HashCode>
+      <FileName>Assets\RTS\Resources\ScriptableObjects\Structures\TrainableStructureSO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UnitData">
+    <Position X="31.5" Y="18.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAACAACAAAAACAAAAgAAABABQAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Assets\RTS\Resources\ScriptableObjects\Units\UnitData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UnitSO">
+    <Position X="33.25" Y="18.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\RTS\Resources\ScriptableObjects\Units\UnitSO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OwnerResourceManager">
+    <Position X="13.25" Y="4.25" Width="1.5" />
+    <NestedTypes>
+      <Delegate Name="OwnerResourceManager.ResourceChangedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Attackable\Resources\OwnerResourceManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAEEAAwAAAAAAIggAAICIQAAACghgLAAAAAQAACAA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Attackable\Resources\OwnerResourceManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="EnemyResources" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ObjectCost">
+    <Position X="13.25" Y="17.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAEAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Attackable\Resources\OwnerResourceManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CollectableResourceCount">
+    <Position X="13.25" Y="14" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAEAAEABAAAQQEAEAIAAQgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Attackable\Resources\OwnerResourceManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ResourceCount">
+    <Position X="13.25" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAgAAAAAAAwAGAAgAAAAAAAAAAAAAAAAAABQA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Attackable\Resources\OwnerResourceManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="Collected" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ResourceDeposit">
+    <Position X="10.25" Y="27.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEAAAAAAIAAAAYAAAAAAAAAAAAwAAAEA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Attackable\Resources\ResourceDeposit.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="RType" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ResourceDepositManager">
+    <Position X="4.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAQACAAAAAAAAAAAAgBAoAAAIAwAACAA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Attackable\Resources\ResourceDepositManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GeneralStructure">
+    <Position X="20.25" Y="27.75" Width="1.5" />
+    <NestedTypes>
+      <Delegate Name="GeneralStructure.GeneralStructureSelectedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Attackable\Structures\GeneralStructure.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="GeneralStructure.GeneralStructureDeselectedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Attackable\Structures\GeneralStructure.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAgAQAAAAAAAABAAQAAAAAA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Attackable\Structures\GeneralStructure.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Structure">
+    <Position X="18.25" Y="28" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="Structure.IncreaseEnergyCapacityHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Attackable\Structures\Structure.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAECAAAAgAAAAQAAIiAAADgAAAAAgAAMABAAAAAAABA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Attackable\Structures\Structure.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="StructurePlacedActions" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="StructureManager">
+    <Position X="9" Y="3.25" Width="1.5" />
+    <NestedTypes>
+      <Delegate Name="StructureManager.PlaceableStructuresLoadedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Attackable\Structures\StructureManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>shSQCBKCEEAgGQAAEUQCIAAIAQIgtkAIkEAkQIDADBI=</HashCode>
+      <FileName>Assets\RTS\Scripts\Attackable\Structures\StructureManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="structures" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="TrainingStructure">
+    <Position X="20.25" Y="30.5" Width="1.5" />
+    <NestedTypes>
+      <Delegate Name="TrainingStructure.TrainingStructureSelectedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Attackable\Structures\TrainingStructure.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="TrainingStructure.TrainingStructureDeselectedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Attackable\Structures\TrainingStructure.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="TrainingStructure.TrainUnitHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Attackable\Structures\TrainingStructure.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="TrainingStructure.TrainingStructureUpgradedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Attackable\Structures\TrainingStructure.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>gACgACAQCAAAAQACAAgCACgAAQgAAABIEBAAIEgASIA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Attackable\Structures\TrainingStructure.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="UpgradeState" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Field Name="trainedUnits" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="AttackUnit">
+    <Position X="11.25" Y="32.75" Width="1.5" />
+    <NestedTypes>
+      <Delegate Name="AttackUnit.StructureDestroyedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Attackable\Units\AttackUnit.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="AttackUnit.UnitDestroyedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Attackable\Units\AttackUnit.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAEAAQAAAAAAAAAAAAACkAAAAAAAAgAAAAAAAAAAFA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Attackable\Units\AttackUnit.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="Weapon" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="CollectorUnit">
+    <Position X="15.5" Y="31.5" Width="1.5" />
+    <NestedTypes>
+      <Delegate Name="CollectorUnit.ResourceDroppedOffHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Attackable\Units\CollectorUnit.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="CollectorUnit.ResourceDepositDestroyedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Attackable\Units\CollectorUnit.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAKAAAABAAAAIAAAAAAAAAAAAgAAAQAAYAAFA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Attackable\Units\CollectorUnit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HealerUnit">
+    <Position X="15.5" Y="29.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAFA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Attackable\Units\HealerUnit.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="Weapon" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="JumperController">
+    <Position X="9" Y="33" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAACAAQABAAAAAAAAAABAAACAAAAAAACBA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Attackable\Units\JumperController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TargetingTriggerController">
+    <Position X="9.5" Y="31" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAAAAAAIAAQAAAAAAAAAA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Attackable\Units\TargetingTriggerController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="Unit" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Unit">
+    <Position X="13.25" Y="28.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>FEwCEACAAAkECAAIIiQAABEBgCAIAAAQAIgOQAAAABA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Attackable\Units\Unit.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="UType" />
+      <Property Name="AssignedStructure" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="UnitManager">
+    <Position X="2.75" Y="4" Width="1.5" />
+    <NestedTypes>
+      <Delegate Name="UnitManager.TrainableUnitsLoadedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Attackable\Units\UnitManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>IIEAAADAAgAAQAAAAIICAASAARgEIAEYMAAAIEgACQQ=</HashCode>
+      <FileName>Assets\RTS\Scripts\Attackable\Units\UnitManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Units" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Attackable">
+    <Position X="13.5" Y="24" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgACBAAAAAACAAAAAEAAAQAAAAAAAACAAgAAAAAA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Attackable\Attackable.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="AType" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="FaceTowardsCamera">
+    <Position X="29" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Attackable\FaceTowardsCamera.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CameraManager">
+    <Position X="17.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAIABAAAAAACAA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Camera\CameraManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CameraMovement">
+    <Position X="17.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAQCAAAACKgAAAACAAiAAAoCAQAoAAAIAAAAIAAACEA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Camera\CameraMovement.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CinematicCameraController">
+    <Position X="19.5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAACCQAAAAIJAhAAAAAAAAAQAAAAAAAAAAAAE=</HashCode>
+      <FileName>Assets\RTS\Scripts\Camera\CinematicCameraController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MapCameraController">
+    <Position X="19.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Camera\MapCameraController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="InputManager">
+    <Position X="6.75" Y="4" Width="1.5" />
+    <NestedTypes>
+      <Delegate Name="InputManager.GroundLeftClickedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Input\InputManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="InputManager.ResourceRightClickedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Input\InputManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="InputManager.UnitLeftClickedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Input\InputManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="InputManager.KeyUpHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Input\InputManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="InputManager.KeyDownHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Input\InputManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="InputManager.ResourceLeftClickedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Input\InputManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="InputManager.StructureLeftClickedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Input\InputManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="InputManager.GroundRightClickedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Input\InputManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="InputManager.StructureRightClickedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Input\InputManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="InputManager.UnitRightClickedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Input\InputManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="InputManager.MiscLeftClickedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Input\InputManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>IQQAAAAAEAAAgAAIgQgAAAAAAUAAgKAYhAAEAAAAGAA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Input\InputManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SelectController">
+    <Position X="6.75" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAQAAAAAEAAAABAAAAgAAAAACAAAAAAIgAAAAAAACAA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Input\SelectController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScreenshotHandler">
+    <Position X="31" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAgAAAAAAAAAAAAAAAAAAACAAAAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Thumbnail\ScreenshotHandler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dbx">
+    <Position X="28.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Utility\Dbx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MonoBehaviourSingleton&lt;T&gt;">
+    <Position X="10" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAEA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Utility\MonoBehaviourSingleton.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NavMeshUtils">
+    <Position X="30.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Utility\NavMeshUtils.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Weapon">
+    <Position X="13" Y="38.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAABAAAAAAAAAAIAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Weapon\Weapon.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EnemyAI">
+    <Position X="7.75" Y="18.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAgAIlAQAEACAAIEAAAQAYCEQAAAAAEAAAAAEEA=</HashCode>
+      <FileName>Assets\RTS\Scripts\EnemyAI.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameManager">
+    <Position X="11.25" Y="3.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="GameManager.GameStateChangedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\GameManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="GameManager.GameBeganHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\GameManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>IACUGACQACAAAAAACEEAAAAACAAIABQJAAkAJCQgSgM=</HashCode>
+      <FileName>Assets\RTS\Scripts\GameManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="player" />
+      <Field Name="enemy" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Player">
+    <Position X="5" Y="19" Width="1.5" />
+    <NestedTypes>
+      <Delegate Name="Player.PlayerLostHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\Player.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAEAAAAAAAAIAACAAAABAAAAgAAAAAAg=</HashCode>
+      <FileName>Assets\RTS\Scripts\Player.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UIManager">
+    <Position X="15.5" Y="4" Width="1.5" />
+    <NestedTypes>
+      <Delegate Name="UIManager.UnitButtonPressedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\UIManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="UIManager.BuildingButtonPressedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\UIManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="UIManager.UpgradeButtonPressedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\RTS\Scripts\UIManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>IBBAICAAoAAACEAEFAAAJAIAgABBBBAqAIIAAUFNCQA=</HashCode>
+      <FileName>Assets\RTS\Scripts\UIManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="TrainableUnits" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Enum Name="ResourceType">
+    <Position X="10.25" Y="26" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\RTS\Resources\ScriptableObjects\ResourceDeposits\ResourceDepositData.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="StructurePlacedAction">
+    <Position X="18.25" Y="33.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\RTS\Resources\ScriptableObjects\Structures\StructureData.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="UnitType">
+    <Position X="13" Y="36.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAQ=</HashCode>
+      <FileName>Assets\RTS\Resources\ScriptableObjects\Units\UnitData.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="StructureID">
+    <Position X="9" Y="15.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEgAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAEAA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Attackable\Structures\StructureManager.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="StructureUpgradeState">
+    <Position X="20.25" Y="37.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAECAAA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Attackable\Structures\TrainingStructure.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="UnitID">
+    <Position X="1.25" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAACQAAAAAAAAAEAAAQQAAAQ=</HashCode>
+      <FileName>Assets\RTS\Scripts\Attackable\Units\UnitManager.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="AttackableType">
+    <Position X="13.5" Y="22.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAAIAAAAAAEAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Attackable\Attackable.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ObjectOwner">
+    <Position X="13.25" Y="19" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Attackable\Attackable.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Keybind">
+    <Position X="6.75" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAQAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\RTS\Scripts\Input\InputManager.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="GameState">
+    <Position X="11.25" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAggAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\RTS\Scripts\GameManager.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
